@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=jewellery-ecommerce
+    volumes:
+      - progresDB:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  development:
+    image: node:latest
+    working_dir: /app
+    environment:
+      - MODE=development
+      - PORT=8282
+      - DATABASE_URL=postgresql://postgres:root@postgres:5432/jewellery-ecommerce
+    ports:
+      - '8282:8282'
+    volumes:
+      - .:/app
+    command: sh -c "npm install  && npx prisma migrate dev --name init && npx prisma generate  && npm run dev"
+    depends_on:
+      - postgres
+    env_file: .env
+
+  production:
+    image: node:latest
+    working_dir: /app
+    environment:
+      - MODE=production
+      - PORT=8282
+      - DATABASE_URL=postgresql://postgres:root@postgres:5432/jewellery-ecommerce
+    ports:
+      - '8282:8282'
+    volumes:
+      - .:/app
+    command: sh -c "npm install && npx prisma migrate deploy  && npx prisma generate &&  npm run build && npm start"
+    depends_on:
+      - postgres
+    env_file: .env
+
+volumes:
+  progresDB:
