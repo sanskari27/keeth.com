@@ -1,4 +1,4 @@
-import { accountDB } from '../../config/postgres';
+import { accountDB } from '../../../db/db';
 import CustomError, { ERRORS } from '../../errors';
 
 export default class UserService {

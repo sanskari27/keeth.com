@@ -7,43 +7,32 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=jewellery-ecommerce
+      - POSTGRES_DB=jewellery
     volumes:
-      - progresDB:/var/lib/postgresql/data
+      - postgres_db:/var/lib/postgresql/data # Persist data
     ports:
       - '5432:5432'
 
-  development:
-    image: node:latest
-    working_dir: /app
-    environment:
-      - MODE=development
-      - PORT=8282
-      - DATABASE_URL=postgresql://postgres:root@postgres:5432/jewellery-ecommerce
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
     ports:
-      - '8282:8282'
-    volumes:
-      - .:/app
-    command: sh -c "npm install  && npx prisma migrate dev --name init && npx prisma generate  && npm run dev"
+      - '8282:8282' # Expose port 8282 on the host and map it to port 8282 in the container
     depends_on:
-      - postgres
-    env_file: .env
-
-  production:
-    image: node:latest
-    working_dir: /app
+      - postgres # Optional dependency on the postgres service
     environment:
-      - MODE=production
-      - PORT=8282
-      - DATABASE_URL=postgresql://postgres:root@postgres:5432/jewellery-ecommerce
-    ports:
-      - '8282:8282'
+      NODE_ENV: development # Define the environment (development or production)
+    command: >
+      sh -c "if [ \"$NODE_ENV\" = 'development' ]; then
+        npm run start:dev; 
+      else
+        npm run start:prod; 
+      fi"
     volumes:
-      - .:/app
-    command: sh -c "npm install && npx prisma migrate deploy  && npx prisma generate &&  npm run build && npm start"
-    depends_on:
-      - postgres
+      - .:/usr/src/app
     env_file: .env
 
 volumes:
-  progresDB:
+  postgres_db:
