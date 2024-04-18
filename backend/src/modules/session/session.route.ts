@@ -1,22 +1,14 @@
-// import express from 'express';
-// import VerifySession from '../../middleware/VerifySession';
-// import { IDValidator } from '../../middleware/idValidator';
-// import UserController from './session.controller';
+import express from 'express';
+import { VerifyAccount } from '../../middleware';
+import Controller from './session.controller';
+import { LoginAccountValidator } from './session.validator';
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.route('/create-session').post(UserController.createSession);
+router.route('/validate-auth').all(VerifyAccount).post(Controller.validateAuth);
+router.route('/login').all(LoginAccountValidator).post(Controller.login);
+router.route('/register').all(LoginAccountValidator).post(Controller.register);
 
-// router.route('/cart').all(VerifySession).get(UserController.cart);
+router.route('/create-session').post(Controller.createSession);
 
-// router.route('/add-to-cart/:id').all(VerifySession, IDValidator).post(UserController.addToCart);
-// router
-// 	.route('/decrease-quantity-from-cart/:id')
-// 	.all(VerifySession, IDValidator)
-// 	.post(UserController.decreaseQuantityFromCart);
-// router
-// 	.route('/remove-from-cart/:id')
-// 	.all(VerifySession, IDValidator)
-// 	.post(UserController.removeFromCart);
-
-// export default router;
+export default router;

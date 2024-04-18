@@ -2,7 +2,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import fs from 'fs';
-// import routes from './modules';
+import routes from './modules';
 
 import Logger from 'n23-logger';
 import { IS_PRODUCTION, IS_WINDOWS, MISC_PATH } from './config/const';
@@ -69,7 +69,7 @@ export default function (app: Express) {
 		});
 		next();
 	});
-	// app.use(routes);
+	app.use(routes);
 
 	app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 		if (err instanceof CustomError) {

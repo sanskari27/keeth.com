@@ -89,57 +89,21 @@ export default { SingleFileUpload, MultiFileUpload };
 
 export { MultipleFileUploadOptions as FileUploadOptions, ResolvedFile };
 
-const ONLY_IMAGES_ALLOWED = (
+const ONLY_MEDIA_ALLOWED = (
 	req: Request,
 	file: Express.Multer.File,
 	cb: multer.FileFilterCallback
 ) => {
 	if (
 		file.mimetype !== 'image/png' &&
+		file.mimetype !== 'image/webp' &&
 		file.mimetype !== 'image/jpg' &&
-		file.mimetype !== 'image/jpeg'
+		file.mimetype !== 'image/jpeg' &&
+		file.mimetype !== 'video/mp4'
 	) {
-		return cb(new Error('Only JPG / PNG images are allowed'));
+		return cb(new Error('Only JPG, PNG, WEBP, MP4  images are allowed'));
 	}
 	cb(null, true);
 };
 
-const ONLY_VIDEO_ALLOWED = (
-	req: Request,
-	file: Express.Multer.File,
-	cb: multer.FileFilterCallback
-) => {
-	if (file.mimetype !== 'video/mp4') {
-		return cb(new Error('Only MP4 videos are allowed'));
-	}
-	cb(null, true);
-};
-
-const ONLY_PDF_ALLOWED = (
-	req: Request,
-	file: Express.Multer.File,
-	cb: multer.FileFilterCallback
-) => {
-	if (file.mimetype !== 'application/pdf') {
-		return cb(new Error('Only PDF are allowed'));
-	}
-	cb(null, true);
-};
-
-const ONLY_CSV_ALLOWED = (
-	req: Request,
-	file: Express.Multer.File,
-	cb: multer.FileFilterCallback
-) => {
-	if (file.mimetype !== 'text/csv') {
-		return cb(new Error('Only CSV are allowed'));
-	}
-	cb(null, true);
-};
-
-export {
-	ONLY_CSV_ALLOWED,
-	ONLY_IMAGES_ALLOWED as ONLY_JPG_IMAGES_ALLOWED,
-	ONLY_PDF_ALLOWED,
-	ONLY_VIDEO_ALLOWED,
-};
+export { ONLY_MEDIA_ALLOWED };

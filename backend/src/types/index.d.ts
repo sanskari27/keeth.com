@@ -1,5 +1,6 @@
 /* eslint-disable no-var */
 
+import { Types } from 'mongoose';
 import SessionService from '../services/session';
 
 declare global {
@@ -16,9 +17,11 @@ declare global {
 	}
 }
 export interface LocalVariables {
+	query: any;
 	data: any;
-	id: string;
+	id: Types.ObjectId;
+	collection_id: string;
 	session: SessionService;
 }
 
-export { IServerError, default as ServerError } from './server-error';
+export { default as ServerError } from './server-error';

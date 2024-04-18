@@ -171,3 +171,4 @@ build
 .vscode/launch.json
 !server/static/assets/logo.png
 .vscode/settings.json
+backend/static/*

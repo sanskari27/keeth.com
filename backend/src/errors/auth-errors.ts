@@ -16,10 +16,10 @@ const USER_ERRORS = {
 		TITLE: 'SESSION_INVALIDATED',
 		MESSAGE: 'The session was invalidated. Please login again.',
 	},
-	WHATSAPP_NOT_READY: {
+	USER_ALREADY_EXISTS: {
 		STATUS: 400,
-		TITLE: 'WHATSAPP_NOT_READY',
-		MESSAGE: 'The whatsapp session was invalidated. Please login again.',
+		TITLE: 'USER_ALREADY_EXISTS',
+		MESSAGE: 'The user already exists with given email or phone.',
 	},
 	ATTACHMENT_IN_USE: {
 		STATUS: 400,

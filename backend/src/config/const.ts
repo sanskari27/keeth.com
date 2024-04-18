@@ -10,13 +10,11 @@ export const PORT = process.env.PORT !== undefined ? process.env.PORT : undefine
 export const SALT_FACTOR = Number(process.env.SALT_FACTOR) ?? 0;
 export const JWT_SECRET = process.env.JWT_SECRET ?? 'hello';
 export const REFRESH_SECRET = process.env.REFRESH_SECRET ?? 'world';
-export const JWT_EXPIRE = process.env.JWT_EXPIRE ?? '3m';
-export const REFRESH_EXPIRE = process.env.REFRESH_EXPIRE ?? '30days';
+export const JWT_EXPIRE = process.env.JWT_EXPIRE ?? '30days';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 export const SESSION_COOKIE = 'session_id';
-export const JWT_COOKIE = 'jwt';
-export const JWT_REFRESH_COOKIE = 'jwt_refresh';
+export const AUTH_COOKIE = 'auth_id';
 
 export enum TRANSACTION_STATUS {
 	SUCCESS = 'success',

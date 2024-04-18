@@ -32,11 +32,7 @@ export const RespondCSV = ({ res, filename, data }: CSVResponseData) => {
 	res.set('Content-Type', 'text/csv');
 	res.status(200).send(data);
 };
-export const RespondVCF = ({ res, filename, data }: CSVResponseData) => {
-	res.setHeader('Content-Disposition', `attachment; filename="${filename}.vcf"`);
-	res.set('Content-Type', 'text/vcf');
-	res.status(200).send(data);
-};
+
 export const RespondFile = ({ res, filename, filepath }: FileResponseData) => {
 	const stat = fs.statSync(filepath);
 	res.setHeader(
@@ -108,4 +104,19 @@ export function validatePhoneNumber(num: string) {
 	var re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
 	return re.test(num);
+}
+
+export function filterUndefinedKeys<T extends object>(opt: T): T {
+	const entries = Object.entries(opt);
+	const filteredEntries = entries.filter(([key, value]) => value !== undefined);
+	const filteredOpt = Object.fromEntries(filteredEntries);
+	return filteredOpt as T;
+}
+
+export function intersection<T>(arr1: T[], arr2: T[]) {
+	const set = new Set(arr2.map((e) => String(e)));
+
+	// Use the built-in Set method `has` to check for common elements
+	const res = arr1.map((e) => String(e)).filter((item) => set.has(String(item)));
+	return new Set(res);
 }

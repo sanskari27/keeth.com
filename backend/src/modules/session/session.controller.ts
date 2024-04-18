@@ -1,115 +1,106 @@
-// import { NextFunction, Request, Response } from 'express';
-// import { IS_PRODUCTION, SESSION_COOKIE } from '../../config/const';
-// import CustomError, { ERRORS } from '../../errors';
-// import SessionService from '../../services/session';
-// import { Respond } from '../../utils/ExpressUtils';
-// export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
+import { NextFunction, Request, Response } from 'express';
+import { AUTH_COOKIE, IS_PRODUCTION, SESSION_COOKIE } from '../../config/const';
+import CustomError, { ERRORS } from '../../errors';
+import { SessionService } from '../../services';
+import { Respond } from '../../utils/ExpressUtils';
+import { LoginValidationResult } from './session.validator';
+export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
-// async function createSession(req: Request, res: Response, next: NextFunction) {
-// 	const _session_id = req.cookies[SESSION_COOKIE];
+async function createSession(req: Request, res: Response, next: NextFunction) {
+	const _session_id = req.cookies[SESSION_COOKIE];
 
-// 	if (_session_id) {
-// 		try {
-// 			await SessionService.getSession(_session_id);
-// 			return Respond({
-// 				res,
-// 				status: 200,
-// 			});
-// 		} catch (err) {
-// 			//ignored
-// 		}
-// 	}
+	if (_session_id) {
+		try {
+			await SessionService.getSession(_session_id);
+			return Respond({
+				res,
+				status: 200,
+			});
+		} catch (err) {
+			//ignored
+		}
+	}
 
-// 	const session = await SessionService.createSession();
+	const session = await SessionService.createSession();
 
-// 	res.cookie(SESSION_COOKIE, session.id, {
-// 		sameSite: 'none',
-// 		expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
-// 		httpOnly: IS_PRODUCTION,
-// 		secure: IS_PRODUCTION,
-// 	});
+	res.cookie(SESSION_COOKIE, session.id, {
+		sameSite: 'none',
+		expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
+		httpOnly: IS_PRODUCTION,
+		secure: IS_PRODUCTION,
+	});
 
-// 	return Respond({
-// 		res,
-// 		status: 200,
-// 	});
-// }
+	return Respond({
+		res,
+		status: 200,
+	});
+}
 
-// async function cart(req: Request, res: Response, next: NextFunction) {
-// 	const session = req.locals.session;
+async function login(req: Request, res: Response, next: NextFunction) {
+	const _session_id = req.cookies[SESSION_COOKIE];
+	const { email, password } = req.locals.data as LoginValidationResult;
+	try {
+		const [token, new_session] = await SessionService.login(email, password);
 
-// 	try {
-// 		const cart = await session.getCart();
-// 		const total = cart.reduce((acc, item) => {
-// 			return (acc += item.quantity * item.product_option.price);
-// 		}, 0);
+		res.clearCookie(SESSION_COOKIE);
+		res.cookie(AUTH_COOKIE, token, {
+			sameSite: 'strict',
+			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+		});
 
-// 		return Respond({
-// 			res,
-// 			status: 200,
-// 			data: {
-// 				total,
-// 				cart,
-// 			},
-// 		});
-// 	} catch (err) {
-// 		next(new CustomError(ERRORS.COMMON_ERRORS.NOT_FOUND));
-// 	}
-// }
+		if (_session_id) {
+			await SessionService.copySession(_session_id, new_session);
+		}
 
-// async function addToCart(req: Request, res: Response, next: NextFunction) {
-// 	const session = req.locals.session;
-// 	const product_id = req.locals.id;
-// 	const product_option = req.body.product_option as string;
-// 	if (!product_option) {
-// 		return next(new CustomError(ERRORS.COMMON_ERRORS.INVALID_FIELDS));
-// 	}
+		return Respond({
+			res,
+			status: 200,
+		});
+	} catch (err) {
+		return next(new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR));
+	}
+}
 
-// 	try {
-// 		await session.addToCart(product_id, product_option);
-// 		return Respond({
-// 			res,
-// 			status: 200,
-// 		});
-// 	} catch (err) {
-// 		next(new CustomError(ERRORS.COMMON_ERRORS.NOT_FOUND));
-// 	}
-// }
+async function register(req: Request, res: Response, next: NextFunction) {
+	const _session_id = req.cookies[SESSION_COOKIE];
+	const { email, password } = req.locals.data as LoginValidationResult;
+	try {
+		const [token, new_session] = await SessionService.register(email, password);
 
-// async function decreaseQuantityFromCart(req: Request, res: Response, next: NextFunction) {
-// 	const session = req.locals.session;
-// 	const product_id = req.locals.id;
-// 	try {
-// 		await session.removeQuantityFromCart(product_id);
-// 		return Respond({
-// 			res,
-// 			status: 200,
-// 		});
-// 	} catch (err) {
-// 		next(new CustomError(ERRORS.COMMON_ERRORS.NOT_FOUND));
-// 	}
-// }
+		res.cookie(AUTH_COOKIE, token, {
+			sameSite: 'strict',
+			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+		});
 
-// async function removeFromCart(req: Request, res: Response, next: NextFunction) {
-// 	const session = req.locals.session;
-// 	const product_id = req.locals.id;
-// 	try {
-// 		await session.removeFromCart(product_id);
-// 		return Respond({
-// 			res,
-// 			status: 200,
-// 		});
-// 	} catch (err) {
-// 		next(new CustomError(ERRORS.COMMON_ERRORS.NOT_FOUND));
-// 	}
-// }
+		if (_session_id) {
+			await SessionService.copySession(_session_id, new_session);
+		}
 
-// const AuthController = {
-// 	createSession,
-// 	addToCart,
-// 	cart,
-// 	removeFromCart,
-// 	decreaseQuantityFromCart,
-// };
+		return Respond({
+			res,
+			status: 200,
+		});
+	} catch (err) {
+		return next(new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR));
+	}
+}
 
-// export default AuthController;
+async function validateAuth(req: Request, res: Response, next: NextFunction) {
+	return Respond({
+		res,
+		status: 200,
+	});
+}
+
+const Controller = {
+	validateAuth,
+	login,
+	register,
+	createSession,
+};
+
+export default Controller;
