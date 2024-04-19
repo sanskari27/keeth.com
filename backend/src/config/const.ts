@@ -5,6 +5,9 @@ export const CHROMIUM_PATH = process.env.CHROMIUM_PATH as string;
 export const IS_PRODUCTION = process.env.MODE === 'production';
 
 export const IS_WINDOWS = process.env.OS === 'WINDOWS';
+export const GOOGLE_AUTH_PASSWORD = process.env.GOOGLE_AUTH_PASSWORD as string;
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
+export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string;
 
 export const PORT = process.env.PORT !== undefined ? process.env.PORT : undefined;
 export const SALT_FACTOR = Number(process.env.SALT_FACTOR) ?? 0;
@@ -21,7 +24,6 @@ export enum TRANSACTION_STATUS {
 	FAILED = 'failed',
 	PENDING = 'pending',
 	CANCELLED = 'cancelled',
-	RECURRING = 'recurring',
 }
 
 export const TAX = 0.18;

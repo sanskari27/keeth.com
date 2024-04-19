@@ -3,6 +3,7 @@ export {
 	AccountDB,
 	CartItemDB,
 	CollectionDB,
+	CouponDB,
 	ProductDB,
 	ProductOptionDB,
 	SessionDB,

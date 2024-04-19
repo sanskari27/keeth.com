@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import CustomError, { ERRORS } from '../../errors';
-import WishlistService from '../../services/wishlist';
+import { WishlistService } from '../../services';
 import { Respond } from '../../utils/ExpressUtils';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 

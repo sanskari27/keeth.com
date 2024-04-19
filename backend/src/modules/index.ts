@@ -1,26 +1,30 @@
 import express from 'express';
 import CartRoute from './cart/cart.route';
+import CheckoutRoute from './checkout/checkout.route';
 import CollectionRoute from './collection/collection.route';
+import CouponRoute from './coupon/coupon.route';
 import ProductRoute from './product/product.route';
 import SessionRoute from './session/session.route';
 import WishlistRoute from './wishlist/wishlist.route';
 
 import CustomError, { COMMON_ERRORS } from '../errors';
+import PhonePeProvider from '../provider/phonepe';
 import { Respond } from '../utils/ExpressUtils';
 import { FileUpload, ONLY_MEDIA_ALLOWED, SingleFileUploadOptions } from '../utils/files';
-import WebhooksRoute from './webhooks/webhooks.route';
 
 const router = express.Router();
 
 // Next routes will be webhooks routes
 
-router.use('/webhooks', WebhooksRoute);
-
 router.use('/cart', CartRoute);
-router.use('/wishlist', WishlistRoute);
-router.use('/sessions', SessionRoute);
+router.use('/checkout', CheckoutRoute);
 router.use('/collections', CollectionRoute);
+router.use('/coupon', CouponRoute);
 router.use('/products', ProductRoute);
+router.use('/sessions', SessionRoute);
+router.use('/wishlist', WishlistRoute);
+
+router.use('/phonepe/callback', PhonePeProvider.Callbacks.transactionCallback);
 
 router.post('/upload-media', async function (req, res, next) {
 	const fileUploadOptions: SingleFileUploadOptions = {

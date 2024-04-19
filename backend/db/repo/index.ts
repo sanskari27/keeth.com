@@ -1,5 +1,6 @@
 export { default as AccountDB } from './Account';
 export { default as CartItemDB } from './CartItem';
+export { default as CouponDB } from './Coupon';
 export { default as CollectionDB } from './Collection';
 export { default as ProductDB } from './Product';
 export { default as ProductOptionDB } from './ProductOption';

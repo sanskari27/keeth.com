@@ -10,6 +10,10 @@ export default class CartService {
 		this._session = session;
 	}
 
+	public getSessionId() {
+		return this._session.id;
+	}
+
 	async getCart() {
 		const cartItems = await CartItemDB.find({
 			cart_id: this._session.id,
@@ -28,6 +32,7 @@ export default class CartService {
 				metal_quality: c.productOption.metal_quality,
 				diamond_type: c.productOption.diamond_type,
 				price: c.productOption.price,
+				discount: c.productOption.discount,
 				quantity: c.quantity,
 				image:
 					c.productOption.images.length > 0
