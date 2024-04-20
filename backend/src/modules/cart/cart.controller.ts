@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import CustomError, { ERRORS } from '../../errors';
 import { CartService } from '../../services';
-import { Respond, idValidator } from '../../utils/ExpressUtils';
+import { Respond } from '../../utils/ExpressUtils';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 async function cart(req: Request, res: Response, next: NextFunction) {
@@ -29,13 +29,9 @@ async function cart(req: Request, res: Response, next: NextFunction) {
 async function addToCart(req: Request, res: Response, next: NextFunction) {
 	const session = req.locals.session;
 	const product_id = req.locals.id;
-	const [product_option_valid, product_option] = idValidator(req.body.product_option);
-	if (!product_option_valid) {
-		return next(new CustomError(ERRORS.COMMON_ERRORS.INVALID_FIELDS));
-	}
 
 	try {
-		await new CartService(session).addToCart(product_id, product_option);
+		await new CartService(session).addToCart(product_id);
 		return Respond({
 			res,
 			status: 200,

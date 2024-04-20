@@ -33,7 +33,7 @@ export default class SessionService {
 		const oldCartItems = await CartItemDB.find({ cart_id: old_id });
 		const newCart = new CartService(new_session);
 		for (const cart_item of oldCartItems) {
-			await newCart.addToCart(cart_item.product, cart_item.productOption, cart_item.quantity);
+			await newCart.addToCart(cart_item.product, cart_item.quantity);
 		}
 		await CartItemDB.deleteMany({ cart_id: old_id });
 	}

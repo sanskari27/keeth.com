@@ -6,7 +6,7 @@ import { ProductService } from '../../services';
 import CollectionService from '../../services/collection';
 import DateUtils from '../../utils/DateUtils';
 import { Respond, intersection } from '../../utils/ExpressUtils';
-import { CreateProductOptionValidationResult, CreateValidationResult } from './product.validator';
+import { CreateValidationResult } from './product.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 async function listProducts(req: Request, res: Response, next: NextFunction) {
@@ -26,7 +26,7 @@ async function listProducts(req: Request, res: Response, next: NextFunction) {
 	if (query.sort !== 'popular') {
 		products = products.sort(function (a, b) {
 			if (query.sort === 'new') {
-				return DateUtils.getMoment(a.listed_on).isAfter(DateUtils.getMoment(b.listed_on)) ? -1 : 1;
+				return DateUtils.getMoment(a.listedOn).isAfter(DateUtils.getMoment(b.listedOn)) ? -1 : 1;
 			}
 			if (query.sort === 'discount') {
 				return b.discount - a.discount;
@@ -81,40 +81,10 @@ async function updateProduct(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
-async function createProductOption(req: Request, res: Response, next: NextFunction) {
-	const id = req.locals.id;
-	const data = req.locals.data as CreateProductOptionValidationResult;
-
-	try {
-		await new ProductService().createProductOption(id, data);
-		return Respond({
-			res,
-			status: 200,
-		});
-	} catch (err) {
-		next(new CustomError(COMMON_ERRORS.ALREADY_EXISTS));
-	}
-}
-
-async function updateProductOption(req: Request, res: Response, next: NextFunction) {
-	const id = req.locals.id;
-	const data = req.locals.data as CreateProductOptionValidationResult;
-
-	try {
-		await new ProductService().updateProductOption(id, data);
-		return Respond({
-			res,
-			status: 200,
-		});
-	} catch (err) {
-		next(new CustomError(COMMON_ERRORS.ALREADY_EXISTS));
-	}
-}
-
 async function list(req: Request, res: Response, next: NextFunction) {
 	const id = req.locals.id;
 
-	await new ProductService().list(id);
+	await new ProductService().setDiscontinued(id, false);
 	return Respond({
 		res,
 		status: 200,
@@ -124,7 +94,7 @@ async function list(req: Request, res: Response, next: NextFunction) {
 async function unlist(req: Request, res: Response, next: NextFunction) {
 	const id = req.locals.id;
 
-	await new ProductService().unlist(id);
+	await new ProductService().setDiscontinued(id, true);
 	return Respond({
 		res,
 		status: 200,
@@ -148,8 +118,6 @@ const Controller = {
 	listProducts,
 	addProduct,
 	updateProduct,
-	createProductOption,
-	updateProductOption,
 	list,
 	unlist,
 	details,

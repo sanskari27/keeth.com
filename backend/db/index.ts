@@ -5,7 +5,7 @@ export {
 	CollectionDB,
 	CouponDB,
 	ProductDB,
-	ProductOptionDB,
+	ProductGroupDB,
 	SessionDB,
 	WishlistDB,
 } from './repo';

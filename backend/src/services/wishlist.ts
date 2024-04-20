@@ -15,6 +15,7 @@ export default class WishlistService {
 			account: this._session.id,
 		});
 	}
+	
 	async getWishlist() {
 		const wishlist = await WishlistDB.findOne({
 			account: this._session.id,

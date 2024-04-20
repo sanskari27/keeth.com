@@ -1,44 +1,54 @@
 import { Types } from 'mongoose';
-import { CartItemDB, ProductDB, ProductOptionDB, WishlistDB } from '../../db';
-import CustomError, { COMMON_ERRORS } from '../errors';
+import { ProductDB } from '../../db';
+import IProduct from '../../db/types/product';
 import { filterUndefinedKeys } from '../utils/ExpressUtils';
 
 type ProductDetails = {
+	productCode: String;
 	name: string;
 	description: string;
+	details: string;
+	pricing_bifurcation: string;
 	images: string[];
 	videos: string[];
+	tags: string[];
+	size: string | null;
+	metal_color: string;
+	metal_type: string;
+	metal_quality: string;
+	diamond_type: string;
 	price: number;
 	discount: number;
+	listed: boolean;
 };
 
-type ProductOptionDetails = {
-	productCode: String;
-	description: String;
-	images: String[];
-	videos: String[];
-	price: Number;
-	discount: Number;
-	metal_color: String;
-	metal_type: String;
-	metal_quality: String;
-	diamond_type: String;
-};
+const formatProduct = (p: IProduct) => ({
+	id: p._id,
+	productCode: p.productCode,
+	name: p.name,
+	description: p.description,
+	details: p.details,
+	pricing_bifurcation: p.pricing_bifurcation,
+	images: p.images,
+	videos: p.videos,
+	tags: p.tags,
+	size: p.size,
+	metal_color: p.metal_color,
+	metal_type: p.metal_type,
+	metal_quality: p.metal_quality,
+	diamond_type: p.diamond_type,
+	price: p.price,
+	discount: p.discount,
+	listed: p.listed,
+	discontinued: p.discontinued,
+	listedOn: p.createdAt,
+});
 
 export default class ProductService {
 	async listAll() {
 		const products = await ProductDB.find();
 
-		return products.map((p) => ({
-			id: p._id,
-			name: p.name,
-			description: p.description,
-			images: p.images,
-			videos: p.videos,
-			price: p.price,
-			discount: p.discount,
-			listed: p.listed,
-		}));
+		return products.map((p) => formatProduct(p));
 	}
 
 	async fetch(id: Types.ObjectId) {
@@ -47,79 +57,21 @@ export default class ProductService {
 			return null;
 		}
 
-		const options = await ProductOptionDB.find({ product });
-
-		return {
-			product: {
-				productId: product._id,
-				name: product.name,
-				description: product.description,
-				images: product.images,
-				videos: product.videos,
-			},
-			options: options.map((opt) => ({
-				productOptionId: opt._id,
-				productCode: opt.productCode,
-				description: opt.description,
-				images: opt.images,
-				videos: opt.videos,
-				price: opt.price,
-				discount: opt.discount,
-				metal_color: opt.metal_color,
-				metal_type: opt.metal_type,
-				metal_quality: opt.metal_quality,
-				diamond_type: opt.diamond_type,
-			})),
-		};
+		return formatProduct(product);
 	}
 
-	async fetchProductOption(id: Types.ObjectId, productOptionId: Types.ObjectId) {
-		const product = await ProductDB.findById(id);
-		if (!product) {
-			return null;
-		}
+	async fetchByCode(code: string) {
+		const products = await ProductDB.find({
+			productCode: code,
+		});
 
-		const option = await ProductOptionDB.findOne({ product, _id: productOptionId });
-		if (!option) {
-			return null;
-		}
-
-		return {
-			product: {
-				productId: product._id,
-				name: product.name,
-				description: product.description,
-				images: product.images,
-				videos: product.videos,
-			},
-			option: {
-				productOptionId: option._id,
-				productCode: option.productCode,
-				description: option.description,
-				images: option.images,
-				videos: option.videos,
-				price: option.price,
-				discount: option.discount,
-				metal_color: option.metal_color,
-				metal_type: option.metal_type,
-				metal_quality: option.metal_quality,
-				diamond_type: option.diamond_type,
-			},
-		};
+		return products.map((p) => formatProduct(p));
 	}
 
 	async create(opt: ProductDetails) {
 		const p = await ProductDB.create(opt);
 
-		return {
-			id: p._id,
-			name: p.name,
-			description: p.description,
-			images: p.images,
-			videos: p.videos,
-			price: p.price,
-			discount: p.discount,
-		};
+		return formatProduct(p);
 	}
 
 	async update(id: Types.ObjectId, opt: Partial<ProductDetails>) {
@@ -131,63 +83,16 @@ export default class ProductService {
 			return null;
 		}
 
-		return {
-			id: p._id,
-			name: p.name,
-			description: p.description,
-			images: p.images,
-			videos: p.videos,
-			price: p.price,
-			discount: p.discount,
-		};
+		return formatProduct(p);
 	}
 
-	async createProductOption(id: Types.ObjectId, opt: ProductOptionDetails) {
-		try {
-			await ProductOptionDB.create({
-				product: id,
-				...opt,
-			});
-		} catch (err) {
-			throw new CustomError(COMMON_ERRORS.ALREADY_EXISTS);
-		}
-	}
-
-	async updateProductOption(
-		id: Types.ObjectId,
-		opt: Partial<Omit<ProductOptionDetails, 'productCode'>>
-	) {
-		opt = filterUndefinedKeys(opt);
-		await ProductOptionDB.updateOne({ _id: id }, { $set: opt });
-	}
-
-	async list(id: Types.ObjectId) {
+	async setDiscontinued(id: Types.ObjectId, isDiscontinued: boolean) {
 		await ProductDB.updateOne(
 			{
 				_id: id,
 			},
 			{
-				listed: true,
-			}
-		);
-	}
-
-	async unlist(id: Types.ObjectId) {
-		await ProductDB.updateOne(
-			{
-				_id: id,
-			},
-			{
-				listed: false,
-			}
-		);
-		await CartItemDB.deleteMany({ product: id });
-		await WishlistDB.updateMany(
-			{},
-			{
-				$pull: {
-					products: id,
-				},
+				$set: { listed: isDiscontinued },
 			}
 		);
 	}
@@ -235,15 +140,6 @@ export default class ProductService {
 			.skip(query.skip)
 			.limit(query.limit);
 
-		return products.map((p) => ({
-			id: p._id,
-			name: p.name,
-			description: p.description,
-			images: p.images,
-			videos: p.videos,
-			price: p.price,
-			discount: p.discount,
-			listed_on: p.createdAt,
-		}));
+		return products.map((p) => formatProduct(p));
 	}
 }

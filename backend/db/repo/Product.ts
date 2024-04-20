@@ -5,11 +5,23 @@ export const ProductDB_name = 'Product';
 
 const schema = new mongoose.Schema<IProduct>(
 	{
+		productCode: {
+			type: String,
+			default: '',
+		},
 		name: {
 			type: String,
 			default: '',
 		},
 		description: {
+			type: String,
+			default: '',
+		},
+		details: {
+			type: String,
+			default: '',
+		},
+		pricing_bifurcation: {
 			type: String,
 			default: '',
 		},
@@ -25,22 +37,14 @@ const schema = new mongoose.Schema<IProduct>(
 			type: [String],
 			default: [],
 		},
-		metal_color: {
-			type: [String],
-			default: [],
+		size: {
+			type: String,
+			default: null,
 		},
-		metal_type: {
-			type: [String],
-			default: [],
-		},
-		metal_quality: {
-			type: [String],
-			default: [],
-		},
-		diamond_type: {
-			type: [String],
-			default: [],
-		},
+		metal_color: String,
+		metal_type: String,
+		metal_quality: String,
+		diamond_type: String,
 		price: {
 			type: Number,
 			default: 0,
@@ -52,6 +56,10 @@ const schema = new mongoose.Schema<IProduct>(
 		listed: {
 			type: Boolean,
 			default: true,
+		},
+		discontinued: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	{ timestamps: { createdAt: true } }

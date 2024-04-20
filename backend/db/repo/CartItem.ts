@@ -1,7 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import ICartItem from '../types/cart-item';
 import { ProductDB_name } from './Product';
-import { ProductOptionDB_name } from './ProductOption';
 
 export const CartItemDB_name = 'CartItem';
 
@@ -14,11 +13,9 @@ const schema = new mongoose.Schema<ICartItem>({
 		type: Schema.Types.ObjectId,
 		ref: ProductDB_name,
 	},
-	productOption: {
-		type: Schema.Types.ObjectId,
-		ref: ProductOptionDB_name,
-	},
 });
+
+schema.index({ product: 1, cart_id: 1 }, { unique: true });
 
 const CartItemDB = mongoose.model<ICartItem>(CartItemDB_name, schema);
 

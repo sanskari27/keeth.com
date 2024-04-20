@@ -36,12 +36,10 @@ export interface ICheckoutProduct extends Document {
 	productCode: string;
 	name: string;
 	description: string;
+	details: string;
+	size: string;
 	image: string;
 	price: number;
 	discount: number;
 	quantity: number;
-	metal_color: string;
-	metal_type: string;
-	metal_quality: string;
-	diamond_type: string;
 }

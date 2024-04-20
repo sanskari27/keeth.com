@@ -1,18 +1,14 @@
 import mongoose, { Schema } from 'mongoose';
 import { TRANSACTION_STATUS } from '../../src/config/const';
 import ICheckout, { ICheckoutProduct } from '../types/checkout';
+import { ProductDB_name } from './Product';
 
 export const CheckoutDB_name = 'Checkout';
 
 const productSchema = new mongoose.Schema<ICheckoutProduct>({
 	productId: {
 		type: Schema.Types.ObjectId,
-		ref: 'Product',
-		required: true,
-	},
-	productOptionId: {
-		type: Schema.Types.ObjectId,
-		ref: 'ProductOption',
+		ref: ProductDB_name,
 		required: true,
 	},
 	productCode: {
@@ -27,7 +23,12 @@ const productSchema = new mongoose.Schema<ICheckoutProduct>({
 		type: String,
 		default: '',
 	},
+	details: {
+		type: String,
+		default: '',
+	},
 	image: String,
+	size: String,
 	price: {
 		type: Number,
 		required: true,
@@ -42,22 +43,6 @@ const productSchema = new mongoose.Schema<ICheckoutProduct>({
 		type: Number,
 		required: true,
 		min: 1,
-	},
-	metal_color: {
-		type: String,
-		required: true,
-	},
-	metal_type: {
-		type: String,
-		required: true,
-	},
-	metal_quality: {
-		type: String,
-		required: true,
-	},
-	diamond_type: {
-		type: String,
-		required: true,
 	},
 });
 
