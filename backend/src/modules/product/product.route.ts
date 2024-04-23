@@ -1,9 +1,11 @@
 import express from 'express';
 import { IDValidator, ProductsQueryValidator } from '../../middleware';
 import Controller from './product.controller';
-import {  CreateValidator } from './product.validator';
+import { CreateValidator } from './product.validator';
 
 const router = express.Router();
+
+router.route('/product-code/:product_code').get(Controller.detailsByProductCode);
 
 router.route('/:id/unlist').all(IDValidator).post(Controller.unlist);
 router.route('/:id/list').all(IDValidator).post(Controller.list);

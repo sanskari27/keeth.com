@@ -15,7 +15,7 @@ export type CreateValidationResult = {
 	metal_color: string;
 	metal_type: string;
 	metal_quality: string;
-	diamond_type: string;
+	diamond_type: string | null;
 	price: number;
 	discount: number;
 	listed: boolean;
@@ -35,7 +35,7 @@ export async function CreateValidator(req: Request, res: Response, next: NextFun
 		metal_color: z.enum(['Yellow', 'Rose Gold', 'White']),
 		metal_type: z.enum(['Gold']),
 		metal_quality: z.enum(['14K', '18K', '22K']),
-		diamond_type: z.enum(['SI IJ', 'SI GH', 'VS GH', 'VVS EF']),
+		diamond_type: z.enum(['SI IJ', 'SI GH', 'VS GH', 'VVS EF']).or(z.null()),
 		price: z.number().nonnegative(),
 		discount: z.number().nonnegative(),
 		listed: z.boolean().default(false),

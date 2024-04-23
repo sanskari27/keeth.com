@@ -16,7 +16,7 @@ type ProductDetails = {
 	metal_color: string;
 	metal_type: string;
 	metal_quality: string;
-	diamond_type: string;
+	diamond_type: string | null;
 	price: number;
 	discount: number;
 	listed: boolean;

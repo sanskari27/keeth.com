@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { ProductGroupService } from '../../services';
+import { Types } from 'mongoose';
+import { ProductGroupService, ProductService } from '../../services';
 import { Respond } from '../../utils/ExpressUtils';
 import { CreateValidationResult, ProductCodesValidationResult } from './product-group.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
@@ -16,12 +17,16 @@ async function listGroups(req: Request, res: Response, next: NextFunction) {
 
 async function listProducts(req: Request, res: Response, next: NextFunction) {
 	let products = await new ProductGroupService().productsInGroup(req.locals.id);
+	const details = await Promise.all(
+		products.map((p) => new ProductService().fetch(new Types.ObjectId(p)))
+	);
 
 	return Respond({
 		res,
 		status: 200,
 		data: {
 			products,
+			details,
 		},
 	});
 }

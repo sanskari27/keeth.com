@@ -5,6 +5,7 @@ export const ProductGroupDB_name = 'ProductGroup';
 
 const schema = new mongoose.Schema<IProductGroup>(
 	{
+		name: String,
 		productCodes: [String],
 	},
 	{ timestamps: { createdAt: true } }

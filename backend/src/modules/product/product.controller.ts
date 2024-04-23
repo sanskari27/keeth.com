@@ -114,6 +114,22 @@ async function details(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function detailsByProductCode(req: Request, res: Response, next: NextFunction) {
+	const product_code = req.params.product_code as string;
+	if (!product_code) {
+		return next(new CustomError(COMMON_ERRORS.INVALID_FIELDS));
+	}
+
+	const products = await new ProductService().fetchByCode(product_code);
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			products,
+		},
+	});
+}
+
 const Controller = {
 	listProducts,
 	addProduct,
@@ -121,6 +137,7 @@ const Controller = {
 	list,
 	unlist,
 	details,
+	detailsByProductCode,
 };
 
 export default Controller;

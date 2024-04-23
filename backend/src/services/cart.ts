@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { CartItemDB } from '../../db';
 import IProduct from '../../db/types/product';
+import ProductService from './product';
 import SessionService from './session';
 
 export default class CartService {
@@ -37,6 +38,11 @@ export default class CartService {
 	}
 
 	public async addToCart(product_id: Types.ObjectId, quantity = 1) {
+		const product = await new ProductService().fetch(product_id);
+		if (!product || product.discontinued) {
+			return;
+		}
+
 		const exists = await CartItemDB.findOne({
 			cart_id: this._session.id,
 			product: product_id,

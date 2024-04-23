@@ -13,11 +13,24 @@ export default class ProductGroupService {
 
 	async productsInGroup(id: Types.ObjectId) {
 		const group = await ProductGroupDB.findById(id);
-		const product = await ProductDB.find({
-			productCode: { $in: group?.productCodes ?? [] },
-		}).distinct('productCode');
 
-		return product.map((p) => p._id.toString()) as string[];
+		const product = await ProductDB.aggregate([
+			{
+				$match: {
+					productCode: { $in: group?.productCodes ?? [] },
+				},
+			},
+			{
+				$group: {
+					_id: '$productCode',
+					products: { $push: '$$ROOT' },
+				},
+			},
+		]);
+
+		return product
+			.map((p) => (p.products.length > 0 ? [p.products[0]._id.toString()] : []))
+			.flat() as string[];
 	}
 
 	async create(name: string, productCodes: string[] = []) {
