@@ -6,4 +6,5 @@ export default interface ICollection extends Document {
 	image: string;
 	products: Types.ObjectId[];
 	tags: string[];
+	visibleAtHome: boolean;
 }

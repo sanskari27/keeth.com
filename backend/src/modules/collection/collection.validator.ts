@@ -6,6 +6,12 @@ import { default as CustomError } from '../../errors';
 export type CreateValidationResult = {
 	id: string;
 	name: string;
+	image: string;
+};
+
+export type VisibilityValidationResult = {
+	id: string;
+	isVisible: boolean;
 };
 
 export async function CreateValidator(req: Request, res: Response, next: NextFunction) {
@@ -15,6 +21,7 @@ export async function CreateValidator(req: Request, res: Response, next: NextFun
 			.toLowerCase()
 			.regex(/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/),
 		name: z.string(),
+		image: z.string().default(''),
 	});
 
 	const reqValidatorResult = reqValidator.safeParse(req.body);
@@ -51,6 +58,32 @@ export async function UpdateValidator(req: Request, res: Response, next: NextFun
 
 	if (reqValidatorResult.success) {
 		req.locals.data = reqValidatorResult.data;
+		return next();
+	}
+	const message = reqValidatorResult.error.issues
+		.map((err) => err.path)
+		.flat()
+		.filter((item, pos, arr) => arr.indexOf(item) == pos)
+		.join(', ');
+
+	return next(
+		new CustomError({
+			STATUS: 400,
+			TITLE: 'INVALID_FIELDS',
+			MESSAGE: message,
+		})
+	);
+}
+
+export async function VisibilityValidator(req: Request, res: Response, next: NextFunction) {
+	const reqValidator = z.object({
+		isVisible: z.boolean(),
+	});
+
+	const reqValidatorResult = reqValidator.safeParse(req.body);
+
+	if (reqValidatorResult.success) {
+		req.locals.data = reqValidatorResult.data.isVisible;
 		return next();
 	}
 	const message = reqValidatorResult.error.issues

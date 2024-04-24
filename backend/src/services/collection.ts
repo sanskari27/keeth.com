@@ -10,6 +10,7 @@ export default class CollectionService {
 			name: collection.name,
 			image: collection.image,
 			tags: collection.tags,
+			visibleAtHome: collection.visibleAtHome ?? false,
 		}));
 	}
 
@@ -28,10 +29,11 @@ export default class CollectionService {
 		};
 	}
 
-	async create(id: string, name: string) {
+	async create(id: string, name: string, image: string = '') {
 		await CollectionDB.create({
 			collection_id: id,
 			name,
+			image,
 		});
 	}
 
@@ -43,6 +45,19 @@ export default class CollectionService {
 			{
 				$set: {
 					image: image,
+				},
+			}
+		);
+	}
+
+	async updateHomeVisibility(id: string, visible: boolean) {
+		await CollectionDB.updateOne(
+			{
+				collection_id: id,
+			},
+			{
+				$set: {
+					visibleAtHome: visible,
 				},
 			}
 		);
@@ -62,6 +77,19 @@ export default class CollectionService {
 			{
 				$addToSet: {
 					tags: { $each: tags },
+				},
+			}
+		);
+	}
+
+	async replaceTags(id: string, tags: string[]) {
+		await CollectionDB.updateOne(
+			{
+				collection_id: id,
+			},
+			{
+				$set: {
+					tags,
 				},
 			}
 		);

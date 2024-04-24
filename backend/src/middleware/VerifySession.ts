@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { JwtPayload, verify } from 'jsonwebtoken';
 import {
+	ADMIN_AUTH_COOKIE,
 	AUTH_COOKIE,
 	IS_PRODUCTION,
 	JWT_SECRET,
@@ -43,6 +44,16 @@ export default async function VerifySession(req: Request, res: Response, next: N
 		secure: IS_PRODUCTION,
 	});
 	next();
+}
+
+export async function VerifyAdmin(req: Request, res: Response, next: NextFunction) {
+	const _auth_id = req.cookies[AUTH_COOKIE];
+
+	if (_auth_id === ADMIN_AUTH_COOKIE) {
+		return next();
+	}
+
+	return next(new CustomError(ERRORS.USER_ERRORS.SESSION_INVALIDATED));
 }
 
 export async function VerifyAccount(req: Request, res: Response, next: NextFunction) {

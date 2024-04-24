@@ -21,6 +21,10 @@ const schema = new mongoose.Schema<ICollection>({
 		type: [String],
 		default: [],
 	},
+	visibleAtHome: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const CollectionDB = mongoose.model<ICollection>(CollectionDB_name, schema);

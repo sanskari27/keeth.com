@@ -5,6 +5,7 @@ import { default as CustomError } from '../../errors';
 export type LoginValidationResult = {
 	email: string;
 	password: string;
+	type: 'user' | 'admin';
 };
 
 export type GoogleLoginValidationResult = {
@@ -15,6 +16,7 @@ export async function LoginAccountValidator(req: Request, res: Response, next: N
 	const reqValidator = z.object({
 		email: z.string().email(),
 		password: z.string(),
+		type: z.enum(['user', 'admin']).default('user'),
 	});
 
 	const reqValidatorResult = reqValidator.safeParse(req.body);

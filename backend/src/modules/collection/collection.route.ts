@@ -5,6 +5,7 @@ import {
 	CreateValidator,
 	ProductsValidator,
 	TagsValidator,
+	VisibilityValidator,
 } from './collection.validator';
 
 const router = express.Router();
@@ -19,7 +20,13 @@ router
 	.route('/:id/tags')
 	.all(CollectionIDValidator, TagsValidator)
 	.post(CollectionController.addTags)
+	.put(CollectionController.replaceTags)
 	.delete(CollectionController.removeTags);
+
+router
+	.route('/:id/home-visibility')
+	.all(CollectionIDValidator, VisibilityValidator)
+	.patch(CollectionController.updateVisibility);
 
 router.route('/:id').all(CollectionIDValidator).patch(CollectionController.updateImage);
 

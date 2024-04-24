@@ -5,11 +5,8 @@
 	"main": "server.js",
 	"scripts": {
 		"build": "npx tsc",
-		"start:prod": "npm i && npx tsc && node build/src/server.js",
-		"start:dev": "nodemon",
-		"db:generate": "drizzle-kit generate:pg",
-		"db:migrate": "npx tsx ./db/migrate.ts -y",
-		"db:view": "npx drizzle-kit studio",
+		"start": "npm i && npx tsc && node build/src/server.js",
+		"dev": "nodemon",
 		"test": "jest"
 	},
 	"keywords": [],

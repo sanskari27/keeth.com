@@ -20,7 +20,7 @@ async function create(req: Request, res: Response, next: NextFunction) {
 	const data = req.locals.data as CreateValidationResult;
 
 	try {
-		await new CollectionService().create(data.id, data.name);
+		await new CollectionService().create(data.id, data.name, data.image);
 	} catch (err) {
 		return next(new CustomError(ERRORS.COMMON_ERRORS.ALREADY_EXISTS));
 	}
@@ -61,10 +61,32 @@ async function remove(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function updateVisibility(req: Request, res: Response, next: NextFunction) {
+	const data = req.locals.data as boolean;
+
+	await new CollectionService().updateHomeVisibility(req.locals.collection_id, data);
+
+	return Respond({
+		res,
+		status: 200,
+	});
+}
+
 async function addTags(req: Request, res: Response, next: NextFunction) {
 	const data = req.locals.data as string[];
 
 	await new CollectionService().addTag(req.locals.collection_id, data);
+
+	return Respond({
+		res,
+		status: 200,
+	});
+}
+
+async function replaceTags(req: Request, res: Response, next: NextFunction) {
+	const data = req.locals.data as string[];
+
+	await new CollectionService().replaceTags(req.locals.collection_id, data);
 
 	return Respond({
 		res,
@@ -109,8 +131,10 @@ const Controller = {
 	listCollections,
 	updateImage,
 	create,
+	updateVisibility,
 	remove,
 	addTags,
+	replaceTags,
 	removeTags,
 	addProducts,
 	removeProducts,

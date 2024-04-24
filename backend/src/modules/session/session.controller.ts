@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import {
+	ADMIN_AUTH_COOKIE,
+	ADMIN_EMAIL,
+	ADMIN_PASSWORD,
 	AUTH_COOKIE,
 	GOOGLE_AUTH_PASSWORD,
 	GOOGLE_CLIENT_ID,
@@ -34,7 +37,7 @@ async function createSession(req: Request, res: Response, next: NextFunction) {
 	const session = await SessionService.createSession();
 
 	res.cookie(SESSION_COOKIE, session.id, {
-		sameSite: 'none',
+		sameSite: 'strict',
 		expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
 		httpOnly: IS_PRODUCTION,
 		secure: IS_PRODUCTION,
@@ -48,7 +51,25 @@ async function createSession(req: Request, res: Response, next: NextFunction) {
 
 async function login(req: Request, res: Response, next: NextFunction) {
 	const _session_id = req.cookies[SESSION_COOKIE];
-	const { email, password } = req.locals.data as LoginValidationResult;
+	const { email, password, type } = req.locals.data as LoginValidationResult;
+
+	if (type === 'admin') {
+		if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+			return next(new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR));
+		}
+
+		res.cookie(AUTH_COOKIE, ADMIN_AUTH_COOKIE, {
+			sameSite: 'strict',
+			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+		});
+
+		return Respond({
+			res,
+			status: 200,
+		});
+	}
 	try {
 		const [token, new_session] = await SessionService.login(email, password);
 
@@ -142,12 +163,23 @@ async function validateAuth(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function logout(req: Request, res: Response, next: NextFunction) {
+	res.clearCookie(SESSION_COOKIE);
+	res.clearCookie(AUTH_COOKIE);
+	res.clearCookie(ADMIN_AUTH_COOKIE);
+	return Respond({
+		res,
+		status: 200,
+	});
+}
+
 const Controller = {
 	validateAuth,
 	login,
 	googleLogin,
 	register,
 	createSession,
+	logout,
 };
 
 export default Controller;

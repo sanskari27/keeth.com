@@ -8,6 +8,8 @@ export const IS_WINDOWS = process.env.OS === 'WINDOWS';
 export const GOOGLE_AUTH_PASSWORD = process.env.GOOGLE_AUTH_PASSWORD as string;
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string;
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL as string;
+export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD as string;
 
 export const PORT = process.env.PORT !== undefined ? process.env.PORT : undefined;
 export const SALT_FACTOR = Number(process.env.SALT_FACTOR) ?? 0;
@@ -18,6 +20,7 @@ export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 export const SESSION_COOKIE = 'session_id';
 export const AUTH_COOKIE = 'auth_id';
+export const ADMIN_AUTH_COOKIE = 'admin-keeth-jewels';
 
 export enum TRANSACTION_STATUS {
 	SUCCESS = 'success',

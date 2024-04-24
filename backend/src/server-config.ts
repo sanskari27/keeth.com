@@ -6,7 +6,9 @@ import routes from './modules';
 
 import Logger from 'n23-logger';
 import { IS_PRODUCTION, IS_WINDOWS, MISC_PATH } from './config/const';
-import CustomError from './errors';
+import CustomError, { COMMON_ERRORS } from './errors';
+import { Respond, RespondFile } from './utils/ExpressUtils';
+import { FileUpload, FileUtils, SingleFileUploadOptions } from './utils/files';
 
 const allowlist = ['http://localhost:5173'];
 
@@ -50,7 +52,6 @@ export default function (app: Express) {
 			success: true,
 		});
 	});
-
 	app.use((req: Request, res: Response, next: NextFunction) => {
 		req.locals = {
 			...req.locals,
@@ -69,7 +70,48 @@ export default function (app: Express) {
 		});
 		next();
 	});
+
 	app.use(routes);
+
+	app.route('/images/:path/:filename').get((req, res, next) => {
+		try {
+			const path = __basedir + '/static/' + req.params.path + '/' + req.params.filename;
+			return RespondFile({
+				res,
+				filename: req.params.filename,
+				filepath: path,
+			});
+		} catch (err: unknown) {
+			console.log(err);
+
+			return next(new CustomError(COMMON_ERRORS.NOT_FOUND));
+		}
+	});
+	app.route('/images').post(async (req, res, next) => {
+		const fileUploadOptions: SingleFileUploadOptions = {
+			field_name: 'file',
+			options: {},
+		};
+
+		try {
+			const uploadedFile = await FileUpload.SingleFileUpload(req, res, fileUploadOptions);
+
+			const location = req.body.location as string;
+
+			const destination = `${__basedir}/static/${location}/${uploadedFile.filename}`;
+			FileUtils.moveFile(uploadedFile.path, destination);
+
+			return Respond({
+				res,
+				status: 200,
+				data: {
+					filepath: `${location}/${uploadedFile.filename}`,
+				},
+			});
+		} catch (err: unknown) {
+			return next(new CustomError(COMMON_ERRORS.FILE_UPLOAD_ERROR));
+		}
+	});
 
 	app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 		if (err instanceof CustomError) {
