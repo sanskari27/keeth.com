@@ -1,0 +1,1 @@
+import{K as r}from"./index-c8a2b0d9.js";class c{static async abandonedCarts(){try{const{data:t}=await r.get("/cart/abandoned-carts");return t.carts}catch{return[]}}static async getOrders(){try{const{data:t}=await r.get("/checkout/orders");return t.orders}catch{return[]}}}export{c as C};
