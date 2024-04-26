@@ -9,8 +9,8 @@ type ProductDetails = {
 	description: string;
 	details: string;
 	pricing_bifurcation: string;
-	images: string[];
-	videos: string[];
+	images: string[] | undefined;
+	videos: string[] | undefined;
 	tags: string[];
 	size: string | null;
 	metal_color: string;
@@ -19,7 +19,6 @@ type ProductDetails = {
 	diamond_type: string | null;
 	price: number;
 	discount: number;
-	listed: boolean;
 };
 
 const formatProduct = (p: IProduct) => ({
@@ -39,16 +38,31 @@ const formatProduct = (p: IProduct) => ({
 	diamond_type: p.diamond_type,
 	price: p.price,
 	discount: p.discount,
-	listed: p.listed,
 	discontinued: p.discontinued,
 	listedOn: p.createdAt,
 });
 
 export default class ProductService {
-	async listAll() {
-		const products = await ProductDB.find();
+	async distinctProducts() {
+		const products = await ProductDB.aggregate([
+			{ $sort: { price: 1 } },
+			{
+				$group: {
+					_id: '$productCode',
+					products: { $push: '$$ROOT' },
+				},
+			},
+			{
+				$replaceRoot: { newRoot: { $arrayElemAt: ['$products', 0] } },
+			},
+		]);
 
-		return products.map((p) => formatProduct(p));
+		return products.map((p) => ({
+			id: p._id,
+			productCode: p.productCode,
+			name: p.name,
+			price: p.price,
+		}));
 	}
 
 	async fetch(id: Types.ObjectId) {
@@ -63,7 +77,7 @@ export default class ProductService {
 	async fetchByCode(code: string) {
 		const products = await ProductDB.find({
 			productCode: code,
-		});
+		}).sort('price');
 
 		return products.map((p) => formatProduct(p));
 	}
@@ -92,7 +106,7 @@ export default class ProductService {
 				_id: id,
 			},
 			{
-				$set: { listed: isDiscontinued },
+				$set: { discontinued: isDiscontinued },
 			}
 		);
 	}
@@ -133,10 +147,11 @@ export default class ProductService {
 		}
 
 		const products = await ProductDB.find({
-			listed: true,
+			discontinued: false,
 			price: { $lte: query.price_max, $gte: query.price_min },
 			..._query,
 		})
+			.sort('price')
 			.skip(query.skip)
 			.limit(query.limit);
 

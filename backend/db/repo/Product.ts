@@ -53,10 +53,6 @@ const schema = new mongoose.Schema<IProduct>(
 			type: Number,
 			default: 0,
 		},
-		listed: {
-			type: Boolean,
-			default: true,
-		},
 		discontinued: {
 			type: Boolean,
 			default: false,

@@ -69,11 +69,22 @@ async function removeFromCart(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+async function abandonedCarts(req: Request, res: Response, next: NextFunction) {
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			carts: await CartService.abandonedCarts(),
+		},
+	});
+}
+
 const Controller = {
 	addToCart,
 	cart,
 	removeFromCart,
 	decreaseQuantityFromCart,
+	abandonedCarts,
 };
 
 export default Controller;

@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { EditIcon } from '@chakra-ui/icons';
 import {
 	Box,
 	Button,
@@ -11,14 +11,13 @@ import {
 	GridItem,
 	HStack,
 	Heading,
-	IconButton,
 	Image,
 	Progress,
 	Switch,
 	Text,
 	VStack,
 } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdCollectionsBookmark, MdOutlineCreate } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useOutlet } from 'react-router-dom';
@@ -30,24 +29,13 @@ import CollectionService from '../../../services/collection.service';
 import { StoreNames, StoreState } from '../../../store';
 import { updateVisibility } from '../../../store/reducers/CollectionsReducer';
 import { Collection } from '../../../store/types/CollectionsState';
-import DeleteAlert, { DeleteAlertHandle } from '../../components/delete-alert';
 import { NavbarSearchElement } from '../../components/navbar';
 import Each from '../../components/utils/Each';
 
 const Collections = () => {
 	const outlet = useOutlet();
-	const deleteAlertRef = useRef<DeleteAlertHandle>(null);
 
-	const { list, selected } = useSelector((state: StoreState) => state[StoreNames.COLLECTIONS]);
-
-	const deleteCollections = (id: string) => {
-		console.log(id);
-
-		// selectedTasks.forEach(async (id) => {
-		// 	removeTask(id);
-		// });
-		// setSelectedTasks([]);
-	};
+	const { list } = useSelector((state: StoreState) => state[StoreNames.COLLECTIONS]);
 
 	useEffect(() => {
 		pushToNavbar({
@@ -63,7 +51,7 @@ const Collections = () => {
 		return () => {
 			popFromNavbar();
 		};
-	}, [selected.length]);
+	}, []);
 
 	const filtered = useFilteredList(list, { name: 1 });
 
@@ -95,28 +83,18 @@ const Collections = () => {
 						items={filtered}
 						render={(collection) => (
 							<GridItem>
-								<PreviewElement
-									collection={collection}
-									onRemove={() => deleteAlertRef.current?.open(collection.id)}
-								/>
+								<PreviewElement collection={collection} />
 							</GridItem>
 						)}
 					/>
 				</Grid>
 			</Box>
-			<DeleteAlert type={'Collection'} ref={deleteAlertRef} onConfirm={deleteCollections} />
 			{outlet}
 		</Flex>
 	);
 };
 
-function PreviewElement({
-	collection,
-	onRemove,
-}: {
-	collection: Collection;
-	onRemove: () => void;
-}) {
+function PreviewElement({ collection }: { collection: Collection }) {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
@@ -124,7 +102,7 @@ function PreviewElement({
 	const [data, setData] = useState<string | null>(null);
 
 	useEffect(() => {
-		APIInstance.get(`${SERVER_URL}images/${collection.image}`, {
+		APIInstance.get(`${SERVER_URL}media/${collection.image}`, {
 			responseType: 'blob',
 			onDownloadProgress: (progressEvent) => {
 				if (progressEvent.total) {
@@ -198,17 +176,6 @@ function PreviewElement({
 						>
 							Edit
 						</Button>
-						<IconButton
-							aria-label='delete'
-							icon={<DeleteIcon color={'red.400'} />}
-							variant='unstyled'
-							colorScheme='red'
-							border={'1px red solid'}
-							_hover={{
-								bgColor: 'red.100',
-							}}
-							onClick={onRemove}
-						/>
 					</Flex>
 				</VStack>
 			</CardFooter>

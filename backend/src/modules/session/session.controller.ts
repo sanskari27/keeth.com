@@ -19,6 +19,16 @@ export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
 
+async function listUsers(req: Request, res: Response, next: NextFunction) {
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			users: await SessionService.listUser(),
+		},
+	});
+}
+
 async function createSession(req: Request, res: Response, next: NextFunction) {
 	const _session_id = req.cookies[SESSION_COOKIE];
 
@@ -180,6 +190,7 @@ const Controller = {
 	register,
 	createSession,
 	logout,
+	listUsers,
 };
 
 export default Controller;

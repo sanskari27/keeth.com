@@ -15,9 +15,9 @@ const PageNotFound = () => {
 			padding='8'
 		>
 			<Link to={NAVIGATION.HOME}>
-				<Image src={LOGO} width={'120px'} className='shadow-lg rounded-full' />
+				<Image src={LOGO} width={'150px'} className='shadow-lg rounded-full' />
 			</Link>
-			<Heading as='h1' size='xl' mt='6'>
+			<Heading as='h1' size='xl' mt='-9'>
 				Page Not Found
 			</Heading>
 			<Text mt='4' fontSize='lg'>

@@ -67,6 +67,16 @@ export default class SessionService {
 		return new SessionService(session._id);
 	}
 
+	static async listUser() {
+		const accounts = await AccountDB.find();
+
+		return accounts.map((acc) => ({
+			name: acc.name,
+			phone: acc.phone,
+			email: acc.email,
+		}));
+	}
+
 	public get id(): Types.ObjectId {
 		return this._session_id;
 	}

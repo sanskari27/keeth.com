@@ -12,6 +12,7 @@ export type ProductsQueryValidatorResult = {
 	collection_ids: string[];
 	metals: string[];
 	purity: ('14K' | '18K' | '22K')[];
+	distinctProducts: boolean;
 };
 
 export default async function ProductsQueryValidator(
@@ -99,6 +100,11 @@ export default async function ProductsQueryValidator(
 			.string()
 			.default('')
 			.transform((value) => (!value ? [] : value.split(','))),
+
+		distinctProducts: z
+			.string()
+			.default('false')
+			.transform((value) => value === 'true'),
 
 		sort: z.enum(['new', 'popular', 'low-high', 'high-low', 'discount']).default('popular'),
 	});

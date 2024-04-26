@@ -5,7 +5,13 @@ import fs from 'fs';
 import routes from './modules';
 
 import Logger from 'n23-logger';
-import { IS_PRODUCTION, IS_WINDOWS, MISC_PATH } from './config/const';
+import {
+	COLLECTIONS_PATH,
+	IS_PRODUCTION,
+	IS_WINDOWS,
+	MISC_PATH,
+	PRODUCTS_PATH,
+} from './config/const';
 import CustomError, { COMMON_ERRORS } from './errors';
 import { Respond, RespondFile } from './utils/ExpressUtils';
 import { FileUpload, FileUtils, SingleFileUploadOptions } from './utils/files';
@@ -73,7 +79,7 @@ export default function (app: Express) {
 
 	app.use(routes);
 
-	app.route('/images/:path/:filename').get((req, res, next) => {
+	app.route('/media/:path/:filename').get((req, res, next) => {
 		try {
 			const path = __basedir + '/static/' + req.params.path + '/' + req.params.filename;
 			return RespondFile({
@@ -87,7 +93,7 @@ export default function (app: Express) {
 			return next(new CustomError(COMMON_ERRORS.NOT_FOUND));
 		}
 	});
-	app.route('/images').post(async (req, res, next) => {
+	app.route('/media').post(async (req, res, next) => {
 		const fileUploadOptions: SingleFileUploadOptions = {
 			field_name: 'file',
 			options: {},
@@ -153,4 +159,6 @@ export default function (app: Express) {
 
 function createDir() {
 	fs.mkdirSync(__basedir + MISC_PATH, { recursive: true });
+	fs.mkdirSync(__basedir + PRODUCTS_PATH, { recursive: true });
+	fs.mkdirSync(__basedir + COLLECTIONS_PATH, { recursive: true });
 }

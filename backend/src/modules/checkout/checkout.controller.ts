@@ -5,6 +5,16 @@ import { Respond } from '../../utils/ExpressUtils';
 import { BillingDetailsValidationResult } from './checkout.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
+async function listAllOrders(req: Request, res: Response, next: NextFunction) {
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			orders: await CheckoutService.getAllOrders(),
+		},
+	});
+}
+
 async function startCheckout(req: Request, res: Response, next: NextFunction) {
 	const session = req.locals.session;
 
@@ -122,6 +132,7 @@ async function verifyPayment(req: Request, res: Response, next: NextFunction) {
 }
 
 const Controller = {
+	listAllOrders,
 	startCheckout,
 	billingDetails,
 	addCoupon,

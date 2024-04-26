@@ -4,8 +4,8 @@ import { Product, ProductsState } from '../types/ProductsState';
 
 const initialState: ProductsState = {
 	list: [] as Product[],
-	selected: [],
-	editSelected: {
+	customizations: [],
+	productDetails: {
 		id: '',
 		productCode: '',
 		name: '',
@@ -22,7 +22,6 @@ const initialState: ProductsState = {
 		diamond_type: '',
 		price: 0,
 		discount: 0,
-		listed: false,
 		discontinued: false,
 		listedOn: '',
 	},
@@ -34,34 +33,85 @@ const initialState: ProductsState = {
 		isUpdating: false,
 		error: '',
 	},
+	pricing_bifurcation: '',
+	productGroups: [],
+	selectedProductGroup: {
+		id: '',
+		name: '',
+		productCodes: [],
+	},
 };
 
 const Slice = createSlice({
-	name: StoreNames.COLLECTIONS,
+	name: StoreNames.PRODUCTS,
 	initialState,
 	reducers: {
 		reset: (state) => {
-			state.list = initialState.list;
-			state.selected = initialState.selected;
-			state.editSelected = initialState.editSelected;
+			state.productDetails = initialState.productDetails;
 			state.uiDetails = initialState.uiDetails;
+			state.pricing_bifurcation = initialState.pricing_bifurcation;
+			state.selectedProductGroup = initialState.selectedProductGroup;
 		},
-		setCollections: (state, action: PayloadAction<typeof initialState.list>) => {
+		setProducts: (state, action: PayloadAction<typeof initialState.list>) => {
 			state.list = action.payload;
 		},
-		editSelected: (state, action: PayloadAction<string>) => {
-			const index = state.list.findIndex((c) => c.id === action.payload);
+		setProductDetails: (state, action: PayloadAction<typeof initialState.productDetails>) => {
+			state.productDetails = action.payload;
+		},
+		setCustomizations: (state, action: PayloadAction<typeof initialState.customizations>) => {
+			state.customizations = action.payload;
+		},
+		setProductGroups: (state, action: PayloadAction<typeof initialState.productGroups>) => {
+			state.productGroups = action.payload;
+		},
+		setSelectedProductGroup: (state, action: PayloadAction<string>) => {
+			const index = state.productGroups.findIndex((el) => el.id === action.payload);
 			if (index === -1) {
 				return;
 			}
-			state.editSelected = state.list[index];
-			state.uiDetails.isUpdating = true;
+			state.selectedProductGroup = state.productGroups[index];
 		},
-		addSelectedCollection: (state, action: PayloadAction<string>) => {
-			state.selected.push(action.payload);
+		setRecommendationName: (state, action: PayloadAction<string>) => {
+			state.selectedProductGroup.name = action.payload;
 		},
-		removeSelectedCollection: (state, action: PayloadAction<string>) => {
-			state.selected = state.selected.filter((el) => el !== action.payload);
+		addProductCodeToGroup: (state, action: PayloadAction<string>) => {
+			state.selectedProductGroup.productCodes.push(action.payload);
+		},
+		removeProductCodeToGroup: (state, action: PayloadAction<string>) => {
+			state.selectedProductGroup.productCodes = state.selectedProductGroup.productCodes.filter(
+				(item) => item !== action.payload
+			);
+		},
+		addRecommendationGroup: (
+			state,
+			action: PayloadAction<(typeof initialState.productGroups)[0]>
+		) => {
+			state.productGroups.push(action.payload);
+		},
+		updateRecommendationGroup: (
+			state,
+			action: PayloadAction<(typeof initialState.productGroups)[0]>
+		) => {
+			state.productGroups = state.productGroups.map((item) => {
+				if (item.id === action.payload.id) {
+					return action.payload;
+				}
+				return item;
+			});
+		},
+		updateVisibility: (state, action: PayloadAction<{ id: string; visible: boolean }>) => {
+			state.customizations = state.customizations.map((e) => {
+				if (e.id === action.payload.id) {
+					return {
+						...e,
+						discontinued: !action.payload.visible,
+					};
+				}
+				return e;
+			});
+		},
+		setPricingBifurcation: (state, action: PayloadAction<string>) => {
+			state.pricing_bifurcation = action.payload;
 		},
 		setSaving: (state, action: PayloadAction<boolean>) => {
 			state.uiDetails.isSaving = action.payload;
@@ -86,16 +136,24 @@ const Slice = createSlice({
 
 export const {
 	reset,
-	addSelectedCollection,
-	editSelected,
-	removeSelectedCollection,
-	setCollections,
+	setCustomizations,
+	setProducts,
 	setCreating,
 	setDeleting,
 	setError,
 	setFetching,
 	setSaving,
 	setUpdating,
+	setProductDetails,
+	setProductGroups,
+	setPricingBifurcation,
+	updateVisibility,
+	setSelectedProductGroup,
+	setRecommendationName,
+	addProductCodeToGroup,
+	removeProductCodeToGroup,
+	addRecommendationGroup,
+	updateRecommendationGroup,
 } = Slice.actions;
 
 export default Slice.reducer;

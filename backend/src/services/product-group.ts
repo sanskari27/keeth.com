@@ -8,6 +8,7 @@ export default class ProductGroupService {
 		return groups.map((g) => ({
 			id: g._id.toString(),
 			name: g.name,
+			productCodes: g.productCodes,
 		}));
 	}
 
@@ -44,13 +45,11 @@ export default class ProductGroupService {
 		};
 	}
 
-	async update(id: Types.ObjectId, name: string) {
+	async update(id: Types.ObjectId, details: { name: string; productCodes: string[] }) {
 		await ProductGroupDB.updateOne(
 			{ _id: id },
 			{
-				$set: {
-					name,
-				},
+				$set: details,
 			}
 		);
 	}

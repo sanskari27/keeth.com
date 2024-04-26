@@ -13,7 +13,8 @@ const router = express.Router();
 router
 	.route('/:id/products')
 	.all(CollectionIDValidator, ProductsValidator)
-	.post(CollectionController.addProducts)
+	.post(CollectionController.setProducts)
+	.patch(CollectionController.addProducts)
 	.delete(CollectionController.removeProducts);
 
 router

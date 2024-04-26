@@ -1,8 +1,11 @@
 import express from 'express';
 import { IDValidator, VerifySession } from '../../middleware';
+import { VerifyAdmin } from '../../middleware/VerifySession';
 import CartController from './cart.controller';
 
 const router = express.Router();
+
+router.route('/abandoned-carts').all(VerifyAdmin).get(CartController.abandonedCarts);
 
 router
 	.route('/:id')

@@ -12,6 +12,16 @@ export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 async function listProducts(req: Request, res: Response, next: NextFunction) {
 	const query = req.locals.query as ProductsQueryValidatorResult;
 
+	if (query.distinctProducts) {
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				products: await new ProductService().distinctProducts(),
+			},
+		});
+	}
+
 	const product_ids_1 = await new CollectionService().productsByCategory(query.collection_ids);
 	const product_ids_2 = await new CollectionService().productsByTags(query.tags);
 	let product_ids = Array.from(intersection(product_ids_1, product_ids_2)).map(
@@ -93,6 +103,7 @@ async function list(req: Request, res: Response, next: NextFunction) {
 
 async function unlist(req: Request, res: Response, next: NextFunction) {
 	const id = req.locals.id;
+	console.log(id);
 
 	await new ProductService().setDiscontinued(id, true);
 	return Respond({

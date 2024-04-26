@@ -3,6 +3,7 @@ import CheckoutDB from '../../db/repo/Checkout';
 import { TRANSACTION_STATUS } from '../config/const';
 import CustomError, { COMMON_ERRORS } from '../errors';
 import PhonePeProvider from '../provider/phonepe';
+import DateUtils from '../utils/DateUtils';
 import CartService from './cart';
 import CouponService from './coupon';
 
@@ -29,6 +30,25 @@ export default class CheckoutService {
 	public constructor(cart: CartService, transactionId: Types.ObjectId) {
 		this._cart = cart;
 		this._transactionId = transactionId;
+	}
+
+	static async getAllOrders() {
+		const orders = await CheckoutDB.find().sort({ transaction_date: -1 });
+
+		return orders.map((order) => {
+			const quantity = order.products.reduce((acc, item) => acc + item.quantity, 0);
+			return {
+				id: order._id.toString(),
+				name: order.name,
+				phone: order.phone,
+				email: order.email,
+				quantity,
+				amount: order.total_amount,
+				couponCode: order.couponCode,
+				status: order.transaction_status,
+				transaction_date: DateUtils.format(order.transaction_date, 'DD/MM/YYYY'),
+			};
+		});
 	}
 
 	static async startCheckout(cart: CartService) {
@@ -92,7 +112,7 @@ export default class CheckoutService {
 		transaction.couponCode = couponCode;
 		transaction.couponDiscount =
 			coupon.discountType === 'percentage'
-				? coupon.discountPercentage * transaction.gross_total
+				? coupon.discountPercentage * transaction.gross_total * 0.01
 				: coupon.discountAmount;
 
 		transaction.couponDiscount = Math.min(transaction.couponDiscount, transaction.gross_total);
@@ -144,6 +164,7 @@ export default class CheckoutService {
 
 			switch (status) {
 				case 'PAYMENT_SUCCESS':
+					await this._cart.emptyCart();
 					await CheckoutService.confirmPayment(this._transactionId, paymentProviderID);
 					break;
 				case 'PAYMENT_PENDING':

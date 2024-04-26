@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { Types } from 'mongoose';
 import CustomError, { ERRORS } from '../../errors';
 import CollectionService from '../../services/collection';
 import { Respond } from '../../utils/ExpressUtils';
@@ -105,8 +104,19 @@ async function removeTags(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function setProducts(req: Request, res: Response, next: NextFunction) {
+	const data = req.locals.data as string[];
+
+	await new CollectionService().setProducts(req.locals.collection_id, data);
+
+	return Respond({
+		res,
+		status: 200,
+	});
+}
+
 async function addProducts(req: Request, res: Response, next: NextFunction) {
-	const data = req.locals.data as Types.ObjectId[];
+	const data = req.locals.data as string[];
 
 	await new CollectionService().addProducts(req.locals.collection_id, data);
 
@@ -117,7 +127,7 @@ async function addProducts(req: Request, res: Response, next: NextFunction) {
 }
 
 async function removeProducts(req: Request, res: Response, next: NextFunction) {
-	const data = req.locals.data as Types.ObjectId[];
+	const data = req.locals.data as string[];
 
 	await new CollectionService().removeProducts(req.locals.collection_id, data);
 
@@ -132,6 +142,7 @@ const Controller = {
 	updateImage,
 	create,
 	updateVisibility,
+	setProducts,
 	remove,
 	addTags,
 	replaceTags,

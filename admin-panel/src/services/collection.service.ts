@@ -17,6 +17,7 @@ export default class CollectionService {
 				image: c.image as string,
 				tags: c.tags as string[],
 				visibleAtHome: c.visibleAtHome as boolean,
+				productCodes: c.productCodes as string[],
 			}));
 		} catch (err) {
 			return [];
@@ -50,7 +51,8 @@ export default class CollectionService {
 				image,
 				tags: [],
 				visibleAtHome: false,
-			};
+				productCodes: [],
+			} satisfies Collection;
 		} catch (err) {
 			return null;
 		}
@@ -62,6 +64,28 @@ export default class CollectionService {
 			formData.append('file', file);
 			await APIInstance.patch(`/collections/${id}`, {
 				image: file,
+			});
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
+	static async updateCollectionTags(id: string, tags: string[]) {
+		try {
+			await APIInstance.put(`/collections/${id}/tags`, {
+				tags: tags,
+			});
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
+	static async updateProductsInCollection(id: string, productCodes: string[]) {
+		try {
+			await APIInstance.post(`/collections/${id}/products`, {
+				products: productCodes,
 			});
 			return true;
 		} catch (err) {

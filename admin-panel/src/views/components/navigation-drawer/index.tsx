@@ -1,10 +1,10 @@
 import { Box, Flex, Icon, IconButton, Image, Text, VStack } from '@chakra-ui/react';
 import { IconType } from 'react-icons';
 import { AiOutlineDashboard, AiOutlineGold } from 'react-icons/ai';
-import { IoBagHandleOutline } from 'react-icons/io5';
+import { IoBagHandleOutline, IoTicketOutline } from 'react-icons/io5';
 import { LiaSitemapSolid } from 'react-icons/lia';
 import { MdOutlineCollectionsBookmark } from 'react-icons/md';
-import { PiUsersBold } from 'react-icons/pi';
+import { PiShoppingCartSimpleBold, PiUsersBold } from 'react-icons/pi';
 import { TbLogout2 } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 import { LOGO } from '../../../assets/Images';
@@ -12,6 +12,7 @@ import { NAVIGATION } from '../../../config/const';
 import { logout } from '../../../hooks/useAuth';
 
 function isActiveTab(tab: string, path: string): boolean {
+	if (tab === '/') return tab === path;
 	if (path.includes(tab)) return true;
 	return false;
 }
@@ -67,6 +68,12 @@ export default function NavigationDrawer() {
 								route={NAVIGATION.PRODUCT_GROUP}
 								name='SKU Groups'
 							/>
+							<MenuButton icon={IoTicketOutline} route={NAVIGATION.COUPONS} name='Coupons' />
+							<MenuButton
+								icon={PiShoppingCartSimpleBold}
+								route={NAVIGATION.ABANDONED_CARTS}
+								name='Carts'
+							/>
 							<MenuButton icon={IoBagHandleOutline} route={NAVIGATION.ORDERS} name='Orders' />
 							<MenuButton icon={PiUsersBold} route={NAVIGATION.USERS} name='Users' />
 						</Flex>
@@ -100,18 +107,32 @@ type MenuButtonProps = {
 
 function MenuButton({ route, icon, name }: MenuButtonProps) {
 	const navigate = useNavigate();
+	const ActiveStyles = {
+		shadow: 'xl',
+		dropShadow: 'lg',
+		bgColor: 'green.200',
+		textColor: 'green.900',
+		fontWeight: 'bold',
+	};
 	return (
 		<Flex
-			className={`cursor-pointer overflow-hidden
-							hover:!shadow-xl  hover:!drop-shadow-lg hover:!bg-green-100 hover:!font-medium 
+			className={`cursor-pointer 
 							${
 								isActiveTab(route, location.pathname) &&
-								'shadow-xl  drop-shadow-lg bg-green-200 group-hover:shadow-none group-hover:drop-shadow-none group-hover:bg-transparent text-green-900 font-bold'
+								'group-hover:shadow-none group-hover:drop-shadow-none group-hover:bg-transparent '
 							}`}
 			padding={'1rem'}
 			rounded={'lg'}
 			gap={'1.1rem'}
+			cursor={'pointer'}
 			onClick={() => navigate(route)}
+			_hover={{
+				boxShadow: 'xl',
+				dropShadow: 'lg',
+				bgColor: 'green.100',
+				fontWeight: 'medium',
+			}}
+			{...(isActiveTab(route, location.pathname) ? ActiveStyles : {})}
 		>
 			<Icon as={icon} color={'green.400'} width={5} height={5} />
 			<Text transition={'none'} className=' text-green-700'>

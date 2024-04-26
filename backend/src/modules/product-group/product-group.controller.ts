@@ -49,7 +49,7 @@ async function updateGroup(req: Request, res: Response, next: NextFunction) {
 	const id = req.locals.id;
 	const data = req.locals.data as CreateValidationResult;
 
-	await new ProductGroupService().update(id, data.name);
+	await new ProductGroupService().update(id, data);
 
 	return Respond({
 		res,

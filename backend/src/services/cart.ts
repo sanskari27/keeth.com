@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
-import { CartItemDB } from '../../db';
+import { CartItemDB, ProductDB } from '../../db';
+import AccountDB from '../../db/repo/Account';
 import IProduct from '../../db/types/product';
 import ProductService from './product';
 import SessionService from './session';
@@ -13,6 +14,93 @@ export default class CartService {
 
 	public getSessionId() {
 		return this._session.id;
+	}
+
+	static async abandonedCarts() {
+		const carts = await CartItemDB.aggregate([
+			{
+				$lookup: {
+					from: ProductDB.collection.name,
+					localField: 'product',
+					foreignField: '_id',
+					as: 'product',
+				},
+			},
+			{
+				$unwind: {
+					path: '$product',
+					preserveNullAndEmptyArrays: true, // This will include cart groups even if no matching account user is found
+				},
+			},
+			{
+				$group: {
+					_id: '$cart_id',
+					cartItems: { $push: '$$ROOT' },
+				},
+			},
+			{
+				$lookup: {
+					from: AccountDB.collection.name,
+					localField: '_id',
+					foreignField: '_id',
+					as: 'user',
+				},
+			},
+			{
+				$unwind: {
+					path: '$user',
+					preserveNullAndEmptyArrays: true, // This will include cart groups even if no matching account user is found
+				},
+			},
+		]);
+
+		return carts.map((c) => {
+			const id = c._id.toString();
+			const user = {
+				name: c.user.name ?? '',
+				phone: c.user.phone ?? '',
+				email: c.user.email ?? '',
+			};
+			const cart_items = c.cartItems.map((item: { quantity: number; product: IProduct }) => ({
+				product_id: item.product._id,
+				quantity: item.quantity,
+				productCode: item.product.productCode,
+				name: item.product.name,
+				price: item.product.price,
+				discount: item.product.discount,
+				metal_type: item.product.metal_type,
+				metal_color: item.product.metal_color,
+				metal_quality: item.product.metal_quality,
+				diamond_type: item.product.diamond_type,
+				size: item.product.size,
+			})) as {
+				product_id: Types.ObjectId;
+				quantity: number;
+				productCode: string;
+				name: string;
+				metal_type: string;
+				metal_color: string;
+				metal_quality: string;
+				diamond_type: string;
+				size: string;
+				price: number;
+				discount: number;
+			}[];
+
+			const gross_amount = cart_items.reduce((acc, item) => {
+				const item_total = item.price * item.quantity;
+				const discount_total = item.discount * item.quantity;
+				acc += item_total - discount_total;
+				return acc;
+			}, 0);
+
+			return {
+				id,
+				user,
+				cartItems: cart_items,
+				grossAmount: gross_amount,
+			};
+		});
 	}
 
 	async getCart() {
@@ -94,6 +182,12 @@ export default class CartService {
 	public async removeFromCart(productId: Types.ObjectId) {
 		await CartItemDB.deleteOne({
 			product: productId,
+			cart_id: this._session.id,
+		});
+	}
+
+	public async emptyCart() {
+		await CartItemDB.deleteMany({
 			cart_id: this._session.id,
 		});
 	}

@@ -11,6 +11,7 @@ const initialState: CollectionsState = {
 		image: '',
 		tags: [],
 		visibleAtHome: false,
+		productCodes: [],
 	},
 	uiDetails: {
 		isSaving: false,
@@ -70,6 +71,14 @@ const Slice = createSlice({
 		},
 		removeSelectedCollection: (state, action: PayloadAction<string>) => {
 			state.selected = state.selected.filter((el) => el !== action.payload);
+		},
+		addProductCodeToCollection: (state, action: PayloadAction<string>) => {
+			state.editSelected.productCodes.push(action.payload);
+		},
+		removeProductCodeToCollection: (state, action: PayloadAction<string>) => {
+			state.editSelected.productCodes = state.editSelected.productCodes.filter(
+				(item) => item !== action.payload
+			);
 		},
 		updateVisibility: (state, action: PayloadAction<{ id: string; visible: boolean }>) => {
 			state.list = state.list.map((e) => {
@@ -133,6 +142,8 @@ export const {
 	addSelectedCollection,
 	editSelected,
 	removeSelectedCollection,
+	addProductCodeToCollection,
+	removeProductCodeToCollection,
 	updateVisibility,
 	setCollections,
 	setCreating,

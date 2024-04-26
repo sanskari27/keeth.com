@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { CollectionDB } from '../../db';
 
 export default class CollectionService {
@@ -11,6 +10,7 @@ export default class CollectionService {
 			image: collection.image,
 			tags: collection.tags,
 			visibleAtHome: collection.visibleAtHome ?? false,
+			productCodes: collection.products,
 		}));
 	}
 
@@ -108,7 +108,20 @@ export default class CollectionService {
 		);
 	}
 
-	async addProducts(collection_id: string, ids: Types.ObjectId[]) {
+	async setProducts(collection_id: string, ids: string[]) {
+		await CollectionDB.updateOne(
+			{
+				collection_id: collection_id,
+			},
+			{
+				$set: {
+					products: ids,
+				},
+			}
+		);
+	}
+
+	async addProducts(collection_id: string, ids: string[]) {
 		await CollectionDB.updateOne(
 			{
 				collection_id: collection_id,
@@ -121,7 +134,7 @@ export default class CollectionService {
 		);
 	}
 
-	async removeProducts(collection_id: string, ids: Types.ObjectId[]) {
+	async removeProducts(collection_id: string, ids: string[]) {
 		await CollectionDB.updateOne(
 			{
 				collection_id: collection_id,

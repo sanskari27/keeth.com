@@ -1,10 +1,10 @@
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 export default interface ICollection extends Document {
 	name: string;
 	collection_id: string;
 	image: string;
-	products: Types.ObjectId[];
+	products: string[];
 	tags: string[];
 	visibleAtHome: boolean;
 }

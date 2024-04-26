@@ -9,6 +9,7 @@ export default class CouponService {
 
 		return (
 			coupons.map((c) => ({
+				id: c._id,
 				name: c.name,
 				couponCode: c.couponCode,
 				availableCoupon: c.availableCoupon,

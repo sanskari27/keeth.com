@@ -12,6 +12,7 @@ router.route('/login').all(LoginAccountValidator).post(Controller.login);
 router.route('/logout').all(LoginAccountValidator).post(Controller.logout);
 router.route('/google-login').all(GoogleLoginValidator).post(Controller.googleLogin);
 router.route('/register').all(LoginAccountValidator).post(Controller.register);
+router.route('/users').all(VerifyAdmin).get(Controller.listUsers);
 
 router.route('/create-session').post(Controller.createSession);
 

@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { Types } from 'mongoose';
 import { z } from 'zod';
 import { default as CustomError } from '../../errors';
 
@@ -152,11 +151,7 @@ export async function TagsValidator(req: Request, res: Response, next: NextFunct
 
 export async function ProductsValidator(req: Request, res: Response, next: NextFunction) {
 	const reqValidator = z.object({
-		products: z
-			.string()
-			.array()
-			.refine((p) => !p.some((value) => !Types.ObjectId.isValid(value)))
-			.transform((p) => p.map((value) => new Types.ObjectId(value))),
+		products: z.string().array(),
 	});
 
 	const reqValidatorResult = reqValidator.safeParse(req.body);

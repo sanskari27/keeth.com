@@ -25,4 +25,5 @@ type Collection = {
 	image: string;
 	tags: string[];
 	visibleAtHome: boolean;
+	productCodes: string[];
 };

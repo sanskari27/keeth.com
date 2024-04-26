@@ -1,7 +1,7 @@
 export type ProductsState = {
 	list: Product[];
-	selected: string[];
-	editSelected: Product;
+	customizations: ProductDetails[];
+	productDetails: ProductDetails;
 	uiDetails: {
 		isSaving: boolean;
 		isFetching: boolean;
@@ -10,9 +10,24 @@ export type ProductsState = {
 		isUpdating: boolean;
 		error: string;
 	};
+	pricing_bifurcation: string;
+	productGroups: ProductGroup[];
+	selectedProductGroup: ProductGroup;
 };
 
+type ProductGroup = {
+	id: string;
+	name: string;
+	productCodes: string[];
+};
 type Product = {
+	id: string;
+	productCode: string;
+	name: string;
+	price: number;
+};
+
+type ProductDetails = {
 	id: string;
 	productCode: string;
 	name: string;
@@ -29,7 +44,6 @@ type Product = {
 	diamond_type: string;
 	price: number;
 	discount: number;
-	listed: boolean;
 	discontinued: boolean;
 	listedOn: string;
 };

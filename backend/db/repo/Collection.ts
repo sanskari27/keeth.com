@@ -1,6 +1,5 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import ICollection from '../types/collection';
-import { ProductDB_name } from './Product';
 
 export const CollectionDB_name = 'Collection';
 
@@ -11,12 +10,7 @@ const schema = new mongoose.Schema<ICollection>({
 		unique: true,
 	},
 	image: String,
-	products: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: ProductDB_name,
-		},
-	],
+	products: [String],
 	tags: {
 		type: [String],
 		default: [],

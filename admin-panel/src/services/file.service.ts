@@ -10,7 +10,7 @@ export default class FileService {
 			const formData = new FormData();
 			formData.append('file', file);
 			formData.append('location', location);
-			const { data } = await APIInstance.post(`/images`, formData, {
+			const { data } = await APIInstance.post(`/media`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},

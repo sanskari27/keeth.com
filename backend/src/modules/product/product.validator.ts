@@ -8,8 +8,8 @@ export type CreateValidationResult = {
 	description: string;
 	details: string;
 	pricing_bifurcation: string;
-	images: string[];
-	videos: string[];
+	images: string[] | undefined;
+	videos: string[] | undefined;
 	tags: string[];
 	size: string;
 	metal_color: string;
@@ -18,7 +18,6 @@ export type CreateValidationResult = {
 	diamond_type: string | null;
 	price: number;
 	discount: number;
-	listed: boolean;
 };
 
 export async function CreateValidator(req: Request, res: Response, next: NextFunction) {
@@ -28,8 +27,8 @@ export async function CreateValidator(req: Request, res: Response, next: NextFun
 		description: z.string().default(''),
 		details: z.string().default(''),
 		pricing_bifurcation: z.string().default(''),
-		images: z.string().array().default([]),
-		videos: z.string().array().default([]),
+		images: z.string().array().or(z.undefined()),
+		videos: z.string().array().or(z.undefined()),
 		tags: z.string().array().default([]),
 		size: z.string().or(z.null()).default(null),
 		metal_color: z.enum(['Yellow', 'Rose Gold', 'White']),
@@ -38,7 +37,6 @@ export async function CreateValidator(req: Request, res: Response, next: NextFun
 		diamond_type: z.enum(['SI IJ', 'SI GH', 'VS GH', 'VVS EF']).or(z.null()),
 		price: z.number().nonnegative(),
 		discount: z.number().nonnegative(),
-		listed: z.boolean().default(false),
 	});
 
 	const reqValidatorResult = reqValidator.safeParse(req.body);

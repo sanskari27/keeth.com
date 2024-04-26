@@ -11,8 +11,10 @@ export const NAVIGATION = {
 	COLLECTIONS: '/collections',
 	PRODUCT: '/products',
 	PRODUCT_GROUP: '/product-groups',
+	COUPONS: '/coupons',
 	ORDERS: '/orders',
 	USERS: '/users',
+	ABANDONED_CARTS: '/abandoned-carts',
 };
 
 export enum TRANSACTION_STATUS {

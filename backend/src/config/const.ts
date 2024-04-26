@@ -32,6 +32,8 @@ export enum TRANSACTION_STATUS {
 export const TAX = 0.18;
 
 export const MISC_PATH = '/static/misc/';
+export const COLLECTIONS_PATH = '/static/collections/';
+export const PRODUCTS_PATH = '/static/products/';
 
 export const CACHE_TIMEOUT = 60 * 60; //seconds
 export const REFRESH_CACHE_TIMEOUT = 30 * 24 * 60 * 60; //seconds
