@@ -18,6 +18,7 @@ const config: Config = {
 					dark_red: '#8A1619',
 					brown: '#942F1A',
 					marron: '#7E3625',
+					dark_marron: '#891618',
 				},
 				accent: {
 					dark: '#CA835B',

@@ -146,14 +146,42 @@ export default class ProductService {
 			};
 		}
 
-		const products = await ProductDB.find({
-			discontinued: false,
-			price: { $lte: query.price_max, $gte: query.price_min },
-			..._query,
-		})
-			.sort('price')
-			.skip(query.skip)
-			.limit(query.limit);
+		const products = await ProductDB.aggregate([
+			{ $match: _query },
+			{ $sort: { price: 1 } },
+			{
+				$group: {
+					_id: '$productCode',
+					products: { $push: '$$ROOT' },
+				},
+			},
+			{
+				$replaceRoot: { newRoot: { $arrayElemAt: ['$products', 0] } },
+			},
+			{ $skip: query.skip },
+			{ $limit: query.limit },
+		]);
+
+		return products.map((p) => formatProduct(p));
+	}
+
+	async productsByProductCodes(codes: string[]) {
+		const products = await ProductDB.aggregate([
+			{
+				$match: {
+					productCode: { $in: codes },
+				},
+			},
+			{
+				$group: {
+					_id: '$productCode',
+					products: { $push: '$$ROOT' },
+				},
+			},
+			{
+				$replaceRoot: { newRoot: { $arrayElemAt: ['$products', 0] } },
+			},
+		]);
 
 		return products.map((p) => formatProduct(p));
 	}

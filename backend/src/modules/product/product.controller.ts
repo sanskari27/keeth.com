@@ -1,23 +1,29 @@
 import { NextFunction, Request, Response } from 'express';
 import { Types } from 'mongoose';
+import StorageDB from '../../../db/repo/Storage';
 import CustomError, { COMMON_ERRORS } from '../../errors';
 import { ProductsQueryValidatorResult } from '../../middleware';
 import { ProductService } from '../../services';
 import CollectionService from '../../services/collection';
 import DateUtils from '../../utils/DateUtils';
 import { Respond, intersection } from '../../utils/ExpressUtils';
-import { CreateValidationResult } from './product.validator';
+import { CreateValidationResult, NewArrivalValidationResult } from './product.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 async function listProducts(req: Request, res: Response, next: NextFunction) {
+	let list = (await StorageDB.getObject('NEW_ARRIVAL')) as string[];
 	const query = req.locals.query as ProductsQueryValidatorResult;
 
 	if (query.distinctProducts) {
+		const products = await new ProductService().distinctProducts();
 		return Respond({
 			res,
 			status: 200,
 			data: {
-				products: await new ProductService().distinctProducts(),
+				products: products.map((item) => ({
+					...item,
+					isNewArrival: list.includes(item.productCode),
+				})),
 			},
 		});
 	}
@@ -101,6 +107,40 @@ async function list(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function markBestSeller(req: Request, res: Response, next: NextFunction) {
+	const { productCode, status } = req.locals.data as NewArrivalValidationResult;
+
+	let list = ((await StorageDB.getObject('NEW_ARRIVAL')) as string[]) ?? [];
+	if (status) {
+		list = [...new Set([...list, productCode])];
+	} else {
+		list = list.filter((item) => item !== productCode);
+	}
+
+	await StorageDB.setObject('BEST_SELLER', list);
+
+	return Respond({
+		res,
+		status: 200,
+	});
+}
+
+async function fetchBestSellers(req: Request, res: Response, next: NextFunction) {
+	const list = ((await StorageDB.getObject('BEST_SELLER')) as string[]) ?? [];
+	const products = await new ProductService().productsByProductCodes(list);
+
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			products: products.map((p) => ({
+				image: p.images.length > 0 ? p.images[0] : '',
+				productCode: p.productCode,
+			})),
+		},
+	});
+}
+
 async function unlist(req: Request, res: Response, next: NextFunction) {
 	const id = req.locals.id;
 	console.log(id);
@@ -148,6 +188,8 @@ const Controller = {
 	list,
 	unlist,
 	details,
+	markBestSeller,
+	fetchBestSellers,
 	detailsByProductCode,
 };
 

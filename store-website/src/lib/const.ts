@@ -1,2 +1,13 @@
+export const KEETH_LOGO = '/images/keeth-logo.svg';
+export const HOME_SCREEN_MODAL = '/images/model-demonstrating-earrings-ring.jpg';
+export const HOME_SCREEN_RINGS = '/images/home-ring.svg';
+export const QUOTES = '/images/quotes.svg';
 
-export const KEETH_LOGO = './keeth-logo.svg'
+export const ARRIVALS_BANGLES = '/images/arrivals-bangle.webp';
+export const ARRIVALS_NECKLACE = '/images/arrivals-necklace.webp';
+export const ARRIVALS_PENDANTS = '/images/arrivals-pendants.webp';
+export const ARRIVALS_EARRINGS = '/images/arrivals-earrings.webp';
+
+export const FONT_AURA_BELLA = '/font/aura-bella.ttf';
+
+export const SERVER_URL = process.env.SERVER_URL;

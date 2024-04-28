@@ -25,7 +25,7 @@ const Navbar = () => {
 
 	return (
 		<div ref={outsideRef}>
-			<nav className='navbar mt-4 h-[60px] '>
+			<nav className='navbar mt-4 h-[60px]'>
 				<div className='flex items-center px-4 h-full justify-start md:justify-between'>
 					<div className='w-full md:w-fit h-full flex justify-between space-x-32 items-center'>
 						<a href='/'>
@@ -80,7 +80,7 @@ const Navbar = () => {
 								}`}
 							>
 								<a href='/wishlist'>
-									<FaRegHeart fontSize={'1.5rem'} />
+									<FaRegHeart fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
 								</a>
 							</li>
 
@@ -90,7 +90,7 @@ const Navbar = () => {
 								}`}
 							>
 								<a href='/cart'>
-									<FiShoppingCart fontSize={'1.5rem'} />
+									<FiShoppingCart fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
 								</a>
 							</li>
 
@@ -100,7 +100,7 @@ const Navbar = () => {
 								}`}
 							>
 								<a href='/profile'>
-									<CgProfile fontSize={'1.5rem'} />
+									<CgProfile fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
 								</a>
 							</li>
 						</ul>

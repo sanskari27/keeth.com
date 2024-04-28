@@ -1,9 +1,16 @@
 import express from 'express';
 import { IDValidator, ProductsQueryValidator } from '../../middleware';
+import { VerifyAdmin } from '../../middleware/VerifySession';
 import Controller from './product.controller';
-import { CreateValidator } from './product.validator';
+import { CreateValidator, NewArrivalValidator } from './product.validator';
 
 const router = express.Router();
+
+router
+	.route('/best-sellers')
+	.get(Controller.fetchBestSellers)
+	.all(VerifyAdmin, NewArrivalValidator)
+	.post(Controller.markBestSeller);
 
 router.route('/product-code/:product_code').get(Controller.detailsByProductCode);
 
