@@ -15,6 +15,7 @@ import { Avatar, Box, Button, Card, CardBody, Flex, HStack, Text, VStack } from 
 import { DM_Mono } from 'next/font/google';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { FaRegHeart } from 'react-icons/fa';
 import { FiShoppingCart } from 'react-icons/fi';
 
@@ -185,7 +186,9 @@ export default async function ProductDetails({
 	return (
 		<section>
 			<Box width='full' pt={'80px'} pb={'1rem'} gap={'1rem'}>
-				<CollectionBar />
+				<Suspense fallback={<div>Loading Collections...</div>}>
+					<CollectionBar />
+				</Suspense>
 
 				<Flex className='flex-col md:flex-row md:px-[5%]'>
 					<Box>
@@ -220,7 +223,9 @@ export default async function ProductDetails({
 								{product.description}
 							</Text>
 							<Box className='w-full mt-8 md:mt-16'>
-								<Customization {...{ colors, qualities, diamond_types, sizes }} />
+								<Suspense fallback={<div>Loading Customization...</div>}>
+									<Customization {...{ colors, qualities, diamond_types, sizes }} />
+								</Suspense>
 							</Box>
 							<Box width={'full'} marginTop={'1.5rem'}>
 								<Flex className='flex-col md:flex-row gap-3'>

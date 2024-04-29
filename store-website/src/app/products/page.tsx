@@ -6,6 +6,7 @@ import { Box, Button, Center, Flex, Grid, GridItem, Text, VStack } from '@chakra
 import { DM_Mono } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
 
@@ -41,7 +42,9 @@ export default async function ProductPage() {
 	return (
 		<section>
 			<VStack width='full' pt={'80px'} pb={'1rem'} gap={'1rem'}>
-				<CollectionBar />
+				<Suspense fallback={<div>Loading Collections...</div>}>
+					<CollectionBar />
+				</Suspense>
 				<FilterBar />
 				<Box className='mt-4 md:mt-8'>
 					<Grid className='grid-cols-2 md:grid-cols-4 gap-6 md:gap-9'>
