@@ -43,7 +43,7 @@ export default async function ProductsQueryValidator(
 				return !(isNaN(numberValue) || numberValue < 0);
 			})
 			.transform((value) => {
-				if (value === undefined) return 0;
+				if (value === undefined) return 1000;
 				return parseFloat(value);
 			}),
 

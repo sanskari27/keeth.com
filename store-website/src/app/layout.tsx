@@ -1,10 +1,11 @@
+import Footer from '@/components/footer';
 import Navbar from '@/components/navbar';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { DM_Sans } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 
-const inter = Inter({ subsets: ['latin'] });
+const dm_sans = DM_Sans({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
 	title: 'Keeth',
@@ -19,10 +20,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={inter.className} style={{ backgroundColor: '#FDFDFD' }}>
+			<body className={dm_sans.className} style={{ backgroundColor: '#FDFDFD' }}>
 				<Providers>
 					<Navbar />
 					{children}
+					<Footer />
 				</Providers>
 			</body>
 		</html>

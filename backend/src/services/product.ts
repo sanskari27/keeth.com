@@ -112,7 +112,7 @@ export default class ProductService {
 	}
 
 	async products(
-		ids: Types.ObjectId[],
+		productCodes: string[],
 		query: {
 			price_min: number;
 			price_max: number;
@@ -124,9 +124,9 @@ export default class ProductService {
 	) {
 		let _query = {};
 
-		if (ids.length > 0) {
+		if (productCodes.length > 0) {
 			_query = {
-				_id: { $in: ids },
+				productCode: { $in: productCodes },
 			};
 		}
 		if (query.metals.length > 0) {

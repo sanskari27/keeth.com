@@ -25,7 +25,7 @@ const Navbar = () => {
 
 	return (
 		<div ref={outsideRef}>
-			<nav className='navbar mt-4 h-[60px]'>
+			<nav className='navbar mt-4 h-[60px] border-gray-300 border'>
 				<div className='flex items-center px-4 h-full justify-start md:justify-between'>
 					<div className='w-full md:w-fit h-full flex justify-between space-x-32 items-center'>
 						<a href='/'>

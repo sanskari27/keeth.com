@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { Types } from 'mongoose';
 import StorageDB from '../../../db/repo/Storage';
 import CustomError, { COMMON_ERRORS } from '../../errors';
 import { ProductsQueryValidatorResult } from '../../middleware';
@@ -30,9 +29,8 @@ async function listProducts(req: Request, res: Response, next: NextFunction) {
 
 	const product_ids_1 = await new CollectionService().productsByCategory(query.collection_ids);
 	const product_ids_2 = await new CollectionService().productsByTags(query.tags);
-	let product_ids = Array.from(intersection(product_ids_1, product_ids_2)).map(
-		(p) => new Types.ObjectId(p)
-	);
+
+	let product_ids = Array.from(intersection(product_ids_1, product_ids_2));
 
 	//If no collection_ids or tags is provided then fetch all products
 	product_ids = query.collection_ids.length === 0 && query.tags.length === 0 ? [] : product_ids;

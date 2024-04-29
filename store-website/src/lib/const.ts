@@ -1,5 +1,7 @@
-export const KEETH_LOGO = '/images/keeth-logo.svg';
 export const HOME_SCREEN_MODAL = '/images/model-demonstrating-earrings-ring.jpg';
+export const FOOTER_GIRL = '/images/footer-girl.png';
+
+export const KEETH_LOGO = '/images/keeth-logo.svg';
 export const HOME_SCREEN_RINGS = '/images/home-ring.svg';
 export const QUOTES = '/images/quotes.svg';
 
@@ -10,4 +12,4 @@ export const ARRIVALS_EARRINGS = '/images/arrivals-earrings.webp';
 
 export const FONT_AURA_BELLA = '/font/aura-bella.ttf';
 
-export const SERVER_URL = process.env.SERVER_URL;
+export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
