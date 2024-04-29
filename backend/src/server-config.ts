@@ -20,7 +20,7 @@ const allowlist = [
 	'http://localhost:5173',
 	'https://keethjewels.com',
 	'https://www.keethjewels.com',
-	'https://adminkeethjewels.com',
+	'https://admin.keethjewels.com',
 ];
 
 const corsOptionsDelegate = (req: any, callback: any) => {
