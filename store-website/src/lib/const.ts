@@ -13,3 +13,4 @@ export const ARRIVALS_EARRINGS = '/images/arrivals-earrings.webp';
 export const FONT_AURA_BELLA = '/font/aura-bella.ttf';
 
 export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+export const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;

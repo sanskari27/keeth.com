@@ -5,6 +5,7 @@ import { CreateValidator, ProductCodeValidator } from './product-group.validator
 
 const router = express.Router();
 
+router.route('/similar-products/:code').get(Controller.fetchSimilarProducts);
 router
 	.route('/:id/products')
 	.all(IDValidator)

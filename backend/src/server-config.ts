@@ -16,7 +16,12 @@ import CustomError, { COMMON_ERRORS } from './errors';
 import { Respond, RespondFile } from './utils/ExpressUtils';
 import { FileUpload, FileUtils, SingleFileUploadOptions } from './utils/files';
 
-const allowlist = ['http://localhost:5173'];
+const allowlist = [
+	'http://localhost:5173',
+	'https://keethjewels.com',
+	'https://www.keethjewels.com',
+	'https://adminkeethjewels.com',
+];
 
 const corsOptionsDelegate = (req: any, callback: any) => {
 	let corsOptions;

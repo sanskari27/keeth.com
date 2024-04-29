@@ -12,6 +12,32 @@ export default class ProductGroupService {
 		}));
 	}
 
+	async getSimilarProducts(code: string) {
+		const group = await ProductGroupDB.find({
+			productCodes: code,
+		});
+
+		const productCodes = group.map((p) => p.productCodes).flat();
+
+		const product = await ProductDB.aggregate([
+			{
+				$match: {
+					productCode: { $in: productCodes ?? [] },
+				},
+			},
+			{
+				$group: {
+					_id: '$productCode',
+					products: { $push: '$$ROOT' },
+				},
+			},
+		]);
+
+		return product
+			.map((p) => (p.products.length > 0 ? [p.products[0]._id.toString()] : []))
+			.flat() as string[];
+	}
+
 	async productsInGroup(id: Types.ObjectId) {
 		const group = await ProductGroupDB.findById(id);
 

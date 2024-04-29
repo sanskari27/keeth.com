@@ -34,6 +34,7 @@ export default function ProductPreview({ images, videos }: { images: string[]; v
 							width={500}
 							height={500}
 							className='rounded-2xl object-contain mix-blend-multiply object-center'
+							priority
 						/>
 					</Center>
 				)}
@@ -73,6 +74,7 @@ export default function ProductPreview({ images, videos }: { images: string[]; v
 										width={500}
 										height={500}
 										className='rounded-2xl object-contain mix-blend-multiply object-center'
+										priority
 									/>
 								</Box>
 							</CarouselItem>

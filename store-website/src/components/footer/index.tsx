@@ -98,8 +98,8 @@ export default function Footer() {
 						<VStack width='full'>
 							<Box width='full'>
 								<Text
-									bgGradient='linear(to-r, #DB3E42, #D25D42)'
 									className='aura-bella text-4xl md:text-6xl'
+									bgGradient='linear(to-r, #DB3E42, #D25D42)'
 									bgClip='text'
 								>
 									Keeth
@@ -156,8 +156,8 @@ export default function Footer() {
 								</Link>
 							</GridItem>
 							<GridItem>
-								<Link href={'/cart'}>
-									<Text>Cart</Text>
+								<Link href={'/privacy'}>
+									<Text>Privacy Policy</Text>
 								</Link>
 							</GridItem>
 							<GridItem>
@@ -166,7 +166,7 @@ export default function Footer() {
 								</Link>
 							</GridItem>
 							<GridItem>
-								<Link href={'/about'}>
+								<Link href={'/terms'}>
 									<Text>Terms & Conditions</Text>
 								</Link>
 							</GridItem>

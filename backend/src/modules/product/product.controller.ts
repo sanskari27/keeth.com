@@ -21,7 +21,7 @@ async function listProducts(req: Request, res: Response, next: NextFunction) {
 			data: {
 				products: products.map((item) => ({
 					...item,
-					isNewArrival: list.includes(item.productCode),
+					isNewArrival: list?.includes(item.productCode),
 				})),
 			},
 		});

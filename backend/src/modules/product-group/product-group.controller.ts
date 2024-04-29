@@ -31,6 +31,31 @@ async function listProducts(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function fetchSimilarProducts(req: Request, res: Response, next: NextFunction) {
+	const productIds = await new ProductGroupService().getSimilarProducts(req.params.code);
+	const products = await Promise.all(
+		productIds.map((p) => new ProductService().fetch(new Types.ObjectId(p)))
+	);
+
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			products: products
+				.filter((p) => !!p)
+				.map((p) => {
+					if (!p) return null;
+					return {
+						image: p.images.length > 0 ? p.images[0] : '',
+						productCode: p.productCode,
+						discount: p.discount,
+						price: p.price,
+					};
+				}),
+		},
+	});
+}
+
 async function createGroup(req: Request, res: Response, next: NextFunction) {
 	const data = req.locals.data as CreateValidationResult;
 
@@ -86,6 +111,7 @@ const Controller = {
 	updateGroup,
 	removeProduct,
 	createGroup,
+	fetchSimilarProducts,
 };
 
 export default Controller;
