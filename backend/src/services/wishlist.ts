@@ -15,7 +15,7 @@ export default class WishlistService {
 			account: this._session.id,
 		});
 	}
-	
+
 	async getWishlist() {
 		const wishlist = await WishlistDB.findOne({
 			account: this._session.id,
@@ -24,6 +24,7 @@ export default class WishlistService {
 		return (
 			wishlist?.products.map((product) => ({
 				productId: product._id,
+				productCode: product.productCode,
 				name: product.name,
 				description: product.description,
 				price: product.price,

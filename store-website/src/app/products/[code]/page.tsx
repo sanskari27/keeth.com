@@ -1,4 +1,5 @@
 import CollectionBar from '@/components/collectionBar';
+import { AddToCart, BuyNowButton, WishlistButton } from '@/components/products/buttons';
 import Customization from '@/components/products/customization';
 import CustomizationNotAvailable from '@/components/products/customizationNotAvailable';
 import ProductPreview from '@/components/products/imagePreview';
@@ -11,13 +12,11 @@ import {
 	CarouselPrevious,
 } from '@/components/ui/carousel';
 import { QUOTES, SERVER_URL } from '@/lib/const';
-import { Avatar, Box, Button, Card, CardBody, Flex, HStack, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Box, Card, CardBody, Flex, HStack, Text, VStack } from '@chakra-ui/react';
 import { DM_Mono } from 'next/font/google';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { FaRegHeart } from 'react-icons/fa';
-import { FiShoppingCart } from 'react-icons/fi';
 
 const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
 
@@ -229,44 +228,11 @@ export default async function ProductDetails({
 							<Box width={'full'} marginTop={'1.5rem'}>
 								<Flex className='flex-col md:flex-row gap-3'>
 									<Flex className='gap-3'>
-										<Button
-											bgColor={'#FFE5CF'}
-											py='0.5rem'
-											px='3rem'
-											rounded={'md'}
-											_hover={{
-												bgColor: '#F3D4BB',
-											}}
-											className='w-full md:w-max'
-											// onChange={(e) => handleChange(e.target.name, e.target.value)}
-										>
-											<Text fontWeight={'medium'}>Buy Now</Text>
-										</Button>
+										<BuyNowButton id={product.id} />
 									</Flex>
 									<Flex className='gap-3'>
-										<Button
-											bgColor={'#F0F0F0'}
-											py='0.5rem'
-											px='2rem'
-											rounded={'md'}
-											_hover={{
-												bgColor: '#E8E8E8',
-											}}
-											className='w-full md:w-max'
-											leftIcon={<FiShoppingCart />}
-											// onChange={(e) => handleChange(e.target.name, e.target.value)}
-										>
-											<Text fontWeight={'medium'}>Add To Cart</Text>
-										</Button>
-										<Button
-											borderColor={'#891618'}
-											variant={'outline'}
-											py='0.5rem'
-											px='1rem'
-											rounded={'md'}
-										>
-											<FaRegHeart color='#891618' />
-										</Button>
+										<AddToCart id={product.id} />
+										<WishlistButton id={product.id} />
 									</Flex>
 								</Flex>
 							</Box>

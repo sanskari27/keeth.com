@@ -1,12 +1,11 @@
 'use client';
+import { AddToCart, WishlistButton } from '@/components/products/buttons';
 import useAuth from '@/hooks/useAuth';
 import { SERVER_URL } from '@/lib/const';
 import { fetchWishlist } from '@/services/wishlist.service';
-import { Box, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import Image from 'next/image';
-import { useState } from 'react';
-import { FiShoppingCart } from 'react-icons/fi';
-import { MdDelete } from 'react-icons/md';
+import { useEffect, useState } from 'react';
 
 export default function Wishlist() {
 	const { loading } = useAuth({
@@ -16,6 +15,7 @@ export default function Wishlist() {
 	const [list, setList] = useState<
 		{
 			productId: string;
+			productCode: string;
 			name: string;
 			description: string;
 			price: number;
@@ -24,9 +24,9 @@ export default function Wishlist() {
 		}[]
 	>([]);
 
-	useState(() => {
+	useEffect(() => {
 		fetchWishlist().then(setList);
-	});
+	}, []);
 
 	// if (loading) {
 	// 	return <></>;
@@ -70,41 +70,21 @@ export default function Wishlist() {
 							>
 								<Box>
 									<Text fontWeight={'medium'} textColor={'black'}>
-										The Gianna Ring
+										{item.name}
 									</Text>
-									<Text textColor={'#8E8E8E'}>Product Code: 123</Text>
+									<Text textColor={'#8E8E8E'}>Product Code: {item.productCode}</Text>
 									<Text textColor={'#8E8E8E'} marginTop={'0.5rem'}>
-										Description
+										Description: {item.description}
 									</Text>
 									<Text textColor={'#8E8E8E'} marginTop={'0.5rem'}>
-										Price
+										Price: ₹ {item.price}
 									</Text>
 								</Box>
 								<Flex className='flex-col md:flex-row gap-3 w-full  md:w-[400px]'>
 									<Flex className='gap-3'>
-										<Button
-											bgColor={'#F0F0F0'}
-											py='0.5rem'
-											px='2rem'
-											rounded={'md'}
-											_hover={{
-												bgColor: '#E8E8E8',
-											}}
-											className='w-full md:w-max'
-											leftIcon={<FiShoppingCart />}
-											// onChange={(e) => handleChange(e.target.name, e.target.value)}
-										>
-											<Text fontWeight={'medium'}>Add To Cart</Text>
-										</Button>
-										<Button
-											borderColor={'red'}
-											variant={'outline'}
-											py='0.5rem'
-											px='1rem'
-											rounded={'md'}
-										>
-											<MdDelete color='red' />
-										</Button>
+										<AddToCart id={item.productId} />
+
+										<WishlistButton id={item.productId} />
 									</Flex>
 								</Flex>
 							</Flex>
