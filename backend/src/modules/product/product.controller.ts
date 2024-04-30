@@ -141,7 +141,6 @@ async function fetchBestSellers(req: Request, res: Response, next: NextFunction)
 
 async function unlist(req: Request, res: Response, next: NextFunction) {
 	const id = req.locals.id;
-	console.log(id);
 
 	await new ProductService().setDiscontinued(id, true);
 	return Respond({

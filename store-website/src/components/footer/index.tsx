@@ -19,6 +19,7 @@ export default function Footer() {
 						width={500}
 						height={500}
 						className='bottom-0 md:w-full h-[250px] md:h-[500px] object-cover mix-blend-multiply object-left md:object-center absolute left-0 md:top-0 '
+						priority
 					/>
 					<Box
 						bgColor={'#c5c6c8'}

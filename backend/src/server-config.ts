@@ -18,6 +18,7 @@ import { FileUpload, FileUtils, SingleFileUploadOptions } from './utils/files';
 
 const allowlist = [
 	'http://localhost:5173',
+	'http://localhost:3000',
 	'https://keethjewels.com',
 	'https://www.keethjewels.com',
 	'https://admin.keethjewels.com',
@@ -93,8 +94,6 @@ export default function (app: Express) {
 				filepath: path,
 			});
 		} catch (err: unknown) {
-			console.log(err);
-
 			return next(new CustomError(COMMON_ERRORS.NOT_FOUND));
 		}
 	});

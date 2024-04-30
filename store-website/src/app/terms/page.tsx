@@ -128,7 +128,7 @@ export default async function Terms() {
 								will be refunded back to the gift card.
 							</Text>
 							<Text>
-								● Please visit https://www.keethjewels.com/returns.html for more details about our
+								● Please visit https://www.keethjewels.com/returns for more details about our
 								Returns Policy.
 							</Text>
 						</Box>

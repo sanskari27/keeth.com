@@ -62,6 +62,19 @@ export default class SessionService {
 		}
 	}
 
+	static async loginOrRegister(email: string, password: string) {
+		const user = await AccountDB.findOne({ email }).select('+password');
+		if (user === null) {
+			return await SessionService.register(email, password);
+		}
+
+		const password_matched = await user.verifyPassword(password);
+		if (!password_matched) {
+			throw new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR);
+		}
+		return [user.getSignedToken(), new SessionService(user._id)] as [string, SessionService];
+	}
+
 	static async createSession() {
 		const session = await SessionDB.create({});
 		return new SessionService(session._id);

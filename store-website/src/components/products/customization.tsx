@@ -33,7 +33,6 @@ export default function Customization({
 		if (!added) {
 			url.searchParams.append(name, value);
 		}
-		console.log(url.toString());
 
 		router.push(url.toString());
 	}

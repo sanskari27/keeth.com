@@ -31,6 +31,8 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from '@/components/ui/carousel';
+import { createSession, googleLogin } from '@/services/session.service';
+import { cookies } from 'next/headers';
 
 const HOME_TESTIMONIALS = [
 	{
@@ -73,7 +75,17 @@ const HOME_TESTIMONIALS = [
 
 const SOCIAL_MEDIA = [ARRIVALS_BANGLES, ARRIVALS_EARRINGS];
 
-export default function Home() {
+export default async function Home({
+	searchParams,
+}: {
+	searchParams: { [key: string]: string | string[] | undefined };
+}) {
+	if (searchParams['code']) {
+		await googleLogin(searchParams['code'] as string);
+	} else {
+		await createSession();
+	}
+
 	return (
 		<main>
 			<Box>

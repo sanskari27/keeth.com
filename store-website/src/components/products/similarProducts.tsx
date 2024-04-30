@@ -38,7 +38,6 @@ async function getData(productCode: string) {
 
 export default async function SimilarProducts({ productCode }: { productCode: string }) {
 	const products = await getData(productCode);
-	console.log(products);
 
 	return (
 		<Box className='px-[5%] md:px-[7%]' py={'1.5%'} hidden={products.length === 0}>

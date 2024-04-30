@@ -110,7 +110,6 @@ export default async function ProductDetails({
 	if (!products.length) {
 		redirect('/not-found');
 	}
-	console.log(products);
 
 	const customizations = products.reduce(
 		(acc, item) => {

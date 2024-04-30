@@ -8,6 +8,7 @@ import {
 	GOOGLE_AUTH_PASSWORD,
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
+	GOOGLE_REDIRECT_URL,
 	IS_PRODUCTION,
 	SESSION_COOKIE,
 } from '../../config/const';
@@ -17,7 +18,7 @@ import { Respond } from '../../utils/ExpressUtils';
 import { GoogleLoginValidationResult, LoginValidationResult } from './session.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
-const client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+const client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL);
 
 async function listUsers(req: Request, res: Response, next: NextFunction) {
 	return Respond({
@@ -107,8 +108,12 @@ async function login(req: Request, res: Response, next: NextFunction) {
 async function googleLogin(req: Request, res: Response, next: NextFunction) {
 	const _session_id = req.cookies[SESSION_COOKIE];
 	try {
+		const { tokens } = await client.getToken({
+			code: (req.locals.data as GoogleLoginValidationResult).token,
+		});
+
 		const ticket = await client.verifyIdToken({
-			idToken: (req.locals.data as GoogleLoginValidationResult).token,
+			idToken: tokens.id_token!,
 			audience: GOOGLE_CLIENT_ID, // Replace with your client ID
 		});
 
@@ -117,7 +122,7 @@ async function googleLogin(req: Request, res: Response, next: NextFunction) {
 			return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR));
 		}
 		const email = payload['email'];
-		const [token, new_session] = await SessionService.login(email, GOOGLE_AUTH_PASSWORD);
+		const [token, new_session] = await SessionService.loginOrRegister(email, GOOGLE_AUTH_PASSWORD);
 
 		res.clearCookie(SESSION_COOKIE);
 		res.cookie(AUTH_COOKIE, token, {
