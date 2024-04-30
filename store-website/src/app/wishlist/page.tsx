@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export default function Wishlist() {
-	const { loading } = useAuth({
+	useAuth({
 		fallbackUrl: '/login?referrer=wishlist',
 	});
 
@@ -28,15 +28,11 @@ export default function Wishlist() {
 		fetchWishlist().then(setList);
 	}, []);
 
-	// if (loading) {
-	// 	return <></>;
-	// }
-
 	return (
 		<Box pt={'100px'} px={'5%'}>
 			<Heading>
 				<Text className='aura-bella text-2xl md:text-4xl font-light' color={'#DB3E42'}>
-					Your Wishlist
+					My Wishlist
 				</Text>
 			</Heading>
 
@@ -62,7 +58,6 @@ export default function Wishlist() {
 								/>
 							</Box>
 							<Flex
-								rounded={'2xl'}
 								overflow={'hidden'}
 								position={'relative'}
 								direction={'column'}
@@ -77,7 +72,7 @@ export default function Wishlist() {
 										Description: {item.description}
 									</Text>
 									<Text textColor={'#8E8E8E'} marginTop={'0.5rem'}>
-										Price: ₹ {item.price}
+										Price: ₹ {item.price - item.discount}
 									</Text>
 								</Box>
 								<Flex className='flex-col md:flex-row gap-3 w-full  md:w-[400px]'>

@@ -12,20 +12,34 @@ export async function fetchCart() {
 			details: string;
 			price: number;
 			size: string | null;
+			metal_type: string;
+			metal_quality: string;
+			metal_color: string;
+			diamond_type: string | null;
 			discount: number;
 			quantity: number;
 			image: string | null;
 		}[];
 
-		const total = data.total as number;
+		const summary = data.summary as {
+			total: number;
+			discount: number;
+			gross: number;
+			quantity: number;
+		};
 		return {
 			items,
-			total,
+			summary,
 		};
 	} catch (err) {
 		return {
 			items: [],
-			total: 0,
+			summary: {
+				total: 0,
+				discount: 0,
+				gross: 0,
+				quantity: 0,
+			},
 		};
 	}
 }
@@ -34,4 +48,13 @@ export async function addToCart(id: string) {
 	try {
 		await api.post(`/cart/${id}`);
 	} catch (err) {}
+}
+
+export async function removeFromCart(id: string) {
+	try {
+		await api.delete(`/cart/${id}`);
+		return true;
+	} catch (err) {
+		return false;
+	}
 }

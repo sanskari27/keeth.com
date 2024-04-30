@@ -9,15 +9,27 @@ async function cart(req: Request, res: Response, next: NextFunction) {
 
 	try {
 		const cart = await new CartService(session).getCart();
-		const total = cart.reduce((acc, item) => {
-			return (acc += item.quantity * item.price);
-		}, 0);
+		const { total, discount, gross, quantity } = cart.reduce(
+			(acc, item) => {
+				acc.total += item.quantity * (item.price - item.discount);
+				acc.discount += item.quantity * item.discount;
+				acc.gross += item.quantity * item.price;
+				acc.quantity += item.quantity;
+				return acc;
+			},
+			{ total: 0, gross: 0, discount: 0, quantity: 0 }
+		);
 
 		return Respond({
 			res,
 			status: 200,
 			data: {
-				total,
+				summary: {
+					total,
+					discount,
+					gross,
+					quantity,
+				},
 				cart,
 			},
 		});

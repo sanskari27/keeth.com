@@ -1,11 +1,12 @@
 'use client';
-import { addToCart } from '@/services/cart.service';
+import { addToCart, removeFromCart } from '@/services/cart.service';
 import { addToWishlist, isInWishlist, removeFromWishlist } from '@/services/wishlist.service';
 import { Button, Text, useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { FiShoppingCart } from 'react-icons/fi';
+import { MdOutlineDelete } from 'react-icons/md';
 
 export function BuyNowButton({ id }: { id: string }) {
 	const router = useRouter();
@@ -82,6 +83,31 @@ export function WishlistButton({ id }: { id: string }) {
 			onClick={handleClick}
 		>
 			{isWishlist ? <FaHeart color='#891618' /> : <FaRegHeart color='#891618' />}
+		</Button>
+	);
+}
+
+export function RemoveFromCart({ id, onRemove }: { id: string; onRemove?: () => void }) {
+	const handleClick = async () => {
+		const success = await removeFromCart(id);
+		if (success) {
+			onRemove?.();
+		}
+	};
+
+	return (
+		<Button
+			borderColor={'#891618'}
+			color={'#891618'}
+			variant={'outline'}
+			py='0.5rem'
+			px='1rem'
+			rounded={'md'}
+			className='w-full md:w-max'
+			leftIcon={<MdOutlineDelete color='#891618' />}
+			onClick={handleClick}
+		>
+			<Text fontWeight={'medium'}>Delete </Text>
 		</Button>
 	);
 }

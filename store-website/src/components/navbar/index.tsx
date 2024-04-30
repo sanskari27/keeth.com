@@ -29,7 +29,7 @@ const Navbar = () => {
 				<div className='flex items-center px-4 h-full justify-start md:justify-between'>
 					<div className='w-full md:w-fit h-full flex justify-between space-x-32 items-center'>
 						<a href='/'>
-							<Image src={KEETH_LOGO} alt='Keeth Logo' width={100} height={30} priority />
+							<Image src={KEETH_LOGO} alt='Keeth Logo' width={100} height={30} />
 						</a>
 						<div className='md:inline-block hidden'>
 							<ul className='flex gap-9'>
@@ -62,7 +62,9 @@ const Navbar = () => {
 										isActive('/contact-us') && 'nav-active font-bold'
 									}`}
 								>
-									<a href='/contact-us'>Contact Us</a>
+									<a href='https://wa.me/919205893607' target='_blank'>
+										Contact Us
+									</a>
 								</li>
 							</ul>
 						</div>
@@ -148,7 +150,11 @@ const Navbar = () => {
 										isActive('/contact-us') && 'nav-active font-bold'
 									}`}
 								>
-									<a href='/contact-us' className='flex gap-3 items-center'>
+									<a
+										href='https://wa.me/919205893607'
+										target='_blank'
+										className='flex gap-3 items-center'
+									>
 										<GrContactInfo fontSize={'1rem'} /> Contact Us
 									</a>
 								</li>

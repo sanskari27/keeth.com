@@ -120,6 +120,10 @@ export default class CartService {
 				size: c.product.size,
 				discount: c.product.discount,
 				quantity: c.quantity,
+				metal_type: c.product.metal_type,
+				metal_quality: c.product.metal_quality,
+				metal_color: c.product.metal_color,
+				diamond_type: c.product.diamond_type,
 				image: c.product.images.length > 0 ? c.product.images[0] : null,
 			})) ?? []
 		);
