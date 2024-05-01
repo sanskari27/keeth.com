@@ -23,6 +23,7 @@ export default interface ICheckout extends Document {
 	couponDiscount: number;
 	total_amount: number;
 
+	provider_id: string;
 	payment_id: string;
 	transaction_date: Date;
 	transaction_status: TRANSACTION_STATUS;
@@ -38,6 +39,10 @@ export interface ICheckoutProduct extends Document {
 	description: string;
 	details: string;
 	size: string;
+	metal_type: string;
+	metal_color: string;
+	metal_quality: string;
+	diamond_type: string;
 	image: string;
 	price: number;
 	discount: number;

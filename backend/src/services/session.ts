@@ -93,4 +93,10 @@ export default class SessionService {
 	public get id(): Types.ObjectId {
 		return this._session_id;
 	}
+
+	public async getEmailById(): Promise<string | null> {
+		const account = await AccountDB.findById(this._session_id);
+		if (!account) return null;
+		return account.email;
+	}
 }

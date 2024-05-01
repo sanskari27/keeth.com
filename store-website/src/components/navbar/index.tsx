@@ -4,14 +4,8 @@ import { KEETH_LOGO } from '@/lib/const';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { BiCategoryAlt } from 'react-icons/bi';
-import { CgProfile } from 'react-icons/cg';
-import { FaRegHeart } from 'react-icons/fa';
-import { FiShoppingCart } from 'react-icons/fi';
-import { GiHamburgerMenu } from 'react-icons/gi';
-import { GrContactInfo } from 'react-icons/gr';
-import { HiTemplate } from 'react-icons/hi';
-import { RiHomeLine } from 'react-icons/ri';
+import { FaRegHeart, FaRegUserCircle } from 'react-icons/fa';
+import { FiMenu, FiShoppingCart } from 'react-icons/fi';
 
 const Navbar = () => {
 	const pathname = usePathname();
@@ -70,7 +64,7 @@ const Navbar = () => {
 						</div>
 						<div className='md:hidden inline-block'>
 							<button onClick={toggleNavbar}>
-								<GiHamburgerMenu fontSize={'1.5rem'} />
+								<FiMenu fontSize={'1.5rem'} />
 							</button>
 						</div>
 					</div>
@@ -98,11 +92,11 @@ const Navbar = () => {
 
 							<li
 								className={`relative cursor-pointer font-medium ${
-									isActive('/profile') && 'nav-active-bottom'
+									isActive('/orders') && 'nav-active-bottom'
 								}`}
 							>
-								<a href='/profile'>
-									<CgProfile fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
+								<a href='/orders'>
+									<FaRegUserCircle fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
 								</a>
 							</li>
 						</ul>
@@ -121,7 +115,7 @@ const Navbar = () => {
 									}`}
 								>
 									<a href='/' className='flex gap-3 items-center'>
-										<RiHomeLine fontSize={'1rem'} /> Home
+										Home
 									</a>
 								</li>
 
@@ -131,7 +125,7 @@ const Navbar = () => {
 									}`}
 								>
 									<a href='/products' className='flex gap-3 items-center'>
-										<HiTemplate fontSize={'1rem'} /> Products
+										Products
 									</a>
 								</li>
 
@@ -141,7 +135,7 @@ const Navbar = () => {
 									}`}
 								>
 									<a href='/categories' className='flex gap-3 items-center'>
-										<BiCategoryAlt fontSize={'1rem'} /> Categories
+										Categories
 									</a>
 								</li>
 
@@ -155,7 +149,7 @@ const Navbar = () => {
 										target='_blank'
 										className='flex gap-3 items-center'
 									>
-										<GrContactInfo fontSize={'1rem'} /> Contact Us
+										Contact Us
 									</a>
 								</li>
 
@@ -165,7 +159,7 @@ const Navbar = () => {
 									}`}
 								>
 									<a href='/wishlist' className='flex gap-3 items-center '>
-										<FaRegHeart fontSize={'1rem'} /> Wishlist
+										Wishlist
 									</a>
 								</li>
 
@@ -175,17 +169,17 @@ const Navbar = () => {
 									}`}
 								>
 									<a href='/cart' className='flex gap-3 items-center'>
-										<FiShoppingCart fontSize={'1rem'} /> Cart
+										Cart
 									</a>
 								</li>
 
 								<li
 									className={`relative cursor-pointer font-medium ${
-										isActive('/profile') && 'nav-active-bottom font-bold'
+										isActive('/orders') && 'nav-active-bottom font-bold'
 									}`}
 								>
-									<a href='/profile' className='flex gap-3 items-center'>
-										<CgProfile fontSize={'1rem'} /> Profile
+									<a href='/orders' className='flex gap-3 items-center'>
+										Profile
 									</a>
 								</li>
 							</ul>

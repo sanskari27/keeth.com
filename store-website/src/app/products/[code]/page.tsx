@@ -140,6 +140,9 @@ export default async function ProductDetails({
 	);
 
 	const filtered = products.filter((p) => {
+		if (searchParams['productId']) {
+			return p.id === searchParams['productId'];
+		}
 		if (searchParams['metal_color']) {
 			if (p.metal_color !== searchParams['metal_color']) {
 				return false;

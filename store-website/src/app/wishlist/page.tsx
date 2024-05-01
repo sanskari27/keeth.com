@@ -5,6 +5,7 @@ import { SERVER_URL } from '@/lib/const';
 import { fetchWishlist } from '@/services/wishlist.service';
 import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function Wishlist() {
@@ -39,51 +40,61 @@ export default function Wishlist() {
 			<Box className='my-6 '>
 				<VStack width={'full'} alignItems={'flex-start'}>
 					{list.map((item) => (
-						<Flex className='gap-3' key={item.productId}>
-							<Box
-								rounded={'2xl'}
-								overflow={'hidden'}
-								w='200px'
-								aspectRatio={1 / 1}
-								position={'relative'}
-								className='border-primary-dark_marron border'
-							>
-								<Image
-									src={SERVER_URL + `/media/${item.image}`}
-									alt={'Product Image'}
-									width={500}
-									height={500}
-									className='h-full w-full rounded-2xl object-cover mix-blend-multiply object-center'
-									priority
-								/>
-							</Box>
-							<Flex
-								overflow={'hidden'}
-								position={'relative'}
-								direction={'column'}
-								justifyContent={'space-around'}
-							>
-								<Box>
-									<Text fontWeight={'medium'} textColor={'black'}>
-										{item.name}
-									</Text>
-									<Text textColor={'#8E8E8E'}>Product Code: {item.productCode}</Text>
-									<Text textColor={'#8E8E8E'} marginTop={'0.5rem'}>
-										Description: {item.description}
-									</Text>
-									<Text textColor={'#8E8E8E'} marginTop={'0.5rem'}>
-										Price: ₹ {item.price - item.discount}
-									</Text>
+						<Link
+							className='w-full'
+							href={{
+								pathname: `/products/${item.productCode}`,
+								query: {
+									productId: item.productId,
+								},
+							}}
+						>
+							<Flex className='gap-3' key={item.productId}>
+								<Box
+									rounded={'2xl'}
+									overflow={'hidden'}
+									w='200px'
+									aspectRatio={1 / 1}
+									position={'relative'}
+									className='border-primary-dark_marron border'
+								>
+									<Image
+										src={SERVER_URL + `/media/${item.image}`}
+										alt={'Product Image'}
+										width={500}
+										height={500}
+										className='h-full w-full rounded-2xl object-cover mix-blend-multiply object-center'
+										priority
+									/>
 								</Box>
-								<Flex className='flex-col md:flex-row gap-3 w-full  md:w-[400px]'>
-									<Flex className='gap-3'>
-										<AddToCart id={item.productId} />
+								<Flex
+									overflow={'hidden'}
+									position={'relative'}
+									direction={'column'}
+									justifyContent={'space-around'}
+								>
+									<Box>
+										<Text fontWeight={'medium'} textColor={'black'}>
+											{item.name}
+										</Text>
+										<Text textColor={'#8E8E8E'}>Product Code: {item.productCode}</Text>
+										<Text textColor={'#8E8E8E'} marginTop={'0.5rem'}>
+											Description: {item.description}
+										</Text>
+										<Text textColor={'#8E8E8E'} marginTop={'0.5rem'}>
+											Price: ₹ {item.price - item.discount}
+										</Text>
+									</Box>
+									<Flex className='flex-col md:flex-row gap-3 w-full  md:w-[400px]'>
+										<Flex className='gap-3'>
+											<AddToCart id={item.productId} />
 
-										<WishlistButton id={item.productId} />
+											<WishlistButton id={item.productId} />
+										</Flex>
 									</Flex>
 								</Flex>
 							</Flex>
-						</Flex>
+						</Link>
 					))}
 				</VStack>
 			</Box>

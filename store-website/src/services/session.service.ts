@@ -34,3 +34,14 @@ export async function emailLogin(email: string, password: string) {
 		return false;
 	}
 }
+
+export async function sendFeedback(text: string) {
+	try {
+		await api.post('/feedback', {
+			data: text,
+		});
+		return true;
+	} catch (err) {
+		return false;
+	}
+}

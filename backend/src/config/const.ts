@@ -23,7 +23,11 @@ export const SESSION_COOKIE = 'session_id';
 export const AUTH_COOKIE = 'auth_id';
 export const ADMIN_AUTH_COOKIE = 'admin-keeth-jewels';
 
+export const RESEND_API_KEY = process.env.RESEND_API_KEY ?? '';
+export const RESEND_FEEDBACK_EMAIL = process.env.RESEND_FEEDBACK_EMAIL ?? '';
+
 export enum TRANSACTION_STATUS {
+	UNINITIALIZED = 'uninitialized',
 	SUCCESS = 'success',
 	FAILED = 'failed',
 	PENDING = 'pending',

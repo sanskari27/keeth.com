@@ -1,8 +1,9 @@
 import { FOOTER_GIRL } from '@/lib/const';
-import { Box, Button, Flex, Grid, GridItem, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Flex, Grid, GridItem, Text, VStack } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaFacebook, FaInstagram } from 'react-icons/fa';
+import Feedback from './feedback';
 
 export default function Footer() {
 	return (
@@ -65,26 +66,7 @@ export default function Footer() {
 						<Text className='aura-bella text-2xl md:text-4xl'>Write us a feedback</Text>
 
 						<Box position={'relative'} width={'94%'} mx='auto'>
-							<Textarea
-								variant={'unstyled'}
-								placeholder='Write you feedback here, and help us grow!'
-								height={'200px'}
-								width='full'
-								bgColor={'#F2F2F2'}
-								rounded={'2xl'}
-								resize={'none'}
-								p={'1rem'}
-							></Textarea>
-							<Button
-								className='w-[130px] py-6 !bg-accent-light'
-								position={'absolute'}
-								right={'1rem'}
-								bottom={'1rem'}
-								rounded={'full'}
-								color='white'
-							>
-								<Text className='aura-bella text-lg md:text-2xl'>Send</Text>
-							</Button>
+							<Feedback />
 						</Box>
 					</VStack>
 				</Box>

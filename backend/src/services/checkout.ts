@@ -1,9 +1,11 @@
 import { Types } from 'mongoose';
+import { AccountDB } from '../../db';
 import CheckoutDB from '../../db/repo/Checkout';
 import { TRANSACTION_STATUS } from '../config/const';
 import CustomError, { COMMON_ERRORS } from '../errors';
 import PhonePeProvider from '../provider/phonepe';
 import DateUtils from '../utils/DateUtils';
+import { generateTransactionID } from '../utils/ExpressUtils';
 import CartService from './cart';
 import CouponService from './coupon';
 
@@ -51,14 +53,47 @@ export default class CheckoutService {
 		});
 	}
 
+	static async getOrders(linked_to: Types.ObjectId) {
+		const orders = await CheckoutDB.find({
+			linked_to,
+			transaction_status: { $ne: TRANSACTION_STATUS.UNINITIALIZED },
+		}).sort({ transaction_date: -1 });
+
+		return orders.map((order) => {
+			return {
+				id: order._id,
+				amount: order.total_amount,
+				gross_amount: order.gross_total,
+				discount: order.discount,
+				status: order.transaction_status,
+				transaction_date: DateUtils.format(order.transaction_date, 'DD/MM/YYYY'),
+				products: order.products.map((p) => ({
+					product_id: p.productId,
+					description: p.description,
+					productCode: p.productCode,
+					quantity: p.quantity,
+					name: p.name,
+					price: p.price,
+					discount: p.discount,
+					size: p.size,
+					metal_type: p.metal_type,
+					metal_color: p.metal_color,
+					metal_quality: p.metal_quality,
+					diamond_type: p.diamond_type,
+				})),
+			};
+		});
+	}
+
 	static async startCheckout(cart: CartService) {
 		const products = await cart.getCart();
+		const account = await AccountDB.findById(cart.getSessionId());
 
 		const { gross_amount, discount } = products.reduce(
 			(acc, item) => {
 				const item_total = item.price * item.quantity;
 				const discount_total = item.discount * item.quantity;
-				acc.gross_amount += item_total - discount_total;
+				acc.gross_amount += item_total;
 				acc.discount += discount_total;
 				return acc;
 			},
@@ -74,18 +109,52 @@ export default class CheckoutService {
 				description: p.description,
 				details: p.details,
 				size: p.size,
+				metal_type: p.metal_type,
+				metal_color: p.metal_color,
+				metal_quality: p.metal_quality,
+				diamond_type: p.diamond_type,
 				price: p.price,
 				discount: p.discount,
 				quantity: p.quantity,
 				image: p.image,
 			})),
-
+			email: account?.email || 'no_user@gmail.com',
 			gross_total: gross_amount,
 			discount: discount,
 			total_amount: gross_amount - discount,
 		});
 
 		return transaction._id;
+	}
+
+	async getDetails() {
+		const order = await CheckoutDB.findById(this._transactionId);
+
+		if (!order) {
+			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		return {
+			id: order._id.toString(),
+			amount: order.total_amount,
+			gross_amount: order.gross_total,
+			discount: order.discount + order.couponDiscount,
+			status: order.transaction_status,
+			transaction_date: DateUtils.format(order.transaction_date, 'DD/MM/YYYY'),
+			products: order.products.map((p) => ({
+				product_id: p.productId,
+				productCode: p.productCode,
+				quantity: p.quantity,
+				name: p.name,
+				price: p.price,
+				discount: p.discount,
+				size: p.size,
+				metal_type: p.metal_type,
+				metal_color: p.metal_color,
+				metal_quality: p.metal_quality,
+				diamond_type: p.diamond_type,
+			})),
+		};
 	}
 
 	public async addBillingDetails(details: BillingDetails) {
@@ -117,6 +186,7 @@ export default class CheckoutService {
 
 		transaction.couponDiscount = Math.min(transaction.couponDiscount, transaction.gross_total);
 		transaction.total_amount = transaction.gross_total - transaction.couponDiscount;
+		await transaction.save();
 	}
 
 	public async removeCoupon() {
@@ -129,18 +199,28 @@ export default class CheckoutService {
 		transaction.couponCode = '';
 		transaction.couponDiscount = 0;
 		transaction.total_amount = transaction.gross_total - transaction.couponDiscount;
+		await transaction.save();
 	}
 
 	public async initiatePayment() {
 		const transaction = await CheckoutDB.findById(this._transactionId);
 
-		if (!transaction || transaction.transaction_status !== TRANSACTION_STATUS.PENDING) {
+		if (
+			!transaction ||
+			![TRANSACTION_STATUS.UNINITIALIZED, TRANSACTION_STATUS.PENDING].includes(
+				transaction.transaction_status
+			)
+		) {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
+		transaction.transaction_status = TRANSACTION_STATUS.PENDING;
+		transaction.expireAt = new Date(Date.now() + YEARS_10);
+		transaction.provider_id = generateTransactionID();
+		await transaction.save();
 
 		const order = await PhonePeProvider.Orders.createOrder({
 			amount: transaction.total_amount,
-			reference_id: transaction._id.toString(),
+			reference_id: transaction.provider_id,
 			userID: this._cart.getSessionId().toString(),
 		});
 
@@ -149,7 +229,16 @@ export default class CheckoutService {
 
 	public async verifyPayment() {
 		try {
-			const order = await PhonePeProvider.Orders.getOrderStatus(this._transactionId.toString());
+			const transaction = await CheckoutDB.findById(this._transactionId);
+			if (
+				!transaction ||
+				!transaction.provider_id ||
+				transaction.transaction_status !== TRANSACTION_STATUS.PENDING
+			) {
+				return 'NOT_FOUND';
+			}
+
+			const order = await PhonePeProvider.Orders.getOrderStatus(transaction.provider_id);
 			const paymentProviderID = order.transaction_id;
 			const status = order.status as
 				| 'PAYMENT_SUCCESS'

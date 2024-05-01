@@ -15,6 +15,47 @@ async function listAllOrders(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function listUserOrders(req: Request, res: Response, next: NextFunction) {
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			orders: await CheckoutService.getOrders(req.locals.session.id),
+		},
+	});
+}
+
+async function details(req: Request, res: Response, next: NextFunction) {
+	const email = await req.locals.session.getEmailById();
+	if (!email) {
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				orders: [],
+			},
+		});
+	}
+
+	const session = req.locals.session;
+	const transaction_id = req.locals.id;
+
+	try {
+		const cart = new CartService(session);
+		const checkout_service = new CheckoutService(cart, transaction_id);
+
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				transaction: await checkout_service.getDetails(),
+			},
+		});
+	} catch (err) {
+		next(new CustomError(ERRORS.COMMON_ERRORS.NOT_FOUND));
+	}
+}
+
 async function startCheckout(req: Request, res: Response, next: NextFunction) {
 	const session = req.locals.session;
 
@@ -110,6 +151,8 @@ async function initiatePayment(req: Request, res: Response, next: NextFunction) 
 			},
 		});
 	} catch (err) {
+		console.log(err);
+
 		next(new CustomError(ERRORS.COMMON_ERRORS.NOT_FOUND));
 	}
 }
@@ -131,12 +174,14 @@ async function verifyPayment(req: Request, res: Response, next: NextFunction) {
 
 const Controller = {
 	listAllOrders,
+	listUserOrders,
 	startCheckout,
 	billingDetails,
 	addCoupon,
 	removeCoupon,
 	initiatePayment,
 	verifyPayment,
+	details,
 };
 
 export default Controller;

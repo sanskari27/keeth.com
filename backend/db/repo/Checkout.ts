@@ -29,6 +29,10 @@ const productSchema = new mongoose.Schema<ICheckoutProduct>({
 	},
 	image: String,
 	size: String,
+	metal_type: String,
+	metal_color: String,
+	metal_quality: String,
+	diamond_type: String,
 	price: {
 		type: Number,
 		required: true,
@@ -51,7 +55,7 @@ const schema = new mongoose.Schema<ICheckout>({
 		type: Schema.Types.ObjectId,
 		required: true,
 	},
-	email: String,
+	email: { type: String, required: true },
 	phone: String,
 	name: String,
 	address_line_1: String,
@@ -93,6 +97,7 @@ const schema = new mongoose.Schema<ICheckout>({
 		default: 0,
 		min: 0,
 	},
+	provider_id: String,
 	payment_id: String,
 	transaction_date: {
 		type: Date,
@@ -102,7 +107,7 @@ const schema = new mongoose.Schema<ICheckout>({
 	transaction_status: {
 		type: String,
 		enum: Object.values(TRANSACTION_STATUS),
-		default: TRANSACTION_STATUS.PENDING,
+		default: TRANSACTION_STATUS.UNINITIALIZED,
 	},
 	expireAt: {
 		type: Date,

@@ -8,9 +8,11 @@ import ProductRoute from './product/product.route';
 import SessionRoute from './session/session.route';
 import WishlistRoute from './wishlist/wishlist.route';
 
+import { RESEND_FEEDBACK_EMAIL } from '../config/const';
 import CustomError, { COMMON_ERRORS } from '../errors';
 import PhonePeProvider from '../provider/phonepe';
 import { Respond } from '../utils/ExpressUtils';
+import { sendSimpleText } from '../utils/email';
 import { FileUpload, ONLY_MEDIA_ALLOWED, SingleFileUploadOptions } from '../utils/files';
 
 const router = express.Router();
@@ -48,6 +50,19 @@ router.post('/upload-media', async function (req, res, next) {
 	} catch (err: unknown) {
 		return next(new CustomError(COMMON_ERRORS.FILE_UPLOAD_ERROR, err));
 	}
+});
+
+router.post('/feedback', async function (req, res, next) {
+	const data = req.body.data;
+	if (!data) {
+		return next(new CustomError(COMMON_ERRORS.INVALID_FIELDS));
+	}
+
+	const success = await sendSimpleText(RESEND_FEEDBACK_EMAIL, data);
+	return Respond({
+		res,
+		status: success ? 200 : 400,
+	});
 });
 
 export default router;

@@ -9,6 +9,12 @@ const nextConfig = {
 				pathname: '/media/**',
 			},
 			{
+				protocol: 'http',
+				hostname: 'localhost',
+				port: '8282',
+				pathname: '/products/**',
+			},
+			{
 				protocol: 'https',
 				hostname: 'api.keethjewels.com',
 				port: '',

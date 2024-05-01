@@ -5,7 +5,7 @@ import { ProductsQueryValidatorResult } from '../../middleware';
 import { ProductService } from '../../services';
 import CollectionService from '../../services/collection';
 import DateUtils from '../../utils/DateUtils';
-import { Respond, intersection } from '../../utils/ExpressUtils';
+import { Respond, RespondFile, intersection } from '../../utils/ExpressUtils';
 import { CreateValidationResult, NewArrivalValidationResult } from './product.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
@@ -178,12 +178,28 @@ async function detailsByProductCode(req: Request, res: Response, next: NextFunct
 	});
 }
 
+async function productImage(req: Request, res: Response, next: NextFunction) {
+	try {
+		const product = await new ProductService().fetch(req.locals.id);
+		const path = __basedir + '/static/' + product?.images[0];
+
+		return RespondFile({
+			res,
+			filename: req.params.filename,
+			filepath: path,
+		});
+	} catch (err: unknown) {
+		return next(new CustomError(COMMON_ERRORS.NOT_FOUND));
+	}
+}
+
 const Controller = {
 	listProducts,
 	addProduct,
 	updateProduct,
 	list,
 	unlist,
+	productImage,
 	details,
 	markBestSeller,
 	fetchBestSellers,

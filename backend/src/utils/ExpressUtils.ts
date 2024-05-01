@@ -54,7 +54,7 @@ export const getRequestIP = (req: Request) => {
 	return (req.headers['x-real-ip'] ?? req.socket.remoteAddress)?.toString();
 };
 
-export function generateClientID() {
+export function generateTransactionID() {
 	return crypto.randomUUID();
 }
 

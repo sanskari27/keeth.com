@@ -26,7 +26,7 @@ export default function Customization({
 			if (key === name) {
 				added = true;
 				url.searchParams.append(key, value);
-			} else {
+			} else if (key !== 'productId') {
 				url.searchParams.append(key, val);
 			}
 		});

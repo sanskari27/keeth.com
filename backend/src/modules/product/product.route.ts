@@ -16,6 +16,7 @@ router.route('/product-code/:product_code').get(Controller.detailsByProductCode)
 
 router.route('/:id/unlist').all(IDValidator).post(Controller.unlist);
 router.route('/:id/list').all(IDValidator).post(Controller.list);
+router.route('/:id/image').all(IDValidator).get(Controller.productImage);
 
 router
 	.route('/:id')

@@ -46,7 +46,11 @@ export default function ProductPreview({ images, videos }: { images: string[]; v
 						aspectRatio={1 / 1}
 						position={'relative'}
 					>
-						<VideoPlayer src={SERVER_URL + `/media/${state}`} controls={false} />
+						<VideoPlayer
+							src={SERVER_URL + `/media/${state}`}
+							controls={false}
+							className='object-cover'
+						/>
 					</Center>
 				)}
 			</Box>
@@ -98,6 +102,7 @@ export default function ProductPreview({ images, videos }: { images: string[]; v
 										src={SERVER_URL + `/media/${item}`}
 										autoPlay={true}
 										controls={false}
+										className='object-cover'
 									/>
 								</Box>
 							</CarouselItem>

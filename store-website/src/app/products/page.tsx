@@ -10,9 +10,20 @@ import { Suspense } from 'react';
 
 const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
 
-async function getData() {
+async function getData(query: {
+	price_max: string;
+	price_min: string;
+	metals: string;
+	purity: string;
+	collection_ids: string;
+	tags: string;
+	skip: string;
+	limit: string;
+}) {
 	try {
-		const res = await fetch(SERVER_URL + `/products`, { next: { revalidate: 3600 } });
+		const res = await fetch(SERVER_URL + `/products?` + new URLSearchParams(query), {
+			next: { revalidate: 3600 },
+		});
 		if (!res.ok) {
 			return [];
 		}
@@ -36,8 +47,33 @@ async function getData() {
 	}
 }
 
-export default async function ProductPage() {
-	const products = await getData();
+export default async function ProductPage({
+	searchParams,
+}: {
+	searchParams: { [key: string]: string | undefined };
+}) {
+	const price_max = searchParams['max_price'] ? searchParams['max_price'] : '1000000';
+	const price_min = searchParams['min_price'] ? searchParams['min_price'] : '0';
+	const metals = searchParams['metal_color'] ? searchParams['metal_color'].split('_+_') : [];
+	const purity = searchParams['metal_quality'] ? searchParams['metal_quality'].split('_+_') : [];
+	const collection_ids = searchParams['collections']
+		? searchParams['collections'].split('_+_')
+		: [];
+	const tags = searchParams['tags'] ? searchParams['tags'].split('_+_') : [];
+	const skip = searchParams['items'] ? searchParams['items'] : '0';
+
+	const query = {
+		price_max,
+		price_min,
+		metals: metals.join(','),
+		purity: purity.join(','),
+		collection_ids: collection_ids.join(','),
+		tags: tags.join(','),
+		skip,
+		limit: '60',
+	};
+
+	const products = await getData(query);
 
 	return (
 		<section>
@@ -45,7 +81,9 @@ export default async function ProductPage() {
 				<Suspense fallback={<div>Loading Collections...</div>}>
 					<CollectionBar />
 				</Suspense>
-				<FilterBar />
+				<Suspense>
+					<FilterBar />
+				</Suspense>
 				<Box className='mt-4 md:mt-8'>
 					<Grid className='grid-cols-2 md:grid-cols-4 gap-6 md:gap-9'>
 						{products.map((product, index) => (
@@ -135,6 +173,15 @@ export default async function ProductPage() {
 							</GridItem>
 						))}
 					</Grid>
+					{products.length === 0 && (
+						<Box paddingY={'2rem'} className='w-full'>
+							<Link href={'/products'} className='w-full'>
+								<Text fontWeight={'medium'} fontSize={'xl'} textAlign={'center'}>
+									No products found. Reset filters
+								</Text>
+							</Link>
+						</Box>
+					)}
 				</Box>
 			</VStack>
 		</section>
