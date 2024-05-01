@@ -23,6 +23,12 @@ export async function googleLogin(code: string) {
 	} catch (err) {}
 }
 
+export async function logOut() {
+	try {
+		await api.post('/sessions/logout');
+	} catch (err) {}
+}
+
 export async function emailLogin(email: string, password: string) {
 	try {
 		await api.post('/sessions/login', {

@@ -1,14 +1,20 @@
 'use client';
+import useAuth from '@/hooks/useAuth';
 import useOutsideClick from '@/hooks/useOutsideClick';
 import { KEETH_LOGO } from '@/lib/const';
+import { logOut } from '@/services/session.service';
+import { Text } from '@chakra-ui/react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { BsBoxSeam } from 'react-icons/bs';
 import { FaRegHeart, FaRegUserCircle } from 'react-icons/fa';
 import { FiMenu, FiShoppingCart } from 'react-icons/fi';
 
 const Navbar = () => {
+	const { loading, isAuthenticated, refresh } = useAuth();
 	const pathname = usePathname();
+	const router = useRouter();
 	const [isNavbarExpanded, setNavbarExpanded] = useState(false);
 
 	const outsideRef = useOutsideClick(() => setNavbarExpanded(false));
@@ -16,6 +22,15 @@ const Navbar = () => {
 	const toggleNavbar = () => setNavbarExpanded((prev) => !prev);
 
 	const isActive = (path: string) => (path === '/' ? path === pathname : pathname.includes(path));
+
+	const handleLogout = async () => {
+		await logOut();
+		refresh();
+	};
+
+	useEffect(() => {
+		refresh();
+	}, [pathname]);
 
 	return (
 		<div ref={outsideRef}>
@@ -72,16 +87,6 @@ const Navbar = () => {
 						<ul className='flex gap-6'>
 							<li
 								className={`relative cursor-pointer font-medium ${
-									isActive('/wishlist') && 'nav-active-bottom'
-								}`}
-							>
-								<a href='/wishlist'>
-									<FaRegHeart fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
-								</a>
-							</li>
-
-							<li
-								className={`relative cursor-pointer font-medium ${
 									isActive('/cart') && 'nav-active-bottom'
 								}`}
 							>
@@ -89,16 +94,57 @@ const Navbar = () => {
 									<FiShoppingCart fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
 								</a>
 							</li>
-
-							<li
-								className={`relative cursor-pointer font-medium ${
-									isActive('/orders') && 'nav-active-bottom'
-								}`}
-							>
-								<a href='/orders'>
-									<FaRegUserCircle fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
-								</a>
-							</li>
+							{!loading ? (
+								isAuthenticated ? (
+									<>
+										<li
+											className={`relative cursor-pointer font-medium ${
+												isActive('/wishlist') && 'nav-active-bottom'
+											}`}
+										>
+											<a href='/wishlist'>
+												<FaRegHeart fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
+											</a>
+										</li>
+										<li
+											className={`relative cursor-pointer font-medium ${
+												isActive('/orders') && 'nav-active-bottom'
+											}`}
+										>
+											<a href='/orders'>
+												<BsBoxSeam fontSize={'1.5rem'} color={isActive('/') ? 'white' : 'black'} />
+											</a>
+										</li>
+										<li className={`relative cursor-pointer font-medium`}>
+											<Text
+												className='cursor-pointer'
+												onClick={handleLogout}
+												color={isActive('/') ? 'white' : 'black'}
+											>
+												Logout
+											</Text>
+										</li>
+									</>
+								) : (
+									<li
+										className={`relative cursor-pointer font-medium ${
+											isActive('/login') && 'nav-active-bottom'
+										}`}
+									>
+										<a
+											href={`/login?referrer=${pathname}`}
+											className={`flex items-center ${isActive('/') ? 'text-white' : 'text-black'}`}
+										>
+											<FaRegUserCircle
+												fontSize={'1.5rem'}
+												color={isActive('/') ? 'white' : 'black'}
+												className='mr-3'
+											/>
+											Login
+										</a>
+									</li>
+								)
+							) : null}
 						</ul>
 					</div>
 				</div>
@@ -155,16 +201,6 @@ const Navbar = () => {
 
 								<li
 									className={`relative cursor-pointer font-medium ${
-										isActive('/wishlist') && 'nav-active-bottom font-bold'
-									}`}
-								>
-									<a href='/wishlist' className='flex gap-3 items-center '>
-										Wishlist
-									</a>
-								</li>
-
-								<li
-									className={`relative cursor-pointer font-medium ${
 										isActive('/cart') && 'nav-active-bottom font-bold'
 									}`}
 								>
@@ -173,15 +209,46 @@ const Navbar = () => {
 									</a>
 								</li>
 
-								<li
-									className={`relative cursor-pointer font-medium ${
-										isActive('/orders') && 'nav-active-bottom font-bold'
-									}`}
-								>
-									<a href='/orders' className='flex gap-3 items-center'>
-										Profile
-									</a>
-								</li>
+								{!loading ? (
+									isAuthenticated ? (
+										<>
+											<li
+												className={`relative cursor-pointer font-medium ${
+													isActive('/wishlist') && 'nav-active-bottom font-bold'
+												}`}
+											>
+												<a href='/wishlist' className='flex gap-3 items-center '>
+													Wishlist
+												</a>
+											</li>
+
+											<li
+												className={`relative cursor-pointer font-medium ${
+													isActive('/orders') && 'nav-active-bottom font-bold'
+												}`}
+											>
+												<a href='/orders' className='flex gap-3 items-center'>
+													Orders
+												</a>
+											</li>
+											<li className={`relative cursor-pointer font-medium`}>
+												<Text className='cursor-pointer' onClick={handleLogout}>
+													Logout
+												</Text>
+											</li>
+										</>
+									) : (
+										<li
+											className={`relative cursor-pointer font-medium ${
+												isActive('/orders') && 'nav-active-bottom font-bold'
+											}`}
+										>
+											<a href={`/login?referrer=${pathname}`} className='flex gap-3 items-center'>
+												Login
+											</a>
+										</li>
+									)
+								) : null}
 							</ul>
 						</div>
 					</div>

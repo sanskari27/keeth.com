@@ -57,7 +57,7 @@ export default function FilterBar() {
 
 			setTags(tags);
 		});
-	});
+	}, []);
 
 	const [data, setData] = useState<{ [key: string]: string | string[] }>({});
 
@@ -135,7 +135,7 @@ export default function FilterBar() {
 				px={'1rem'}
 				rounded={'lg'}
 				bg='#F0F0F0'
-				className='max-h-[250px] h-fit transition-all grid-flow-col gap-x-6'
+				className='md:max-h-[250px] h-fit transition-all grid-cols-1 md:grid-flow-col gap-x-6'
 			>
 				<GridItem className='border-r border-black/20 px-6'>
 					<Box width={'full'} className='  pb-6'>
