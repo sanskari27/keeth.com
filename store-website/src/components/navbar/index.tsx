@@ -132,7 +132,7 @@ const Navbar = () => {
 										}`}
 									>
 										<a
-											href={`/login?referrer=${pathname}`}
+											href={`/login`}
 											className={`flex items-center ${isActive('/') ? 'text-white' : 'text-black'}`}
 										>
 											<FaRegUserCircle
@@ -243,7 +243,7 @@ const Navbar = () => {
 												isActive('/orders') && 'nav-active-bottom font-bold'
 											}`}
 										>
-											<a href={`/login?referrer=${pathname}`} className='flex gap-3 items-center'>
+											<a href={`/login`} className='flex gap-3 items-center'>
 												Login
 											</a>
 										</li>
