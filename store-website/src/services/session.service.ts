@@ -35,6 +35,18 @@ export async function emailLogin(email: string, password: string) {
 	}
 }
 
+export async function registerEmail(email: string, password: string) {
+	try {
+		await api.post('/sessions/register', {
+			email,
+			password,
+		});
+		return true;
+	} catch (err) {
+		return false;
+	}
+}
+
 export async function sendFeedback(text: string) {
 	try {
 		await api.post('/feedback', {

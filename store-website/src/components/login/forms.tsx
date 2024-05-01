@@ -1,5 +1,5 @@
 'use client';
-import { emailLogin } from '@/services/session.service';
+import { emailLogin, registerEmail } from '@/services/session.service';
 import {
 	Button,
 	FormControl,
@@ -8,7 +8,7 @@ import {
 	InputGroup,
 	InputLeftElement,
 } from '@chakra-ui/react';
-import { redirect, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { MdOutlinePassword } from 'react-icons/md';
@@ -98,9 +98,13 @@ export function RegisterForm() {
 
 	const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		setLoading(true);
 		const formData = new FormData(event.currentTarget);
-		const success = await emailLogin(
+		if ((formData.get('password') as string) !== (formData.get('password') as string)) {
+			return setFailed(true);
+		}
+		setFailed(false);
+		setLoading(true);
+		const success = await registerEmail(
 			formData.get('email') as string,
 			formData.get('password') as string
 		);
@@ -124,7 +128,13 @@ export function RegisterForm() {
 					<InputLeftElement pointerEvents='none'>
 						<FaRegUserCircle color='gray.200' />
 					</InputLeftElement>
-					<Input type='email' variant='filled' placeholder='enter your email' pl={'2rem'} />
+					<Input
+						type='email'
+						name='email'
+						variant='filled'
+						placeholder='enter your email'
+						pl={'2rem'}
+					/>
 					{failed ? <FormErrorMessage>Email is already in use.</FormErrorMessage> : null}
 				</InputGroup>
 			</FormControl>
@@ -133,14 +143,26 @@ export function RegisterForm() {
 					<InputLeftElement pointerEvents='none'>
 						<MdOutlinePassword color='gray.200' />
 					</InputLeftElement>
-					<Input type='password' variant='filled' placeholder='enter your password' pl={'2rem'} />
+					<Input
+						type='password'
+						name='password'
+						variant='filled'
+						placeholder='enter your password'
+						pl={'2rem'}
+					/>
 				</InputGroup>
 			</FormControl>
 			<InputGroup>
 				<InputLeftElement pointerEvents='none'>
 					<MdOutlinePassword color='gray.200' />
 				</InputLeftElement>
-				<Input type='password' variant='filled' placeholder='confirm password' pl={'2rem'} />
+				<Input
+					type='password'
+					name='confirm=password'
+					variant='filled'
+					placeholder='confirm password'
+					pl={'2rem'}
+				/>
 			</InputGroup>
 			<Button
 				py='0.5rem'
