@@ -122,7 +122,7 @@ export function RegisterForm() {
 	};
 
 	return (
-		<form className='w-full flex flex-col gap-3 mt-4'>
+		<form className='w-full flex flex-col gap-3 mt-4' onSubmit={handleRegister}>
 			<FormControl isInvalid={failed}>
 				<InputGroup>
 					<InputLeftElement pointerEvents='none'>
