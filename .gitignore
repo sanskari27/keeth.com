@@ -171,3 +171,4 @@ build
 !server/static/assets/logo.png
 .vscode/settings.json
 backend/static/*
+deploy.sh
