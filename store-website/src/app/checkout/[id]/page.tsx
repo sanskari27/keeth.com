@@ -51,9 +51,9 @@ export default function Checkout({
 				position: 'top',
 			});
 		}
-		const link = await initiatePaymentProvider(id);
+		const data = await initiatePaymentProvider(id);
 
-		if (!link) {
+		if (!data) {
 			setLoading(false);
 			return toast({
 				status: 'error',
@@ -62,8 +62,11 @@ export default function Checkout({
 				position: 'top',
 			});
 		}
-
-		router.push(link);
+		if (data.redirect) {
+			router.push(data.link);
+		} else {
+			router.push('/orders');
+		}
 	};
 
 	return (
