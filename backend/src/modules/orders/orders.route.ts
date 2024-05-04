@@ -5,7 +5,6 @@ import Controller from './orders.controller';
 
 const router = express.Router();
 
-router.route('/orders').all(VerifyAdmin).get(Controller.listAllOrders);
 router.route('/my-orders').all(VerifyAccount).get(Controller.listUserOrders);
 
 router.route('/:id/cancel').all(VerifyAccount, IDValidator).post(Controller.cancelOrder);
@@ -24,5 +23,8 @@ router
 	.route('/:id/payment-completed')
 	.all(VerifyAdmin, IDValidator)
 	.post(Controller.paymentCompleted);
+
+router.route('/:id').all(VerifyAdmin, IDValidator).post(Controller.orderDetails);
+router.route('/').all(VerifyAdmin).get(Controller.listAllOrders);
 
 export default router;

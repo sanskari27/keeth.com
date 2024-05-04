@@ -12,39 +12,50 @@ export default async function Terms() {
 				</Box>
 				<Box mx='5%' marginTop={'2rem'} textAlign={'justify'} fontSize={'1.1rem'}>
 					<Box>
-						<Text className='text-[#DB3E42]'>Use of the Website</Text>
+						<Text className='text-[#DB3E42]'>ELIGIBILITY CRITERIA</Text>
 						<Text>
-							By accessing the website, you warrant and represent to the website owner that you are
-							legally entitled to do so and to make use of information made available via the
-							website.
+							Under the Indian Contract Act, 1872, persons above the age 18 are permitted to use,
+							purchase and/or contract from or with this website. By agreeing to these Terms of
+							Service, you represent that you are at least the age of majority in your state or
+							province of residence, or that you are the age of majority in your state or province
+							of residence and you have given us your consent to allow any of your minor dependents
+							to use this site. You may not use our products for any illegal or unauthorized purpose
+							nor may you, in the use of the Service, violate any laws in your jurisdiction
+							(including but not limited to copyright laws).
 						</Text>
 					</Box>
 					<Box mt={'1rem'}>
-						<Text className='text-[#DB3E42]'>Trademarks</Text>
+						<Text className='text-[#DB3E42]'>PRICING & PAYMENTS</Text>
 						<Text>
-							The trademarks, names, logos and service marks (collectively "trademarks") displayed
-							on this website are registered and unregistered trademarks of the website owner.
-							Nothing contained on this website should be construed as granting any license or right
-							to use any trademark without the prior written permission of the website owner.
+							For orders within India, payments accepted in INR only, Prices are inclusive of
+							CGST/SGST/GST, as applicable. In case international credit card used for domestic
+							orders, transaction amount will be converted to INR and conversion charges may apply
+							according to credit card policy. Price charged of jewellery on the day purchased.
+							Prices are subject to change without prior notice. We reserve the right at any time to
+							modify or discontinue the Service (or any part or content thereof) without notice at
+							any time. We shall not be liable to you or to any third-party for any modification,
+							price change, suspension or discontinuance of the Service.
 						</Text>
 					</Box>
 					<Box mt={'1rem'}>
-						<Text className='text-[#DB3E42]'>External links</Text>
+						<Text className='text-[#DB3E42]'>PAN CARD, ID PROOF</Text>
 						<Text>
-							External links may be provided for your convenience, but they are beyond the control
-							of the website owner and no representation is made as to their content. Use or
-							reliance on any external links and the content thereon provided is at your own risk.
+							You are required to provide PAN card proof for above payment of 200,000/- Billing and
+							PAN details should be same.
 						</Text>
 					</Box>
 					<Box mt={'1rem'}>
-						<Text className='text-[#DB3E42]'>Warranties</Text>
-						<Text>
-							The website owner makes no warranties, representations, statements or guarantees
-							(whether express, implied in law or residual) regarding the website.
+						<Text className='text-[#DB3E42]'>SHIPPING DESTINATIONS AND CHARGES</Text>
+						<Text>We provide free shipping all over India</Text>
+						<Text mt={'0.5rem'}>
+							Ready products will be delivered within 5-7 working days. Make to order/customize
+							jewellery will be shipped within 15-18 working days. A tentative delivery date will be
+							given along with the order confirmation email. The exact delivery date shall be
+							provided as soon as your order is ready for dispatch.
 						</Text>
 					</Box>
 					<Box mt={'1rem'}>
-						<Text className='text-[#DB3E42]'>Prices</Text>
+						<Text className='text-[#DB3E42]'>PRICES</Text>
 						<Text>
 							Our pricing is calculated using current precious metal and gem prices to give you the
 							best possible value. These prices do change from time to time, owing to the
@@ -55,83 +66,171 @@ export default async function Terms() {
 						</Text>
 					</Box>
 					<Box mt={'1rem'}>
-						<Text className='text-[#DB3E42]'>Disclaimer of liability</Text>
+						<Text className='text-[#DB3E42]'>DELIVERY, TRACK ORDER</Text>
 						<Text>
-							The website owner shall not be responsible for and disclaims all liability for any
-							loss, liability, damage (whether direct, indirect or consequential), personal injury
-							or expense of any nature whatsoever which may be suffered by you or any third party
-							(including your company), as a result of or which may be attributable, directly or
-							indirectly, to your access and use of the website, any information contained on the
-							website, your or your company's personal information or material and information
-							transmitted over our system. In particular, neither the website owner nor any third
-							party or data or content provider shall be liable in any way to you or to any other
-							person, firm or corporation whatsoever for any loss, liability, damage (whether direct
-							or consequential), personal injury or expense of any nature whatsoever arising from
-							any delays, inaccuracies, errors in, or omission of any share price information or the
-							transmission thereof, or for any actions taken in reliance thereon or occasioned
-							thereby or by reason of non-performance or interruption, or termination thereof. We as
-							a merchant shall be under no liability whatsoever in respect of any loss or damage
-							arising directly or indirectly out of the decline of authorization for any
-							Transaction, on Account of the Cardholder having exceeded the preset limit mutually
-							agreed by us with our acquiring bank from time to time.
+							Ready products will be delivered within 5-7 working days. Make to order/customize
+							jewellery will be shipped within 15-18 working days. A tentative delivery date will be
+							given along with the order confirmation email. The exact delivery date shall be
+							provided as soon as your order is ready for dispatch.
 						</Text>
 					</Box>
 					<Box mt={'1rem'}>
-						<Text className='text-[#DB3E42]'>Conflict of terms</Text>
+						<Text className='text-[#DB3E42]'>EXCHANGE, RETURN AND REFUND POLICY</Text>
 						<Text>
-							If there is a conflict or contradiction between the provisions of these website terms
-							and conditions and any other relevant terms and conditions, policies or notices, the
-							other relevant terms and conditions, policies or notices which relate specifically to
-							a particular section or module of the website shall prevail in respect of your use of
-							the relevant section or module of the website.
+							Lifetime exchange at 5% deduction, refund at 10% deduction of the original billing
+							amount.
 						</Text>
 					</Box>
 					<Box mt={'1rem'}>
-						<Text className='text-[#DB3E42]'>Severability</Text>
+						<Text className='text-[#DB3E42]'>CANCELLATIONS</Text>
 						<Text>
-							Any provision of any relevant terms and conditions, policies and notices, which is or
-							becomes unenforceable in any jurisdiction, whether due to being void, invalidity,
-							illegality, unlawfulness or for any reason whatever, shall, in such jurisdiction only
-							and only to the extent that it is so unenforceable, be treated as void and the
-							remaining provisions of any relevant terms and conditions, policies and notices shall
-							remain in full force and effect.
+							We reserve the right to refuse any order you place with us. We may, in our sole
+							discretion, limit or cancel quantities purchased per person, per household or per
+							order. These restrictions may include orders placed by or under the same customer
+							account, the same credit card, and/or orders that use the same billing and/or shipping
+							address. In the event that we make a change to or cancel an order, we may attempt to
+							notify you by contacting the e-mail and/or billing address/phone number provided at
+							the time the order was made. We reserve the right to limit or prohibit orders that, in
+							our sole judgment, appear to be placed by dealers, resellers or distributors
 						</Text>
 					</Box>
 					<Box mt={'1rem'}>
-						<Text className='text-[#DB3E42]'>Cancellation & Returns</Text>
-						<Box pl={'2rem'}>
-							<Text>
-								● You can cancel your order for a product at no cost any time before we send the
-								Dispatch Confirmation E-mail relating to that product. You can cancel one order item
-								within an order without cancelling the entire order if the order contains 2 or more
-								order items.
-							</Text>
-							<Text>
-								● For prepaid orders, the amount will be credited to the payment source (Credit
-								Card/Debit Card /Net Banking).
-							</Text>
-							<Text>
-								● Once the product is returned under our 48 hours Money Back policy (not applicable
-								on coins) the refund will be credited to your Blue Cash account. You may choose to
-								either make another purchase using the same or get the amount refunded to your bank
-								account.
-								<span className='pl-6 block'>
-									● For cash on delivery orders, the refund will be processed to your bank account.
-								</span>
-								<span className='pl-6 block'>
-									● For prepaid orders, the amount will be credited to the payment source (Credit
-									Card/Debit Card/Net Banking).
-								</span>
-							</Text>
-							<Text>
-								● Upon cancellation/ return of orders placed using gift cards, the gift card amount
-								will be refunded back to the gift card.
-							</Text>
-							<Text>
-								● Please visit https://www.keethjewels.com/returns for more details about our
-								Returns Policy.
-							</Text>
-						</Box>
+						<Text className='text-[#DB3E42]'>YOUR OBLIGATIONS</Text>
+						<Text>
+							You agree to provide current, complete and accurate purchase and account information
+							for all purchases made at our store. You agree to promptly update your account to keep
+							it true, accurate, current and complete, We also reserve the right to ask for
+							additional information for accepting orders or before making delivery in certain
+							cases. If upon confirmation, your details are found to be false (partially or
+							completely) or if you provide any information that is false, inaccurate, incomplete or
+							not current or if Keeth Jewels has reasonable grounds to suspect that such information
+							is false, inaccurate, incomplete, not current or not in accordance with these Terms
+							and Conditions, we have the right to refuse to provide you with access to our Website
+							and other affiliated websites without any prior intimation whatsoever.
+						</Text>
+					</Box>
+					<Box mt={'1rem'}>
+						<Text className='text-[#DB3E42]'>FRAUDULENT</Text>
+						<Text>
+							We reserve the right to recover the cost of goods, collection charges and lawyers’
+							fees from persons using the site fraudulently. We reserve the right to initiate legal
+							proceedings against such persons for fraudulent use of the Site and any other unlawful
+							acts or acts or omissions in breach of these Terms & Conditions.
+						</Text>
+					</Box>
+					<Box mt={'1rem'}>
+						<Text className='text-[#DB3E42]'>DISCLAIMER</Text>
+						<Text>
+							We do not guarantee, represent or warrant that your use of our service will be
+							uninterrupted, timely, secure or error-free. We do not warrant that the results that
+							may be obtained from the use of the service will be accurate or reliable. You agree
+							that from time to time we may remove the service for indefinite periods of time or
+							cancel the service at any time, without notice to you. You expressly agree that your
+							use of, or inability to use, the service is at your sole risk, The service and all
+							products and services delivered to you through the service are (except as expressly
+							stated by us) provided ‘as is’ and ‘as available’ for your use, without any
+							representation, warranties or conditions of any kind, either express or implied,
+							including all implied warranties or conditions of merchantability, merchantable
+							quality, fitness for a particular purpose, durability, title, and non-infringement. In
+							no case shall Keeth Jewels, our directors, officers, employees, affiliates, agents,
+							contractors, interns, suppliers, service providers or licensors be liable for any
+							injury, loss, claim, or any direct, indirect, incidental, punitive, special, or
+							consequential damages of any kind, including, without limitation lost profits, lost
+							revenue, lost savings, loss of data, replacement costs, or any similar damages,
+							whether based in contract, tort (including – negligence), strict liability or
+							otherwise, arising from your use of any of the service or any products procured using
+							the service, or for any other claim related in any way to your use of the service or
+							any product, including, but not limited to, any errors or omissions in any content, or
+							any loss or damage of any kind incurred as a result of the use of the service or any
+							content (or product) posted, transmitted, or otherwise made available via the service,
+							even if advised of their possibility. Because some states or jurisdictions do not
+							allow the exclusion or the limitation of liability for consequential or incidental
+							damages, in such states or jurisdictions, our liability shall be limited to the
+							maximum extent permitted by law.
+						</Text>
+					</Box>
+					<Box mt={'1rem'}>
+						<Text className='text-[#DB3E42]'>RESTRICTIONS</Text>
+						<Text>
+							In addition to other prohibitions as set forth in the Terms of Service, you are
+							prohibited from using the site or its content:
+						</Text>
+						<ul style={{ listStyleType: 'circle' }}>
+							<li>for any unlawful purpose;</li>
+							<li>to solicit others to perform or participate in any unlawful acts;</li>
+							<li>
+								to violate any international, federal, provincial or state regulations, rules, laws,
+								or local ordinances;
+							</li>
+							<li>
+								to infringe upon or violate our intellectual property rights or the intellectual
+								property rights of others;
+							</li>
+							<li>
+								to harass, abuse, insult, harm, defame, slander, disparage, intimidate, or
+								discriminate based on gender, sexual orientation, religion, ethnicity, Face, age,
+								national origin, or disability;
+							</li>
+							<li>to submit false or misleading information;</li>
+							<li>
+								to upload or transmit viruses or any other type of malicious code that will or may
+								be used in any way that will affect the functionality or operation of the Service or
+								of any related website, other websites, or the internet;
+							</li>
+							<li>to collect or track the personal information of others;</li>
+							<li>to spam, phish, pharm, pretext, spider, crawl, or scrape;</li>
+							<li>for any obscene or immoral purpose; or</li>
+							<li>
+								to interfere with or circumvent the security features of the Service or any related
+								website, other websites, or the Internet. We reserve the right to terminate your use
+								of the Service or any related website for violating any of the prohibited uses.
+							</li>
+						</ul>
+					</Box>
+					<Box mt={'1rem'}>
+						<Text className='text-[#DB3E42]'>SITE DISCLAIMER</Text>
+						<Text>
+							You can review the most current version of the Terms of Service at any time at this
+							page. We reserve the right, at our sole discretion, to update, change or replace any
+							part of these Terms of Service by posting updates and changes to our website. It is
+							your responsibility to check our website periodically for changes. Your continued use
+							of or access to our website or the Service following the posting of any changes to
+							these Terms of Service constitutes acceptance of those changes. Occasionally there may
+							be information on our site or in the Service that contains typographical errors,
+							inaccuracies or omissions that may relate to product descriptions, pricing,
+							promotions, offers, product shipping charges, transit times and availability. We
+							reserve the right to correct any errors, inaccuracies or omissions, and to change or
+							update information or cancel orders if any information in the Service or on any
+							related website is inaccurate at any time without prior notice (including after you
+							have submitted your order). We undertake no obligation to update, amend or clarify
+							information in the Service or on any related website, including without limitation,
+							Pricing information, except as required by law. No specified update or refresh date
+							applied in the Service or on any related website should be taken to indicate that all
+							information in the Service or on any related website has been modified or updated.
+						</Text>
+					</Box>
+					<Box mt={'1rem'}>
+						<Text className='text-[#DB3E42]'>DISPUTE RESOLUTION</Text>
+						<Text>
+							This user agreement shall be construed in accordance with the applicable laws of
+							India. The courts at Surat shall alone have exclusive jurisdiction in any proceedings
+							arising out of this user agreement.
+						</Text>
+					</Box>
+					<Box mt={'1rem'}>
+						<Text className='text-[#DB3E42]'>WEBSITE CONTENT</Text>
+						<Text>
+							We reserve the right to refuse service to anyone for any reason at any time. You
+							understand that your content (not including credit card information), may be
+							transferred unencrypted and involve (a) transmissions over various networks; and (b)
+							changes to conform and adapt to technical requirements of connecting networks or
+							devices. Credit card information is always encrypted during transfer over networks.
+							You agree not to reproduce, duplicate, copy, sell, resell or exploit any portion of
+							the Service, use of the Service, or access to the Service or any contact on the
+							website through which the service is provided, without express written permission by
+							us. The headings used in this agreement are included for convenience only and will not
+							limit or otherwise affect these Terms.
+						</Text>
 					</Box>
 				</Box>
 			</VStack>

@@ -143,6 +143,9 @@ export default class CheckoutService {
 
 		return {
 			id: order._id.toString(),
+			name: order.name,
+			email: order.email,
+			phone: order.phone,
 			amount: order.total_amount,
 			gross_amount: order.gross_total,
 			discount: order.discount + order.couponDiscount,

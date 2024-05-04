@@ -27,6 +27,7 @@ import CartService from '../../../services/cart.service';
 import Loading from '../../components/loading';
 import { NavbarSearchElement } from '../../components/navbar';
 import Each from '../../components/utils/Each';
+import DateFilter from './components/DateFilter';
 import StatusUpdateDialog, { StatusUpdateDialogHandle } from './components/StatusUpdateDialog';
 import TrackingUpdateDialog, {
 	TrackingUpdateDialogHandle,
@@ -98,7 +99,14 @@ const Orders = () => {
 		};
 	}, []);
 
-	const filtered = useFilteredList(list, { name: 1, email: 1, phone: 1, status: 1 });
+	const handleDateRange = (startDate: Date, endDate: Date) => {
+		setLoading(true);
+		CartService.getOrders({ startDate, endDate })
+			.then(setList)
+			.finally(() => setLoading(false));
+	};
+
+	const filtered = useFilteredList(list, { name: 1, email: 1, phone: 1, order_status: 1 });
 
 	const handleAction = async (
 		order: Order,
@@ -136,13 +144,16 @@ const Orders = () => {
 	}
 
 	return (
-		<Flex direction={'column'} padding={'1rem'} justifyContent={'start'}>
+		<Flex direction={'column'} padding={'1rem'} justifyContent={'start'} minH={'100vh'}>
 			<Loading isLoaded={!loading} />
 
 			<Box width={'98%'} pb={'5rem'}>
-				<Text textAlign={'right'} color={'black'}>
-					{list.length} records found.
-				</Text>
+				<Flex justifyContent={'flex-end'}>
+					<Text color={'black'}>{list.length} records found.</Text>
+					<Box position={'relative'} mx={'0.5rem'}>
+						<DateFilter onConfirm={handleDateRange} />
+					</Box>
+				</Flex>
 
 				<TableContainer pt={'0.5rem'} textColor={'black'}>
 					<Table>

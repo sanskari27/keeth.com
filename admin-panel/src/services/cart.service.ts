@@ -1,6 +1,7 @@
 import APIInstance from '../config/APIInstance';
 import { Cart } from '../views/pages/abandoned-carts';
 import { Order } from '../views/pages/orders';
+import { OrderDetails } from '../views/pages/orders/components/OrderDetails';
 
 export default class CartService {
 	static async abandonedCarts() {
@@ -12,9 +13,11 @@ export default class CartService {
 		}
 	}
 
-	static async getOrders() {
+	static async getOrders(query?: { startDate: Date; endDate: Date }) {
 		try {
-			const { data } = await APIInstance.get(`/orders/orders`);
+			const { data } = await APIInstance.get(`/orders`, {
+				params: query,
+			});
 			return data.orders as Order[];
 		} catch (err) {
 			return [];
@@ -68,5 +71,10 @@ export default class CartService {
 		} catch (err) {
 			return false;
 		}
+	}
+
+	static async getOrderDetails(id: string) {
+		const { data } = await APIInstance.post(`/orders/${id}`);
+		return data.order as OrderDetails;
 	}
 }

@@ -159,6 +159,17 @@ export default async function PrivacyPolicy() {
 							acts or acts or omissions in breach of these Terms & Conditions.
 						</Text>
 					</Box>
+					<Box mt={'1rem'}>
+						<Text fontWeight={'700'} textTransform={'uppercase'}>
+							FRAUDULENT TRANSACTIONS
+						</Text>
+						<Text>
+							We reserve the right to recover the cost of goods, collection charges and lawyers fees
+							from persons using the site fraudulently. We reserve the right to initiate legal
+							proceedings against such persons for fraudulent use of the Site and any other unlawful
+							acts or acts or omissions in breach of these Terms & Conditions.
+						</Text>
+					</Box>
 				</Box>
 			</VStack>
 		</section>

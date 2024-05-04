@@ -24,6 +24,7 @@ const CouponDetails = lazy(() => import('./views/pages/coupons/CouponDetails'));
 const Carts = lazy(() => import('./views/pages/abandoned-carts'));
 const Users = lazy(() => import('./views/pages/users'));
 const Orders = lazy(() => import('./views/pages/orders'));
+const OrderDetails = lazy(() => import('./views/pages/orders/components/OrderDetails'));
 
 function App() {
 	useUserData();
@@ -58,7 +59,7 @@ function App() {
 							</Route>
 
 							<Route path={NAVIGATION.ORDERS} element={<Orders />}>
-								<Route path={`:id`} element={<CouponDetails />} />
+								<Route path={`:id`} element={<OrderDetails />} />
 							</Route>
 
 							<Route path={NAVIGATION.ABANDONED_CARTS} element={<Carts />} />

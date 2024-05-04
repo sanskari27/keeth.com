@@ -2,15 +2,46 @@ import { NextFunction, Request, Response } from 'express';
 import { ORDER_STATUS } from '../../config/const';
 import CustomError, { COMMON_ERRORS } from '../../errors';
 import { CheckoutService } from '../../services';
+import DateUtils from '../../utils/DateUtils';
 import { Respond } from '../../utils/ExpressUtils';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 async function listAllOrders(req: Request, res: Response, next: NextFunction) {
+	let list = await CheckoutService.getAllOrders();
+
+	if (req.query.startDate && typeof req.query.startDate === 'string') {
+		list = list.filter((o) =>
+			DateUtils.getMoment(o.transaction_date, 'DD/MM/YYYY').isSameOrAfter(
+				DateUtils.getMoment((req.query.startDate as string).split('T')[0], 'YYYY-MM-DD')
+			)
+		);
+	}
+
+	if (req.query.endDate && typeof req.query.endDate === 'string') {
+		list = list.filter((o) =>
+			DateUtils.getMoment(o.transaction_date, 'DD/MM/YYYY').isSameOrBefore(
+				DateUtils.getMoment((req.query.endDate as string).split('T')[0], 'YYYY-MM-DD')
+			)
+		);
+	}
+
 	return Respond({
 		res,
 		status: 200,
 		data: {
-			orders: await CheckoutService.getAllOrders(),
+			orders: list,
+		},
+	});
+}
+
+async function orderDetails(req: Request, res: Response, next: NextFunction) {
+	const transaction_id = req.locals.id;
+	const checkout_service = new CheckoutService(transaction_id);
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			order: await checkout_service.getDetails(),
 		},
 	});
 }
@@ -138,6 +169,7 @@ async function paymentCompleted(req: Request, res: Response, next: NextFunction)
 const Controller = {
 	listAllOrders,
 	listUserOrders,
+	orderDetails,
 	acceptReturn,
 	cancelOrder,
 	rejectReturn,
