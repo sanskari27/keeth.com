@@ -40,6 +40,7 @@ export default function Checkout({
 			state: formData.get('state') as string,
 			country: formData.get('country') as string,
 			postal_code: formData.get('postal_code') as string,
+			payment_method: 'prepaid',
 		});
 		if (!success) {
 			setLoading(false);
