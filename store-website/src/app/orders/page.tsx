@@ -1,22 +1,47 @@
 'use client';
 import useAuth from '@/hooks/useAuth';
 import { SERVER_URL } from '@/lib/const';
-import { fetchOrders, initiatePaymentProvider } from '@/services/checkout.service';
-import { Box, Button, Flex, Heading, Text, VStack, useToast } from '@chakra-ui/react';
-import { DM_Mono } from 'next/font/google';
+import {
+	cancelOrder,
+	cancelReturnRequest,
+	fetchOrders,
+	initiatePaymentProvider,
+	requestReturn,
+} from '@/services/checkout.service';
+import {
+	AlertDialog,
+	AlertDialogBody,
+	AlertDialogContent,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogOverlay,
+	Box,
+	Button,
+	Flex,
+	Heading,
+	Text,
+	VStack,
+	useDisclosure,
+	useToast,
+} from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FaShippingFast } from 'react-icons/fa';
+import { FcCancel } from 'react-icons/fc';
+import { HiOutlineArrowUturnLeft } from 'react-icons/hi2';
 import { MdOutlinePayment } from 'react-icons/md';
-
-const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
 
 export default function Orders() {
 	useAuth({
 		fallbackUrl: '/login?referrer=orders',
 	});
+
+	const cancellationID = React.useRef<string | null>(null);
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const cancelRef = React.useRef(null);
+
 	const toast = useToast();
 	const router = useRouter();
 
@@ -26,6 +51,21 @@ export default function Orders() {
 			amount: number;
 			status: 'success' | 'failed' | 'pending' | 'cancelled';
 			transaction_date: string;
+			order_status:
+				| 'payment-pending'
+				| 'placed'
+				| 'cancelled'
+				| 'shipped'
+				| 'delivered'
+				| 'return-raised'
+				| 'return-accepted'
+				| 'return-denied'
+				| 'return-initiated'
+				| 'refund-initiated'
+				| 'return-completed';
+			tracking_number: string;
+			return_tracking_number: string;
+			payment_method: 'cod' | 'prepaid';
 			products: {
 				product_id: string;
 				description: string;
@@ -42,6 +82,17 @@ export default function Orders() {
 			}[];
 		}[]
 	>([]);
+
+	const onOrderCancel = () => {
+		onClose();
+		if (!cancellationID.current) return;
+		handleCancel(cancellationID.current);
+	};
+
+	const handleOrderCancelClick = (id: string) => {
+		onOpen();
+		cancellationID.current = id;
+	};
 
 	const [loading, setLoading] = useState(true);
 
@@ -65,7 +116,50 @@ export default function Orders() {
 				position: 'top',
 			});
 		}
-		router.push(pay_link);
+		if (pay_link.redirect) {
+			router.push(pay_link.link);
+		} else {
+			router.push('/orders');
+		}
+	};
+
+	const handleCancel = async (id: string) => {
+		const success = await cancelOrder(id);
+		if (!success) {
+			return toast({
+				status: 'error',
+				title: 'Order cancellation failed.',
+				description: 'This order cannot be cancelled',
+				position: 'top',
+			});
+		}
+		fetchData();
+	};
+
+	const handleRequestReturn = async (id: string) => {
+		const success = await requestReturn(id);
+		if (!success) {
+			return toast({
+				status: 'error',
+				title: 'Items cannot be returned now.',
+				description: 'You can only return items with delivery status DELIVERED.',
+				position: 'top',
+			});
+		}
+		fetchData();
+	};
+
+	const handleCancelReturnRequest = async (id: string) => {
+		const success = await cancelReturnRequest(id);
+		if (!success) {
+			return toast({
+				status: 'error',
+				title: 'Return request cannot be cancelled now.',
+				description: 'You can only cancel return request if order status is RETURN RAISED',
+				position: 'top',
+			});
+		}
+		fetchData();
 	};
 
 	return (
@@ -92,7 +186,7 @@ export default function Orders() {
 								<Flex
 									fontWeight={'medium'}
 									textColor={'black'}
-									className='border-b border-black/20 justify-between justify-between w-full  md:w-[500px]  px-4  px-4 '
+									className='border-b border-black/20 justify-between w-full  md:w-[500px]  px-4 '
 								>
 									<Text>Total Amount:</Text>
 									<Text>₹ {item.amount}</Text>
@@ -100,7 +194,7 @@ export default function Orders() {
 								<Flex
 									fontWeight={'medium'}
 									textColor={'#8E8E8E'}
-									className='border-b border-black/20 justify-between justify-between w-full  md:w-[500px]  px-4  px-4'
+									className='border-b border-black/20 justify-between w-full  md:w-[500px]  px-4'
 								>
 									<Text>Total Quantity: </Text>
 									<Text>{item.products.reduce((acc, item) => (acc += item.quantity), 0)}</Text>
@@ -108,7 +202,7 @@ export default function Orders() {
 								<Flex
 									fontWeight={'medium'}
 									textColor={'#8E8E8E'}
-									className='border-b border-black/20 justify-between justify-between w-full  md:w-[500px]  px-4  px-4'
+									className='border-b border-black/20 justify-between w-full  md:w-[500px]  px-4'
 								>
 									<Text>Order Date: </Text>
 									<Text>{item.transaction_date}</Text>
@@ -116,12 +210,20 @@ export default function Orders() {
 								<Flex
 									fontWeight={'medium'}
 									textColor={'#8E8E8E'}
-									className='border-b border-black/20 justify-between justify-between w-full  md:w-[500px]  px-4  px-4'
+									className='border-b border-black/20 justify-between w-full  md:w-[500px]  px-4'
 								>
 									<Text>Payment Status: </Text>
 									<Text className='uppercase'>{item.status}</Text>
 								</Flex>
-								{item.status === 'pending' ? (
+								<Flex
+									fontWeight={'medium'}
+									textColor={'#8E8E8E'}
+									className='border-b border-black/20 justify-between w-full  md:w-[500px]  px-4'
+								>
+									<Text>Order Status: </Text>
+									<Text className='uppercase'>{item.order_status.replace('-', ' ')}</Text>
+								</Flex>
+								{item.order_status === 'payment-pending' ? (
 									<Button
 										color={'white'}
 										bgColor={'#CEA98C'}
@@ -138,7 +240,7 @@ export default function Orders() {
 									>
 										<Text fontWeight={'medium'}>Retry Payment</Text>
 									</Button>
-								) : (
+								) : item.order_status === 'cancelled' ? (
 									<Button
 										borderColor={'#891618'}
 										color={'#891618'}
@@ -149,7 +251,110 @@ export default function Orders() {
 										className='justify-between w-full  md:w-[500px]  px-4'
 										leftIcon={<FaShippingFast color='#891618' />}
 									>
-										<Text fontWeight={'medium'}>Track Order</Text>
+										<Text fontWeight={'medium'}>Order Cancelled</Text>
+									</Button>
+								) : item.order_status === 'placed' ? (
+									<Button
+										borderColor={'#891618'}
+										color={'#891618'}
+										variant={'outline'}
+										py='0.5rem'
+										px='4rem'
+										rounded={'xl'}
+										className='justify-between w-full  md:w-[500px]  px-4'
+										onClick={() => handleOrderCancelClick(item.id)}
+										leftIcon={<FcCancel color='#891618' />}
+									>
+										<Text fontWeight={'medium'}>Cancel Order</Text>
+									</Button>
+								) : item.order_status === 'shipped' ? (
+									<>
+										<Flex
+											fontWeight={'medium'}
+											textColor={'#8E8E8E'}
+											className='border-b border-black/20 justify-between w-full  md:w-[500px]  px-4'
+										>
+											<Text>Tracking No.: </Text>
+											<Text className='uppercase'>{item.tracking_number}</Text>
+										</Flex>
+										<Button
+											borderColor={'green'}
+											color={'green'}
+											variant={'outline'}
+											py='0.5rem'
+											px='4rem'
+											rounded={'xl'}
+											className='justify-between w-full  md:w-[500px]  px-4'
+											leftIcon={<FaShippingFast color='green' />}
+										>
+											<Text fontWeight={'medium'}>Track Order</Text>
+										</Button>
+									</>
+								) : item.order_status === 'delivered' ? (
+									<Button
+										colorScheme={'blue'}
+										color={'white'}
+										variant={'solid'}
+										py='0.5rem'
+										px='4rem'
+										rounded={'xl'}
+										className='justify-between w-full  md:w-[500px]  px-4'
+										onClick={() => handleRequestReturn(item.id)}
+										leftIcon={<HiOutlineArrowUturnLeft color='white' />}
+									>
+										<Text fontWeight={'medium'}>Request Return</Text>
+									</Button>
+								) : item.order_status === 'return-raised' ? (
+									<Button
+										borderColor={'#891618'}
+										color={'#891618'}
+										variant={'outline'}
+										py='0.5rem'
+										px='4rem'
+										rounded={'xl'}
+										className='justify-between w-full  md:w-[500px]  px-4'
+										onClick={() => handleCancelReturnRequest(item.id)}
+										leftIcon={<FcCancel color='#891618' />}
+									>
+										<Text fontWeight={'medium'}>Cancel Return</Text>
+									</Button>
+								) : item.order_status === 'return-initiated' ? (
+									<>
+										<Flex
+											fontWeight={'medium'}
+											textColor={'#8E8E8E'}
+											className='border-b border-black/20 justify-between w-full  md:w-[500px]  px-4'
+										>
+											<Text>Tracking No.: </Text>
+											<Text className='uppercase'>{item.return_tracking_number}</Text>
+										</Flex>
+										<Button
+											borderColor={'green'}
+											color={'green'}
+											variant={'outline'}
+											py='0.5rem'
+											px='4rem'
+											rounded={'xl'}
+											className='justify-between w-full  md:w-[500px]  px-4'
+											leftIcon={<FaShippingFast color='green' />}
+										>
+											<Text fontWeight={'medium'}>Track Return</Text>
+										</Button>
+									</>
+								) : (
+									<Button
+										borderColor={'green'}
+										color={'green'}
+										variant={'outline'}
+										py='0.5rem'
+										px='4rem'
+										rounded={'xl'}
+										className='justify-between w-full  md:w-[500px]  px-4'
+										leftIcon={<FaShippingFast color='green' />}
+									>
+										<Text fontWeight={'medium'} className='capitalize'>
+											{item.order_status.replace('-', ' ')}
+										</Text>
 									</Button>
 								)}
 							</VStack>
@@ -213,6 +418,27 @@ export default function Orders() {
 					)}
 				</VStack>
 			</Box>
+
+			<AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+				<AlertDialogOverlay>
+					<AlertDialogContent>
+						<AlertDialogHeader fontSize='lg' fontWeight='bold'>
+							Cancel Order
+						</AlertDialogHeader>
+
+						<AlertDialogBody>Are you sure? You can't undo this action afterwards.</AlertDialogBody>
+
+						<AlertDialogFooter>
+							<Button ref={cancelRef} onClick={onClose}>
+								Cancel
+							</Button>
+							<Button colorScheme='red' onClick={onOrderCancel} ml={3}>
+								Cancel
+							</Button>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialogOverlay>
+			</AlertDialog>
 		</Box>
 	);
 }

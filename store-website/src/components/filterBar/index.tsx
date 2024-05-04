@@ -13,11 +13,15 @@ import {
 	SliderFilledTrack,
 	SliderThumb,
 	SliderTrack,
+	Tag,
+	TagLabel,
 	Text,
+	Wrap,
+	WrapItem,
 	useBoolean,
 } from '@chakra-ui/react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CiFilter } from 'react-icons/ci';
 import { FaFilter } from 'react-icons/fa';
 import { MdGraphicEq } from 'react-icons/md';
@@ -102,7 +106,6 @@ export default function FilterBar() {
 				url.searchParams.append(key, value.join('_+_'));
 			}
 		});
-		console.log(url.toString());
 
 		router.replace(url.toString());
 		setFilterExpanded.off();
@@ -117,10 +120,54 @@ export default function FilterBar() {
 
 	const [isFilterExpanded, setFilterExpanded] = useBoolean(false);
 
+	const keys = useMemo(() => {
+		const keys: string[] = [];
+		for (const key of searchParams.keys()) {
+			keys.push(key);
+		}
+		return keys;
+	}, [searchParams]);
+
 	return (
 		<>
-			<section className=' h-[40px] px-4 w-[96%] bg-[#F0F0F0]  mx-[2%] py-2 rounded-full flex items-center justify-between'>
-				<Flex>Hii</Flex>
+			<section className=' h-fit px-4 w-[96%] bg-[#F0F0F0]  mx-[2%] py-2 rounded-full flex items-center justify-between'>
+				<Wrap className='gap-3'>
+					{keys.map((_key, index) => {
+						const value = searchParams.get(_key);
+						const key = _key.replace('_', ' ');
+
+						if (!value) {
+							return <></>;
+						}
+						if (value?.includes('_+_')) {
+							const values = value.split('_+_');
+							return (
+								<React.Fragment>
+									{values.map((val, index) => (
+										<WrapItem key={index}>
+											<Tag size={'sm'} borderRadius='full' variant='solid' bgColor='#CA835B'>
+												<TagLabel className='capitalize'>
+													{key} : <span className='font-medium'>{val}</span>
+												</TagLabel>
+											</Tag>
+										</WrapItem>
+									))}
+								</React.Fragment>
+							);
+						}
+
+						return (
+							<WrapItem key={index}>
+								<Tag size={'sm'} borderRadius='full' variant='solid' bgColor='#CA835B'>
+									<TagLabel className='capitalize'>
+										{key} : <span className='font-medium'>{value}</span>
+									</TagLabel>
+								</Tag>
+							</WrapItem>
+						);
+					})}
+					{keys.length === 0 ? <Text>No Filters</Text> : null}
+				</Wrap>
 				<Box cursor={'pointer'} onClick={() => setFilterExpanded.toggle()}>
 					{isFilterExpanded ? <FaFilter color='black' /> : <CiFilter />}
 				</Box>

@@ -7,6 +7,7 @@ import ProductGroupRoute from './product-group/product-group.route';
 import ProductRoute from './product/product.route';
 import SessionRoute from './session/session.route';
 import WishlistRoute from './wishlist/wishlist.route';
+import OrdersRoute from './orders/orders.route';
 
 import { RESEND_FEEDBACK_EMAIL } from '../config/const';
 import CustomError, { COMMON_ERRORS } from '../errors';
@@ -27,6 +28,7 @@ router.use('/product-group', ProductGroupRoute);
 router.use('/products', ProductRoute);
 router.use('/sessions', SessionRoute);
 router.use('/wishlist', WishlistRoute);
+router.use('/orders', OrdersRoute);
 
 router.use('/phonepe/callback', PhonePeProvider.Callbacks.transactionCallback);
 

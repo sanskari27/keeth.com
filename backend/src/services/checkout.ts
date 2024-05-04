@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
 import { AccountDB } from '../../db';
 import CheckoutDB from '../../db/repo/Checkout';
-import { TRANSACTION_STATUS } from '../config/const';
-import CustomError, { COMMON_ERRORS } from '../errors';
+import { ORDER_STATUS, TRANSACTION_STATUS } from '../config/const';
+import CustomError, { COMMON_ERRORS, ORDER_ERRORS } from '../errors';
 import PhonePeProvider from '../provider/phonepe';
 import DateUtils from '../utils/DateUtils';
 import { generateTransactionID } from '../utils/ExpressUtils';
@@ -21,17 +21,18 @@ type BillingDetails = {
 	state: string;
 	country: string;
 	postal_code: string;
+	payment_method: 'cod' | 'prepaid';
 };
 
 const YEARS_10 = 315360000000;
 
 export default class CheckoutService {
-	private _cart: CartService;
+	private _cart?: CartService;
 	private _transactionId: Types.ObjectId;
 
-	public constructor(cart: CartService, transactionId: Types.ObjectId) {
-		this._cart = cart;
+	public constructor(transactionId: Types.ObjectId, cart?: CartService) {
 		this._transactionId = transactionId;
+		this._cart = cart;
 	}
 
 	static async getAllOrders() {
@@ -49,6 +50,7 @@ export default class CheckoutService {
 				couponCode: order.couponCode,
 				status: order.transaction_status,
 				transaction_date: DateUtils.format(order.transaction_date, 'DD/MM/YYYY'),
+				order_status: order.order_status,
 			};
 		});
 	}
@@ -67,6 +69,10 @@ export default class CheckoutService {
 				discount: order.discount,
 				status: order.transaction_status,
 				transaction_date: DateUtils.format(order.transaction_date, 'DD/MM/YYYY'),
+				order_status: order.order_status,
+				tracking_number: order.tracking_number,
+				return_tracking_number: order.return_tracking_number,
+				payment_method: order.payment_method,
 				products: order.products.map((p) => ({
 					product_id: p.productId,
 					description: p.description,
@@ -141,6 +147,10 @@ export default class CheckoutService {
 			discount: order.discount + order.couponDiscount,
 			status: order.transaction_status,
 			transaction_date: DateUtils.format(order.transaction_date, 'DD/MM/YYYY'),
+			order_status: order.order_status,
+			tracking_number: order.tracking_number,
+			return_tracking_number: order.return_tracking_number,
+			payment_method: order.payment_method,
 			products: order.products.map((p) => ({
 				product_id: p.productId,
 				productCode: p.productCode,
@@ -206,6 +216,7 @@ export default class CheckoutService {
 		const transaction = await CheckoutDB.findById(this._transactionId);
 
 		if (
+			!this._cart ||
 			!transaction ||
 			![TRANSACTION_STATUS.UNINITIALIZED, TRANSACTION_STATUS.PENDING].includes(
 				transaction.transaction_status
@@ -213,12 +224,20 @@ export default class CheckoutService {
 		) {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
+
+		if (transaction.payment_method === 'cod') {
+			transaction.order_status = ORDER_STATUS.PLACED;
+			transaction.expireAt = new Date(Date.now() + YEARS_10);
+			await transaction.save();
+			return null;
+		}
+
 		transaction.transaction_status = TRANSACTION_STATUS.PENDING;
 		transaction.expireAt = new Date(Date.now() + YEARS_10);
 		transaction.provider_id = generateTransactionID();
 		await transaction.save();
 
-		const order = await PhonePeProvider.Orders.createOrder({
+		const order = await PhonePeProvider.orders.createOrder({
 			amount: transaction.total_amount,
 			reference_id: transaction.provider_id,
 			userID: this._cart.getSessionId().toString(),
@@ -231,6 +250,7 @@ export default class CheckoutService {
 		try {
 			const transaction = await CheckoutDB.findById(this._transactionId);
 			if (
+				!this._cart ||
 				!transaction ||
 				!transaction.provider_id ||
 				transaction.transaction_status !== TRANSACTION_STATUS.PENDING
@@ -238,7 +258,7 @@ export default class CheckoutService {
 				return 'NOT_FOUND';
 			}
 
-			const order = await PhonePeProvider.Orders.getOrderStatus(transaction.provider_id);
+			const order = await PhonePeProvider.orders.getOrderStatus(transaction.provider_id);
 			const paymentProviderID = order.transaction_id;
 			const status = order.status as
 				| 'PAYMENT_SUCCESS'
@@ -267,12 +287,114 @@ export default class CheckoutService {
 		}
 	}
 
+	async cancelOrder() {
+		const doc = await CheckoutDB.findById(this._transactionId);
+		if (!doc) {
+			return new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		if (doc.transaction_status !== TRANSACTION_STATUS.SUCCESS) {
+			doc.order_status = ORDER_STATUS.CANCELLED;
+			await doc.save();
+			return;
+		}
+
+		if (doc.order_status !== ORDER_STATUS.PLACED) {
+			return new CustomError(ORDER_ERRORS.ORDER_NOT_CANCELLED);
+		}
+
+		doc.order_status = ORDER_STATUS.CANCELLED;
+		doc.refund_id = generateTransactionID();
+		await doc.save();
+
+		await PhonePeProvider.refunds.createRefund({
+			amount: doc.total_amount,
+			order_id: doc.provider_id,
+			reference_id: doc.refund_id,
+		});
+	}
+
+	async requestReturn() {
+		const doc = await CheckoutDB.findById(this._transactionId);
+		if (!doc) {
+			return new CustomError(COMMON_ERRORS.NOT_FOUND);
+		} else if (doc.order_status !== ORDER_STATUS.DELIVERED) {
+			return new CustomError(ORDER_ERRORS.RETURN_FAILED);
+		}
+
+		doc.order_status = ORDER_STATUS.RETURN_RAISED;
+		await doc.save();
+	}
+
+	async cancelReturnRequest() {
+		const doc = await CheckoutDB.findById(this._transactionId);
+		if (!doc) {
+			return new CustomError(COMMON_ERRORS.NOT_FOUND);
+		} else if (doc.order_status !== ORDER_STATUS.RETURN_RAISED) {
+			return new CustomError(ORDER_ERRORS.RETURN_FAILED);
+		}
+
+		doc.order_status = ORDER_STATUS.DELIVERED;
+		await doc.save();
+	}
+
+	async acceptReturn() {
+		const doc = await CheckoutDB.findById(this._transactionId);
+		if (!doc || doc.order_status !== ORDER_STATUS.RETURN_RAISED) {
+			return new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		doc.order_status = ORDER_STATUS.RETURN_ACCEPTED;
+		await doc.save();
+	}
+
+	async rejectReturn() {
+		const doc = await CheckoutDB.findById(this._transactionId);
+		if (!doc || doc.order_status !== ORDER_STATUS.RETURN_RAISED) {
+			return new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		doc.order_status = ORDER_STATUS.RETURN_DENIED;
+		await doc.save();
+	}
+
+	async setTrackingID(tracking_number: string) {
+		const doc = await CheckoutDB.findById(this._transactionId);
+		if (!doc) {
+			return new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		if (doc.order_status === ORDER_STATUS.SHIPPED) {
+			doc.tracking_number = tracking_number;
+		} else if (doc.order_status === ORDER_STATUS.RETURN_INITIATED) {
+			doc.return_tracking_number = tracking_number;
+		} else {
+			return new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		await doc.save();
+	}
+
+	async changeOrderStatus(status: ORDER_STATUS) {
+		const updates = await CheckoutDB.updateOne(
+			{ _id: this._transactionId },
+			{
+				$set: {
+					order_status: status,
+				},
+			}
+		);
+
+		return updates.modifiedCount !== 0;
+	}
+
 	public static async confirmPayment(transactionId: Types.ObjectId, payment_provider_id: string) {
 		const updates = await CheckoutDB.updateOne(
 			{ _id: transactionId },
 			{
 				$set: {
 					transaction_status: TRANSACTION_STATUS.SUCCESS,
+					order_status: ORDER_STATUS.PLACED,
 					payment_id: payment_provider_id,
 					expireAt: Date.now() + YEARS_10,
 				},

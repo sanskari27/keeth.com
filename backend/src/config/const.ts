@@ -34,7 +34,19 @@ export enum TRANSACTION_STATUS {
 	CANCELLED = 'cancelled',
 }
 
-export const TAX = 0.18;
+export enum ORDER_STATUS {
+	PAYMENT_PENDING = 'payment-pending',
+	PLACED = 'placed',
+	CANCELLED = 'cancelled',
+	SHIPPED = 'shipped',
+	DELIVERED = 'delivered',
+	RETURN_RAISED = 'return-raised',
+	RETURN_ACCEPTED = 'return-accepted',
+	RETURN_DENIED = 'return-denied',
+	RETURN_INITIATED = 'return-initiated',
+	REFUND_INITIATED = 'refund-initiated',
+	RETURN_COMPLETED = 'return-completed',
+}
 
 export const MISC_PATH = '/static/misc/';
 export const COLLECTIONS_PATH = '/static/collections/';

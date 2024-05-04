@@ -1,5 +1,5 @@
 import { Document, Types } from 'mongoose';
-import { TRANSACTION_STATUS } from '../../src/config/const';
+import { ORDER_STATUS, TRANSACTION_STATUS } from '../../src/config/const';
 
 export default interface ICheckout extends Document {
 	linked_to: Types.ObjectId;
@@ -23,10 +23,15 @@ export default interface ICheckout extends Document {
 	couponDiscount: number;
 	total_amount: number;
 
+	payment_method: 'cod' | 'prepaid';
+	refund_id: string;
 	provider_id: string;
 	payment_id: string;
 	transaction_date: Date;
 	transaction_status: TRANSACTION_STATUS;
+	order_status: ORDER_STATUS;
+	tracking_number: string;
+	return_tracking_number: string;
 
 	expireAt: Date;
 }

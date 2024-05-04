@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { TRANSACTION_STATUS } from '../../src/config/const';
+import { ORDER_STATUS, TRANSACTION_STATUS } from '../../src/config/const';
 import ICheckout, { ICheckoutProduct } from '../types/checkout';
 import { ProductDB_name } from './Product';
 
@@ -97,7 +97,12 @@ const schema = new mongoose.Schema<ICheckout>({
 		default: 0,
 		min: 0,
 	},
+	payment_method: {
+		type: String,
+		default: 'cod',
+	},
 	provider_id: String,
+	refund_id: String,
 	payment_id: String,
 	transaction_date: {
 		type: Date,
@@ -109,6 +114,13 @@ const schema = new mongoose.Schema<ICheckout>({
 		enum: Object.values(TRANSACTION_STATUS),
 		default: TRANSACTION_STATUS.UNINITIALIZED,
 	},
+	order_status: {
+		type: String,
+		enum: Object.values(ORDER_STATUS),
+		default: ORDER_STATUS.PAYMENT_PENDING,
+	},
+	tracking_number: String,
+	return_tracking_number: String,
 	expireAt: {
 		type: Date,
 		required: true,

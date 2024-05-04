@@ -1,6 +1,8 @@
 import Orders from './orders';
+import refunds from './refunds';
 const PhonePeProvider = {
-	Orders: Orders,
+	orders: Orders,
+	refunds: refunds,
 };
 
 export default PhonePeProvider;

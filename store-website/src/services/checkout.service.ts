@@ -72,6 +72,7 @@ export async function billingDetails(
 		state: string;
 		country: string;
 		postal_code: string;
+		payment_method: 'cod' | 'prepaid';
 	}
 ) {
 	try {
@@ -85,7 +86,11 @@ export async function billingDetails(
 export async function initiatePaymentProvider(id: string) {
 	try {
 		const { data } = await api.post(`/checkout/${id}/initiate-payment-provider`);
-		return data.payment_link as string;
+
+		return {
+			redirect: data.redirect,
+			link: data.payment_link as string,
+		};
 	} catch (err) {
 		return null;
 	}
@@ -93,12 +98,27 @@ export async function initiatePaymentProvider(id: string) {
 
 export async function fetchOrders() {
 	try {
-		const { data } = await api.get(`/checkout/my-orders`);
+		const { data } = await api.get(`/orders/my-orders`);
 		return data.orders as {
 			id: string;
 			amount: number;
 			status: 'success' | 'failed' | 'pending' | 'cancelled';
 			transaction_date: string;
+			order_status:
+				| 'payment-pending'
+				| 'placed'
+				| 'cancelled'
+				| 'shipped'
+				| 'delivered'
+				| 'return-raised'
+				| 'return-accepted'
+				| 'return-denied'
+				| 'return-initiated'
+				| 'refund-initiated'
+				| 'return-completed';
+			tracking_number: string;
+			return_tracking_number: string;
+			payment_method: 'cod' | 'prepaid';
 			products: {
 				product_id: string;
 				productCode: string;
@@ -116,5 +136,32 @@ export async function fetchOrders() {
 		}[];
 	} catch (err) {
 		return [];
+	}
+}
+
+export async function requestReturn(id: string) {
+	try {
+		await api.post(`/orders/${id}/request-return`);
+		return true;
+	} catch (err) {
+		return false;
+	}
+}
+
+export async function cancelReturnRequest(id: string) {
+	try {
+		await api.delete(`/orders/${id}/request-return`);
+		return true;
+	} catch (err) {
+		return false;
+	}
+}
+
+export async function cancelOrder(id: string) {
+	try {
+		await api.post(`/orders/${id}/cancel`);
+		return true;
+	} catch (err) {
+		return false;
 	}
 }
