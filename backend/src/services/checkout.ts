@@ -49,6 +49,7 @@ export default class CheckoutService {
 				amount: order.total_amount,
 				couponCode: order.couponCode,
 				status: order.transaction_status,
+				payment_method: order.payment_method,
 				transaction_date: DateUtils.format(order.transaction_date, 'DD/MM/YYYY'),
 				order_status: order.order_status,
 			};
@@ -285,6 +286,18 @@ export default class CheckoutService {
 		} catch (err) {
 			return 'INTERNAL_SERVER_ERROR';
 		}
+	}
+
+	public async markCODCompleted() {
+		const transaction = await CheckoutDB.findById(this._transactionId);
+		if (!transaction || transaction.transaction_status !== TRANSACTION_STATUS.PENDING) {
+			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
+		} else if (transaction.payment_method !== 'cod') {
+			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
+		}
+
+		transaction.transaction_status = TRANSACTION_STATUS.SUCCESS;
+		await transaction.save();
 	}
 
 	async cancelOrder() {

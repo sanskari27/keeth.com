@@ -124,6 +124,17 @@ async function changeOrderStatus(req: Request, res: Response, next: NextFunction
 	});
 }
 
+async function paymentCompleted(req: Request, res: Response, next: NextFunction) {
+	const transaction_id = req.locals.id;
+
+	const checkout_service = new CheckoutService(transaction_id);
+	await checkout_service.markCODCompleted();
+	return Respond({
+		res,
+		status: 200,
+	});
+}
+
 const Controller = {
 	listAllOrders,
 	listUserOrders,
@@ -134,6 +145,7 @@ const Controller = {
 	setTrackingID,
 	changeOrderStatus,
 	cancelReturnRequest,
+	paymentCompleted,
 };
 
 export default Controller;

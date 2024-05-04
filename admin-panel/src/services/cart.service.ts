@@ -14,10 +14,59 @@ export default class CartService {
 
 	static async getOrders() {
 		try {
-			const { data } = await APIInstance.get(`/checkout/orders`);
+			const { data } = await APIInstance.get(`/orders/orders`);
 			return data.orders as Order[];
 		} catch (err) {
 			return [];
+		}
+	}
+
+	static async acceptReturn(id: string) {
+		try {
+			await APIInstance.post(`/orders/${id}/accept-return`);
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
+	static async rejectReturn(id: string) {
+		try {
+			await APIInstance.post(`/orders/${id}/reject-return`);
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
+	static async saveTrackingID(id: string, tracking_number: string) {
+		try {
+			await APIInstance.post(`/orders/${id}/tracking`, {
+				tracking_number,
+			});
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
+	static async updateTrackingStatus(id: string, status: string) {
+		try {
+			await APIInstance.post(`/orders/${id}/status`, {
+				status,
+			});
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
+	static async markPaid(id: string) {
+		try {
+			await APIInstance.post(`/orders/${id}/payment-completed`);
+			return true;
+		} catch (err) {
+			return false;
 		}
 	}
 }

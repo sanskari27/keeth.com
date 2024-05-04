@@ -20,5 +20,9 @@ router
 
 router.route('/:id/tracking').all(VerifyAdmin, IDValidator).post(Controller.setTrackingID);
 router.route('/:id/status').all(VerifyAdmin, IDValidator).post(Controller.changeOrderStatus);
+router
+	.route('/:id/payment-completed')
+	.all(VerifyAdmin, IDValidator)
+	.post(Controller.paymentCompleted);
 
 export default router;
