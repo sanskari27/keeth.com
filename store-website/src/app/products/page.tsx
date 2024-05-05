@@ -84,7 +84,7 @@ export default async function ProductPage({
 				<Suspense>
 					<FilterBar />
 				</Suspense>
-				<Box className='mt-4 md:mt-8'>
+				<Box className='mt-4 md:mt-8 px-4 md:px-0'>
 					<Grid className='grid-cols-2 md:grid-cols-4 gap-6 md:gap-9'>
 						{products.map((product, index) => (
 							<GridItem key={index}>
@@ -97,7 +97,7 @@ export default async function ProductPage({
 										position={'relative'}
 									>
 										<Center
-											className='absolute -left-3 -top-3 -rotate-12 w-[70px] aura-bella rounded-full h-[70px] bg-primary-brown text-white font-bold tracking-widest'
+											className='absolute -left-3 -top-3 -rotate-12 w-[40px] h-[40px] md:w-[70px] aura-bella rounded-full md:h-[70px] bg-primary-brown text-white font-bold text-xs md:text-base md:racking-widest'
 											hidden={product.discount === 0}
 										>
 											{((product.discount * 100) / product.price).toFixed(2)}% <br /> Off

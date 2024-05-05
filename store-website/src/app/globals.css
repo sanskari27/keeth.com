@@ -12,7 +12,7 @@
 		font-family: 'aura-bella';
 	}
 	.navbar {
-		@apply w-[96%] absolute mx-[2%]  shadow-[inset_0_0_300px_rgba(220,220,220,0.2)] backdrop-blur-lg rounded-2xl z-50;
+		@apply w-[96%] absolute mx-[2%] bg-gray-100 md:bg-transparent   shadow-[inset_0_0_300px_rgba(220,220,220,0.2)] backdrop-blur-lg rounded-2xl z-50;
 	}
 	.nav-active::before {
 		@apply absolute content-[''] -bottom-2 w-[130%] -left-[15%] h-[2px]  bg-accent-dark inline-block  rounded-full;

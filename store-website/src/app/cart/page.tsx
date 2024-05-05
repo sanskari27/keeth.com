@@ -147,7 +147,7 @@ export default function Cart() {
 				<Box className='my-6 w-full'>
 					<VStack width={'full'} alignItems={'flex-start'}>
 						{list.map((item) => (
-							<Flex className='w-full gap-3 border-b py-4 !border-black/40 '>
+							<Flex className='w-full flex-col md:flex-row gap-3 border-b py-4 !border-black/40 '>
 								<Link
 									key={item.productId}
 									href={{
