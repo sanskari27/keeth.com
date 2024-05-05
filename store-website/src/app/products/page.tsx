@@ -116,11 +116,13 @@ export default async function ProductPage({
 												alt={product.productCode}
 												width={500}
 												height={500}
-												className='rounded-2xl w-full h-full object-cover mix-blend-multiply group-hover:hidden'
+												className={`rounded-2xl w-full h-full object-cover mix-blend-multiply ${
+													product.video && 'group-hover:hidden'
+												}`}
 											/>
 											<VideoPlayer
 												src={SERVER_URL + `/media/${product.video}`}
-												className='hidden w-full h-full group-hover:block'
+												className={`hidden w-full h-full ${product.video && 'group-hover:block'}`}
 												playOnHover
 												autoPlay={false}
 												controls={false}
