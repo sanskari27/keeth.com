@@ -120,14 +120,17 @@ export default class ProductService {
 			purity: ('14K' | '18K' | '22K')[];
 			skip: number;
 			limit: number;
+			onlyIds?: boolean;
 		}
 	) {
 		let _query = {};
 
-		_query = {
-			..._query,
-			productCode: { $in: productCodes },
-		};
+		if (query.onlyIds && productCodes.length > 0) {
+			_query = {
+				..._query,
+				productCode: { $in: productCodes },
+			};
+		}
 		if (query.metals.length > 0) {
 			_query = {
 				..._query,

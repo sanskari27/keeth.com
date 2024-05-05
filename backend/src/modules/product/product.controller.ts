@@ -35,7 +35,10 @@ async function listProducts(req: Request, res: Response, next: NextFunction) {
 	//If no collection_ids or tags is provided then fetch all products
 	product_ids = query.collection_ids.length === 0 && query.tags.length === 0 ? [] : product_ids;
 
-	let products = await new ProductService().products(product_ids, query);
+	let products = await new ProductService().products(product_ids, {
+		...query,
+		onlyIds: query.collection_ids.length > 0,
+	});
 
 	if (query.sort !== 'popular') {
 		products = products.sort(function (a, b) {
