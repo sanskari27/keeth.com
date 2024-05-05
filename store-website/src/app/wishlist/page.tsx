@@ -40,16 +40,15 @@ export default function Wishlist() {
 			<Box className='my-6 '>
 				<VStack width={'full'} alignItems={'flex-start'}>
 					{list.map((item) => (
-						<Link
-							className='w-full'
-							href={{
-								pathname: `/products/${item.productCode}`,
-								query: {
-									productId: item.productId,
-								},
-							}}
-						>
-							<Flex className='gap-3' key={item.productId}>
+						<Flex className='gap-3' key={item.productId}>
+							<Link
+								href={{
+									pathname: `/products/${item.productCode}`,
+									query: {
+										productId: item.productId,
+									},
+								}}
+							>
 								<Box
 									rounded={'2xl'}
 									overflow={'hidden'}
@@ -67,11 +66,21 @@ export default function Wishlist() {
 										priority
 									/>
 								</Box>
-								<Flex
-									overflow={'hidden'}
-									position={'relative'}
-									direction={'column'}
-									justifyContent={'space-around'}
+							</Link>
+							<Flex
+								overflow={'hidden'}
+								position={'relative'}
+								direction={'column'}
+								justifyContent={'space-around'}
+							>
+								<Link
+									className='w-full'
+									href={{
+										pathname: `/products/${item.productCode}`,
+										query: {
+											productId: item.productId,
+										},
+									}}
 								>
 									<Box>
 										<Text fontWeight={'medium'} textColor={'black'}>
@@ -85,16 +94,16 @@ export default function Wishlist() {
 											Price: ₹ {item.price - item.discount}
 										</Text>
 									</Box>
-									<Flex className='flex-col md:flex-row gap-3 w-full  md:w-[400px]'>
-										<Flex className='gap-3'>
-											<AddToCart id={item.productId} />
+								</Link>
+								<Flex className='flex-col md:flex-row gap-3 w-full  md:w-[400px]'>
+									<Flex className='gap-3'>
+										<AddToCart id={item.productId} />
 
-											<WishlistButton id={item.productId} />
-										</Flex>
+										<WishlistButton id={item.productId} />
 									</Flex>
 								</Flex>
 							</Flex>
-						</Link>
+						</Flex>
 					))}
 				</VStack>
 			</Box>

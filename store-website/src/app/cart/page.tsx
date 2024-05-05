@@ -147,20 +147,19 @@ export default function Cart() {
 				<Box className='my-6 w-full'>
 					<VStack width={'full'} alignItems={'flex-start'}>
 						{list.map((item) => (
-							<Link
-								className='w-full'
-								key={item.productId}
-								href={{
-									pathname: `/products/${item.productCode}`,
-									query: {
-										metal_color: item.metal_color,
-										metal_quality: item.metal_quality,
-										diamond_type: item.diamond_type,
-										size: item.size,
-									},
-								}}
-							>
-								<Flex className='w-full gap-3 border-b py-4 !border-black/40 '>
+							<Flex className='w-full gap-3 border-b py-4 !border-black/40 '>
+								<Link
+									key={item.productId}
+									href={{
+										pathname: `/products/${item.productCode}`,
+										query: {
+											metal_color: item.metal_color,
+											metal_quality: item.metal_quality,
+											diamond_type: item.diamond_type,
+											size: item.size,
+										},
+									}}
+								>
 									<Box
 										rounded={'2xl'}
 										overflow={'hidden'}
@@ -177,11 +176,24 @@ export default function Cart() {
 											priority
 										/>
 									</Box>
-									<Flex
-										overflow={'hidden'}
-										position={'relative'}
-										direction={'column'}
-										justifyContent={'space-around'}
+								</Link>
+								<Flex
+									overflow={'hidden'}
+									position={'relative'}
+									direction={'column'}
+									justifyContent={'space-around'}
+								>
+									<Link
+										key={item.productId}
+										href={{
+											pathname: `/products/${item.productCode}`,
+											query: {
+												metal_color: item.metal_color,
+												metal_quality: item.metal_quality,
+												diamond_type: item.diamond_type,
+												size: item.size,
+											},
+										}}
 									>
 										<Box>
 											<Text fontWeight={'medium'} textColor={'black'}>
@@ -203,14 +215,14 @@ export default function Cart() {
 												Size: {item.size}
 											</Text>
 										</Box>
-										<Flex className='flex-col md:flex-row gap-3 w-full  md:w-[400px]'>
-											<Flex className='gap-3'>
-												<RemoveFromCart id={item.productId} onRemove={fetchData} />
-											</Flex>
+									</Link>
+									<Flex className='flex-col md:flex-row gap-3 w-full  md:w-[400px]'>
+										<Flex className='gap-3'>
+											<RemoveFromCart id={item.productId} onRemove={fetchData} />
 										</Flex>
 									</Flex>
 								</Flex>
-							</Link>
+							</Flex>
 						))}
 
 						{list.length === 0 && !loading && (
