@@ -30,7 +30,10 @@ export async function isInWishlist(id: string) {
 export async function addToWishlist(id: string) {
 	try {
 		await api.post(`/wishlist/${id}`);
-	} catch (err) {}
+		return true;
+	} catch (err) {
+		return false;
+	}
 }
 
 export async function removeFromWishlist(id: string) {

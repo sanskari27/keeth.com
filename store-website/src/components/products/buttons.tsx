@@ -58,6 +58,7 @@ export function AddToCart({ id }: { id: string }) {
 
 export function WishlistButton({ id }: { id: string }) {
 	const [isWishlist, setWishlist] = useState(false);
+	const router = useRouter();
 
 	useEffect(() => {
 		isInWishlist(id).then(setWishlist);
@@ -68,7 +69,10 @@ export function WishlistButton({ id }: { id: string }) {
 			await removeFromWishlist(id);
 			setWishlist(false);
 		} else {
-			await addToWishlist(id);
+			const success = await addToWishlist(id);
+			if (!success) {
+				return router.push('/login?referrer=products');
+			}
 			setWishlist(true);
 		}
 	};
