@@ -125,7 +125,7 @@ export default class ProductService {
 	) {
 		let _query = {};
 
-		if (query.onlyIds && productCodes.length > 0) {
+		if (query.onlyIds) {
 			_query = {
 				..._query,
 				productCode: { $in: productCodes },
