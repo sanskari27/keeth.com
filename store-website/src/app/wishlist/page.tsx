@@ -40,7 +40,7 @@ export default function Wishlist() {
 			<Box className='my-6 '>
 				<VStack width={'full'} alignItems={'flex-start'}>
 					{list.map((item) => (
-						<Flex className='gap-3' key={item.productId}>
+						<Flex className='gap-3 flex-col md:flex-row' key={item.productId}>
 							<Link
 								href={{
 									pathname: `/products/${item.productCode}`,
