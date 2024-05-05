@@ -25,6 +25,7 @@ type Product = {
 	productCode: string;
 	name: string;
 	price: number;
+	isBestSeller: boolean;
 };
 
 type ProductDetails = {

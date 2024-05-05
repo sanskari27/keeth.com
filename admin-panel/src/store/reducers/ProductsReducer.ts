@@ -99,6 +99,20 @@ const Slice = createSlice({
 				return item;
 			});
 		},
+		updateBestSeller: (
+			state,
+			action: PayloadAction<{ productCode: string; isBestSeller: boolean }>
+		) => {
+			state.list = state.list.map((e) => {
+				if (e.productCode === action.payload.productCode) {
+					return {
+						...e,
+						isBestSeller: action.payload.isBestSeller,
+					};
+				}
+				return e;
+			});
+		},
 		updateVisibility: (state, action: PayloadAction<{ id: string; visible: boolean }>) => {
 			state.customizations = state.customizations.map((e) => {
 				if (e.id === action.payload.id) {
@@ -154,6 +168,7 @@ export const {
 	removeProductCodeToGroup,
 	addRecommendationGroup,
 	updateRecommendationGroup,
+	updateBestSeller,
 } = Slice.actions;
 
 export default Slice.reducer;

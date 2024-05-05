@@ -10,7 +10,7 @@ import { CreateValidationResult, NewArrivalValidationResult } from './product.va
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 async function listProducts(req: Request, res: Response, next: NextFunction) {
-	let list = (await StorageDB.getObject('NEW_ARRIVAL')) as string[];
+	let list = (await StorageDB.getObject('BEST_SELLER')) as string[];
 	const query = req.locals.query as ProductsQueryValidatorResult;
 
 	if (query.distinctProducts) {
@@ -21,7 +21,7 @@ async function listProducts(req: Request, res: Response, next: NextFunction) {
 			data: {
 				products: products.map((item) => ({
 					...item,
-					isNewArrival: list?.includes(item.productCode),
+					isBestSeller: list?.includes(item.productCode) ?? false,
 				})),
 			},
 		});
@@ -111,7 +111,7 @@ async function list(req: Request, res: Response, next: NextFunction) {
 async function markBestSeller(req: Request, res: Response, next: NextFunction) {
 	const { productCode, status } = req.locals.data as NewArrivalValidationResult;
 
-	let list = ((await StorageDB.getObject('NEW_ARRIVAL')) as string[]) ?? [];
+	let list = ((await StorageDB.getObject('BEST_SELLER')) as string[]) ?? [];
 	if (status) {
 		list = [...new Set([...list, productCode])];
 	} else {

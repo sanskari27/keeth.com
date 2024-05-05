@@ -4,6 +4,7 @@ import {
 	Flex,
 	HStack,
 	Heading,
+	Switch,
 	Table,
 	TableContainer,
 	Tbody,
@@ -16,18 +17,21 @@ import {
 import { useEffect } from 'react';
 import { FaSitemap } from 'react-icons/fa6';
 import { MdOutlineCreate } from 'react-icons/md';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useOutlet } from 'react-router-dom';
 import { NAVIGATION } from '../../../config/const';
 import useFilteredList from '../../../hooks/useFilteredList';
 import { popFromNavbar, pushToNavbar } from '../../../hooks/useNavbar';
+import ProductService from '../../../services/product.service';
 import { StoreNames, StoreState } from '../../../store';
+import { updateBestSeller } from '../../../store/reducers/ProductsReducer';
 import { NavbarSearchElement } from '../../components/navbar';
 import Each from '../../components/utils/Each';
 
 const Products = () => {
 	const outlet = useOutlet();
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const { list } = useSelector((state: StoreState) => state[StoreNames.PRODUCTS]);
 
@@ -52,6 +56,13 @@ const Products = () => {
 	}, []);
 
 	const filtered = useFilteredList(list, { name: 1, productCode: 1 });
+
+	async function handleBestSeller(code: string, checked: boolean) {
+		const success = await ProductService.updateBestSeller(code, checked);
+		if (success) {
+			dispatch(updateBestSeller({ productCode: code, isBestSeller: checked }));
+		}
+	}
 
 	if (outlet) {
 		return outlet;
@@ -90,11 +101,14 @@ const Products = () => {
 								<Th color={'gray'} width={'20%'}>
 									Product Code
 								</Th>
-								<Th color={'gray'} width={'65%'}>
+								<Th color={'gray'} width={'60%'}>
 									Name
 								</Th>
 								<Th color={'gray'} width={'10%'} isNumeric>
 									Price
+								</Th>
+								<Th color={'gray'} width={'5%'} isNumeric>
+									Best Seller
 								</Th>
 							</Tr>
 						</Thead>
@@ -102,15 +116,24 @@ const Products = () => {
 							<Each
 								items={filtered}
 								render={(product, index) => (
-									<Tr
-										verticalAlign={'middle'}
-										cursor={'pointer'}
-										onClick={() => openProduct(product.productCode)}
-									>
-										<Td>{index + 1}.</Td>
-										<Td>{product.productCode}</Td>
-										<Td className='whitespace-break-spaces'>{product.name}</Td>
-										<Td isNumeric>{product.price}</Td>
+									<Tr verticalAlign={'middle'} cursor={'pointer'}>
+										<Td onClick={() => openProduct(product.productCode)}>{index + 1}.</Td>
+										<Td onClick={() => openProduct(product.productCode)}>{product.productCode}</Td>
+										<Td
+											onClick={() => openProduct(product.productCode)}
+											className='whitespace-break-spaces'
+										>
+											{product.name}
+										</Td>
+										<Td onClick={() => openProduct(product.productCode)} isNumeric>
+											{product.price}
+										</Td>
+										<Td width={'5%'} isNumeric>
+											<Switch
+												isChecked={product.isBestSeller}
+												onChange={(e) => handleBestSeller(product.productCode, e.target.checked)}
+											/>
+										</Td>
 									</Tr>
 								)}
 							/>

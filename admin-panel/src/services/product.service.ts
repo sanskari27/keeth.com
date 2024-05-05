@@ -29,6 +29,18 @@ export default class ProductService {
 		}
 	}
 
+	static async updateBestSeller(productCode: string, status: boolean) {
+		try {
+			await APIInstance.post(`/products/best-sellers`, {
+				productCode,
+				status,
+			});
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
 	static async updateListing(product_id: string, listed: boolean) {
 		try {
 			await APIInstance.post(`/products/${product_id}/${listed ? 'list' : 'unlist'}`);
