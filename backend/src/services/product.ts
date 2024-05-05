@@ -124,18 +124,13 @@ export default class ProductService {
 	) {
 		let _query = {};
 
-		if (productCodes.length > 0) {
-			_query = {
-				productCode: { $in: productCodes },
-			};
-		}
+		_query = {
+			..._query,
+			productCode: { $in: productCodes },
+		};
 		if (query.metals.length > 0) {
 			_query = {
-				metal_color: { $in: query.metals },
-			};
-		}
-		if (query.metals.length > 0) {
-			_query = {
+				..._query,
 				metal_type: { $in: query.metals },
 			};
 		}

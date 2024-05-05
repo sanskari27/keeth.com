@@ -35,6 +35,132 @@ export default class CheckoutService {
 		this._cart = cart;
 	}
 
+	static async generateTotalStats() {
+		const totalStatsPipeline = [
+			{
+				$group: {
+					_id: null,
+					totalOrders: { $sum: 1 },
+					totalGrossSales: { $sum: '$gross_total' },
+					totalDiscounts: { $sum: '$discount' },
+					totalCouponDiscounts: { $sum: '$couponDiscount' },
+					totalAmountCollected: { $sum: '$total_amount' },
+					uniqueCustomers: { $addToSet: '$email' },
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					totalOrders: 1,
+					totalGrossSales: 1,
+					totalDiscounts: 1,
+					totalCouponDiscounts: 1,
+					totalAmountCollected: 1,
+					uniqueCustomersCount: { $size: '$uniqueCustomers' },
+				},
+			},
+		];
+
+		try {
+			const data = await CheckoutDB.aggregate(totalStatsPipeline);
+			if (data.length === 0) {
+				throw new Error();
+			}
+			return {
+				totalOrders: data[0].totalOrders as number,
+				totalGrossSales: data[0].totalGrossSales as number,
+				totalDiscounts: data[0].totalDiscounts as number,
+				totalCouponDiscounts: data[0].totalCouponDiscounts as number,
+				totalAmountCollected: data[0].totalAmountCollected as number,
+				uniqueCustomersCount: data[0].uniqueCustomersCount as number,
+			};
+		} catch (err) {
+			throw new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	static async generateMonthStats(startMonth: Date, endMonth: Date) {
+		try {
+			const data = await CheckoutDB.aggregate([
+				{
+					$match: {
+						transaction_date: { $gte: startMonth, $lt: endMonth },
+					},
+				},
+				{
+					$group: {
+						_id: {
+							year: { $year: '$transaction_date' },
+							month: { $month: '$transaction_date' },
+						},
+						totalOrders: { $sum: 1 },
+						totalGrossSales: { $sum: '$gross_total' },
+						totalDiscounts: { $sum: '$discount' },
+						totalCouponDiscounts: { $sum: '$couponDiscount' },
+						totalAmountCollected: { $sum: '$total_amount' },
+						uniqueCustomers: { $addToSet: '$email' },
+					},
+				},
+				{
+					$project: {
+						year: '$_id.year',
+						month: '$_id.month',
+						totalOrders: 1,
+						totalGrossSales: 1,
+						totalDiscounts: 1,
+						totalCouponDiscounts: 1,
+						totalAmountCollected: 1,
+						uniqueCustomers: 1,
+					},
+				},
+				// {
+				// 	$group: {
+				// 		_id: { year: '$year', month: '$month' },
+				// 		totalOrders: { $sum: '$totalOrders' },
+				// 		totalGrossSales: { $sum: '$totalGrossSales' },
+				// 		totalDiscounts: { $sum: '$totalDiscounts' },
+				// 		totalCouponDiscounts: { $sum: '$totalCouponDiscounts' },
+				// 		totalAmountCollected: { $sum: '$totalAmountCollected' },
+				// 		uniqueCustomers: { $addToSet: '$uniqueCustomers' },
+				// 	},
+				// },
+				{
+					$sort: { '_id.year': -1, '_id.month': -1 }, // Sort by year and month in descending order
+				},
+				{
+					$project: {
+						_id: 0,
+						year: '$_id.year',
+						month: '$_id.month',
+						totalOrders: 1,
+						totalGrossSales: 1,
+						totalDiscounts: 1,
+						totalCouponDiscounts: 1,
+						totalAmountCollected: 1,
+						uniqueCustomersCount: { $size: '$uniqueCustomers' },
+					},
+				},
+			]);
+
+			if (data.length === 0) {
+				throw new Error();
+			}
+
+			return data.map((item) => ({
+				totalOrders: item.totalOrders as number,
+				totalGrossSales: item.totalGrossSales as number,
+				totalDiscounts: item.totalDiscounts as number,
+				totalCouponDiscounts: item.totalCouponDiscounts as number,
+				totalAmountCollected: item.totalAmountCollected as number,
+				year: item.year as number,
+				month: item.month as number,
+				uniqueCustomersCount: item.uniqueCustomersCount as number,
+			}));
+		} catch (err) {
+			throw new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	static async getAllOrders() {
 		const orders = await CheckoutDB.find().sort({ transaction_date: -1 });
 

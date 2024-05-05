@@ -4,6 +4,14 @@ import { Order } from '../views/pages/orders';
 import { OrderDetails } from '../views/pages/orders/components/OrderDetails';
 
 export default class CartService {
+	static async statistics() {
+		try {
+			const { data } = await APIInstance.get(`/statistics`);
+			return data;
+		} catch (err) {
+			return {};
+		}
+	}
 	static async abandonedCarts() {
 		try {
 			const { data } = await APIInstance.get(`/cart/abandoned-carts`);

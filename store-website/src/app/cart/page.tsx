@@ -1,6 +1,5 @@
 'use client';
 import { RemoveFromCart } from '@/components/products/buttons';
-import useAuth from '@/hooks/useAuth';
 import { SERVER_URL } from '@/lib/const';
 import { fetchCart } from '@/services/cart.service';
 import { addCoupon, details, removeCoupon, startCheckout } from '@/services/checkout.service';
@@ -25,9 +24,6 @@ import { IoCloseCircle } from 'react-icons/io5';
 const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
 
 export default function Cart() {
-	useAuth({
-		fallbackUrl: '/login?referrer=wishlist',
-	});
 	const toast = useToast();
 	const router = useRouter();
 

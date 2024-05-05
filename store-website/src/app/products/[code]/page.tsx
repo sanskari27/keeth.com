@@ -22,40 +22,46 @@ const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
 
 const TESTIMONIALS = [
 	{
-		message: `Absolutely stunning piece! I ordered a delicate diamond pendant for my
-													wife's birthday, and she was thrilled! The craftsmanship is impeccable,
-													and the diamonds sparkle brilliantly. The shipping was fast, and the
-													packaging was elegant. Highly recommend this store for anyone looking for
-													high-quality jewelry`,
-		rating: 4,
-		name: 'Gagan Mehta',
+		message: `I cannot express enough how thrilled I am with the exquisite craftsmanship of the necklace I purchased from Keeth Jewels. It's not just jewelry; it's wearable art that adds an elegant touch to any outfit. Thank you for creating such timeless pieces!`,
+		rating: 5,
+		name: 'Aryan Singh',
+		image:
+			'https://images.unsplash.com/photo-1533020686971-56a0e1d3c731?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTA0NjE5&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
 	},
 	{
-		message: `Absolutely stunning piece! I ordered a delicate diamond pendant for my
-													wife's birthday, and she was thrilled! The craftsmanship is impeccable,
-													and the diamonds sparkle brilliantly. The shipping was fast, and the
-													packaging was elegant. Highly recommend this store for anyone looking for
-													high-quality jewelry`,
+		message: `As someone who values both style and comfort, I couldn't be happier with the ring I purchased from Keeth Jewels. It's not only stunning to look at but also feels incredibly comfortable to wear all day. Truly a testament to their dedication to quality and design.`,
 		rating: 4,
-		name: 'Gagan Mehta',
+		name: 'Gulshan Kumar',
+		image:
+			'https://images.unsplash.com/photo-1622381355313-7e86da83e21f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTA0NTg5&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
 	},
 	{
-		message: `Absolutely stunning piece! I ordered a delicate diamond pendant for my
-													wife's birthday, and she was thrilled! The craftsmanship is impeccable,
-													and the diamonds sparkle brilliantly. The shipping was fast, and the
-													packaging was elegant. Highly recommend this store for anyone looking for
-													high-quality jewelry`,
+		message: `'ve been a longtime admirer of Keeth Jewels, and the necklace I recently purchased only solidified my admiration. It's evident that each piece is created with passion and precision, resulting in jewelry that is both stunning and durable. I look forward to adding more of their creations to my collection in the future.`,
 		rating: 4,
-		name: 'Gagan Mehta',
+		name: 'Sunanda Mishra',
+		image:
+			'https://images.unsplash.com/photo-1527610753782-d450c31409ce?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLWZlbWFsZXx8fHx8fDE3MTQ5MDQ2NDE&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
 	},
 	{
-		message: `Absolutely stunning piece! I ordered a delicate diamond pendant for my
-													wife's birthday, and she was thrilled! The craftsmanship is impeccable,
-													and the diamonds sparkle brilliantly. The shipping was fast, and the
-													packaging was elegant. Highly recommend this store for anyone looking for
-													high-quality jewelry`,
+		message: `From the moment I laid eyes on the bracelet I bought from Keeth Jewels, I knew it was something special. The attention to detail and the unique design make it a standout piece in my collection. I receive compliments every time I wear it, and I couldn't be more pleased with my purchase.`,
+		rating: 5,
+		name: 'Rocky Raj',
+		image:
+			'https://images.unsplash.com/photo-1577760960310-c49bbb09161e?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTA0NDI4&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
+	},
+	{
+		message: `I recently purchased a pair of earrings from Keeth Jewels, and I must say, they exceeded my expectations. The intricate design combined with the superior craftsmanship makes them a must-have accessory for any occasion. Thank you for offering such a beautiful selection of jewelry!`,
 		rating: 4,
-		name: 'Gagan Mehta',
+		name: 'Aslam Ahmed',
+		image:
+			'https://images.unsplash.com/photo-1614959019489-e88b6c0def00?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTA0Mzk0&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
+	},
+	{
+		message: `"As someone who appreciates the finer things in life, I was delighted to discover Keeth Jewels. The necklace I purchased not only reflects my personal style but also showcases the brand's commitment to excellence. I couldn't be happier with my purchase and highly recommend Keeth Jewels to anyone looking for top-quality jewelry.`,
+		rating: 5,
+		name: 'Anshu Dhal',
+		image:
+			'https://images.unsplash.com/photo-1599379695366-8fdbdb961d85?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTA0Mzc3&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
 	},
 ];
 
@@ -262,13 +268,13 @@ export default async function ProductDetails({
 							<CarouselContent>
 								{TESTIMONIALS.map((t) => (
 									<CarouselItem className='md:basis-1/3 p-8'>
-										<Card className='bg-white w-[350px] py-2 md:w-[450px]  shadow-xl drop-shadow-xl rounded-2xl overflow-hidden'>
+										<Card className='bg-white w-[350px] py-2 md:w-[420px]  shadow-xl drop-shadow-xl rounded-2xl overflow-hidden'>
 											<CardBody bgColor={'white'}>
 												<Box bgColor={'white'}>
 													<VStack width={'full'}>
 														<Text textAlign={'justify'}>{t.message}</Text>
 														<HStack width={'full'} justifyContent={'flex-start'}>
-															<Avatar src='https://bit.ly/dan-abramov' />
+															<Avatar src={t.image} />
 															<VStack width={'full'} alignItems={'flex-start'} px={'1rem'}>
 																<Text>{t.name}</Text>
 																<Text>

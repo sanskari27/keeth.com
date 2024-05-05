@@ -32,44 +32,42 @@ import {
 	CarouselPrevious,
 } from '@/components/ui/carousel';
 import { createSession, googleLogin } from '@/services/session.service';
-import { cookies } from 'next/headers';
 
 const HOME_TESTIMONIALS = [
 	{
-		message: `Absolutely stunning piece! I ordered a delicate diamond pendant for my
-													wife's birthday, and she was thrilled! The craftsmanship is impeccable,
-													and the diamonds sparkle brilliantly. The shipping was fast, and the
-													packaging was elegant. Highly recommend this store for anyone looking for
-													high-quality jewelry`,
+		message: `I ordered wedding ring for my wife and it was a masterpiece. She liked the design and the finishing of the product.It just felt the most attractive piece of art in our wedding.Thankyou Keeth Jewels for delievering such a good quality product.`,
 		rating: 4,
 		name: 'Gagan Mehta',
+		image:
+			'https://images.unsplash.com/photo-1521870749737-92928aafcc21?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTAzOTU2&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
 	},
 	{
-		message: `Absolutely stunning piece! I ordered a delicate diamond pendant for my
-													wife's birthday, and she was thrilled! The craftsmanship is impeccable,
-													and the diamonds sparkle brilliantly. The shipping was fast, and the
-													packaging was elegant. Highly recommend this store for anyone looking for
-													high-quality jewelry`,
-		rating: 4,
-		name: 'Gagan Mehta',
+		message: `I bought earrings for daily office wear and the product was so handy for the daily use jewellery. The collegues were just amazed with simplicity and subtleness of the product. Loved it.`,
+		rating: 5,
+		name: 'Aarav Goyal',
+		image:
+			'https://images.unsplash.com/photo-1609846685336-9cb06880bb48?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTA0MDE2&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
 	},
 	{
-		message: `Absolutely stunning piece! I ordered a delicate diamond pendant for my
-													wife's birthday, and she was thrilled! The craftsmanship is impeccable,
-													and the diamonds sparkle brilliantly. The shipping was fast, and the
-													packaging was elegant. Highly recommend this store for anyone looking for
-													high-quality jewelry`,
+		message: `The blend of fine art, tradition and modern design,this is what i really like about Keeth Jewels. The comfort for the daily use is awesome.`,
 		rating: 4,
-		name: 'Gagan Mehta',
+		name: 'Neha Sharma',
+		image:
+			'https://images.unsplash.com/photo-1541964941-510c462a8fcc?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLWZlbWFsZXx8fHx8fDE3MTQ5MDQyNjQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
 	},
 	{
-		message: `Absolutely stunning piece! I ordered a delicate diamond pendant for my
-													wife's birthday, and she was thrilled! The craftsmanship is impeccable,
-													and the diamonds sparkle brilliantly. The shipping was fast, and the
-													packaging was elegant. Highly recommend this store for anyone looking for
-													high-quality jewelry`,
+		message: `The diamond pendant from keeth jewels is outstanding in terms of design details and finish quality. Really Impressed from your work and timely delievery.`,
 		rating: 4,
-		name: 'Gagan Mehta',
+		name: 'Rahul Nanda',
+		image:
+			'https://images.unsplash.com/flagged/photo-1563713076139-d9f44e576124?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTA0MTEx&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
+	},
+	{
+		message: `Keeping the Indian Tradition alive with the pinch of futuristic design. Their jewellery is really pure and easy to wear. Such small gestures from thier side makes a good brand to buy from.`,
+		rating: 5,
+		name: 'Tanmay Reddy',
+		image:
+			'https://images.unsplash.com/photo-1606214443385-df9571086793?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTA0MjIy&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
 	},
 ];
 
@@ -299,7 +297,7 @@ export default async function Home({
 												<VStack width={'full'}>
 													<Text textAlign={'justify'}>{t.message}</Text>
 													<HStack width={'full'} justifyContent={'flex-start'}>
-														<Avatar src='https://bit.ly/dan-abramov' />
+														<Avatar src={t.image} />
 														<VStack width={'full'} alignItems={'flex-start'} px={'1rem'}>
 															<Text>{t.name}</Text>
 															<Text>

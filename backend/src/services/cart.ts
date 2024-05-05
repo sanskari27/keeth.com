@@ -57,9 +57,9 @@ export default class CartService {
 		return carts.map((c) => {
 			const id = c._id.toString();
 			const user = {
-				name: c.user.name ?? '',
-				phone: c.user.phone ?? '',
-				email: c.user.email ?? '',
+				name: c.user?.name ?? '',
+				phone: c.user?.phone ?? '',
+				email: c.user?.email ?? '',
 			};
 			const cart_items = c.cartItems.map((item: { quantity: number; product: IProduct }) => ({
 				product_id: item.product._id,

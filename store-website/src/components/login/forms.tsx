@@ -7,6 +7,7 @@ import {
 	Input,
 	InputGroup,
 	InputLeftElement,
+	InputRightElement,
 } from '@chakra-ui/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState } from 'react';
@@ -17,6 +18,9 @@ export function LoginForm() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [failed, setFailed] = useState(false);
+
+	const [show, setShow] = useState(false);
+	const handleClick = () => setShow(!show);
 	const searchParams = useSearchParams();
 
 	const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
@@ -64,12 +68,17 @@ export function LoginForm() {
 						<MdOutlinePassword color='gray.200' />
 					</InputLeftElement>
 					<Input
-						type='password'
+						type={show ? 'text' : 'password'}
 						name='password'
 						variant='filled'
 						placeholder='enter your password'
 						pl={'2rem'}
 					/>
+					<InputRightElement width='4.5rem'>
+						<Button h='1.75rem' size='sm' onClick={handleClick}>
+							{show ? 'Hide' : 'Show'}
+						</Button>
+					</InputRightElement>
 				</InputGroup>
 			</FormControl>
 			<Button
@@ -95,6 +104,8 @@ export function RegisterForm() {
 	const [loading, setLoading] = useState(false);
 	const [failed, setFailed] = useState(false);
 	const searchParams = useSearchParams();
+	const [show, setShow] = useState(false);
+	const handleClick = () => setShow(!show);
 
 	const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -144,12 +155,17 @@ export function RegisterForm() {
 						<MdOutlinePassword color='gray.200' />
 					</InputLeftElement>
 					<Input
-						type='password'
+						type={show ? 'text' : 'password'}
 						name='password'
 						variant='filled'
 						placeholder='enter your password'
 						pl={'2rem'}
 					/>
+					<InputRightElement width='4.5rem'>
+						<Button h='1.75rem' size='sm' onClick={handleClick}>
+							{show ? 'Hide' : 'Show'}
+						</Button>
+					</InputRightElement>
 				</InputGroup>
 			</FormControl>
 			<InputGroup>

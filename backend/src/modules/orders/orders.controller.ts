@@ -6,6 +6,20 @@ import DateUtils from '../../utils/DateUtils';
 import { Respond } from '../../utils/ExpressUtils';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
+async function statistics(req: Request, res: Response, next: NextFunction) {
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			overall: await CheckoutService.generateTotalStats(),
+			monthly: await CheckoutService.generateMonthStats(
+				new Date('2024-01-01'),
+				new Date('2050-01-01')
+			),
+		},
+	});
+}
+
 async function listAllOrders(req: Request, res: Response, next: NextFunction) {
 	let list = await CheckoutService.getAllOrders();
 
@@ -178,6 +192,7 @@ const Controller = {
 	changeOrderStatus,
 	cancelReturnRequest,
 	paymentCompleted,
+	statistics,
 };
 
 export default Controller;

@@ -3,11 +3,12 @@ import CartRoute from './cart/cart.route';
 import CheckoutRoute from './checkout/checkout.route';
 import CollectionRoute from './collection/collection.route';
 import CouponRoute from './coupon/coupon.route';
+import OrdersController from './orders/orders.controller';
+import OrdersRoute from './orders/orders.route';
 import ProductGroupRoute from './product-group/product-group.route';
 import ProductRoute from './product/product.route';
 import SessionRoute from './session/session.route';
 import WishlistRoute from './wishlist/wishlist.route';
-import OrdersRoute from './orders/orders.route';
 
 import { RESEND_FEEDBACK_EMAIL } from '../config/const';
 import CustomError, { COMMON_ERRORS } from '../errors';
@@ -29,6 +30,7 @@ router.use('/products', ProductRoute);
 router.use('/sessions', SessionRoute);
 router.use('/wishlist', WishlistRoute);
 router.use('/orders', OrdersRoute);
+router.get('/statistics', OrdersController.statistics);
 
 router.use('/phonepe/callback', PhonePeProvider.Callbacks.transactionCallback);
 

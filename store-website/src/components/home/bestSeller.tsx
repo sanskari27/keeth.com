@@ -8,6 +8,7 @@ import {
 import { SERVER_URL } from '@/lib/const';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 async function getData() {
 	try {
@@ -40,43 +41,45 @@ export default async function BestSeller() {
 					<CarouselContent>
 						{products.map((product) => (
 							<CarouselItem key={product.productCode} className='md:basis-1/3 lg:basis-[27%] p-8'>
-								<Box
-									rounded={'2xl'}
-									bgColor={'RGBA(0, 0, 0, 0.1)'}
-									className='w-[250px] h-[280px] md:w-[380px] md:h-[430px] shadow-md drop-shadow-md'
-									p='25px'
-								>
-									<Flex
+								<Link className='w-full' href={`/products/${product.productCode}`}>
+									<Box
 										rounded={'2xl'}
-										bgColor={'white'}
-										aspectRatio={1 / 1}
-										width={'full'}
-										justifyContent={'center'}
-										alignItems={'center'}
+										bgColor={'RGBA(0, 0, 0, 0.1)'}
+										className='w-[250px] h-[280px] md:w-[380px] md:h-[430px] shadow-md drop-shadow-md'
+										p='25px'
 									>
-										<Image
-											src={SERVER_URL + `/media/${product.image}`}
-											alt={product.productCode}
-											width={500}
-											height={500}
-											className='rounded-2xl object-cover mix-blend-multiply '
-										/>
-									</Flex>
-									<Flex
-										width={'full'}
-										justifyContent={'space-between'}
-										alignItems={'center'}
-										marginTop={'1rem'}
-									>
-										<Text
-											className='aura-bella text-medium text-2xl md:text-3xl'
-											textTransform={'uppercase'}
+										<Flex
+											rounded={'2xl'}
+											bgColor={'white'}
+											aspectRatio={1 / 1}
+											width={'full'}
+											justifyContent={'center'}
+											alignItems={'center'}
 										>
-											{product.productCode}
-										</Text>
-										{/* <Text className='text-lg ms:text-2xl'>A17610</Text> */}
-									</Flex>
-								</Box>
+											<Image
+												src={SERVER_URL + `/media/${product.image}`}
+												alt={product.productCode}
+												width={500}
+												height={500}
+												className='rounded-2xl object-cover mix-blend-multiply '
+											/>
+										</Flex>
+										<Flex
+											width={'full'}
+											justifyContent={'space-between'}
+											alignItems={'center'}
+											marginTop={'1rem'}
+										>
+											<Text
+												className='aura-bella text-medium text-2xl md:text-3xl'
+												textTransform={'uppercase'}
+											>
+												{product.productCode}
+											</Text>
+											{/* <Text className='text-lg ms:text-2xl'>A17610</Text> */}
+										</Flex>
+									</Box>
+								</Link>
 							</CarouselItem>
 						))}
 					</CarouselContent>

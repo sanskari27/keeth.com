@@ -196,7 +196,7 @@ export default function FilterBar() {
 						<Slider
 							aria-label='slider-ex-4'
 							min={0}
-							max={1000000}
+							max={Number(data['max_price'] ?? 1000000)}
 							defaultValue={Number(searchParams.get('min_price')) ?? 0}
 							onChange={(val) => setValue('min_price', val.toString())}
 						>
@@ -215,7 +215,7 @@ export default function FilterBar() {
 						</Flex>
 						<Slider
 							aria-label='slider-ex-4'
-							min={1000}
+							min={Number(data['min_price'] ?? 1000)}
 							max={1000000}
 							defaultValue={Number(searchParams.get('max_price') ?? 1000000) ?? 1000000}
 							onChange={(val) => setValue('max_price', val.toString())}
