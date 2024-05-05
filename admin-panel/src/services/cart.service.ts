@@ -9,7 +9,17 @@ export default class CartService {
 			const { data } = await APIInstance.get(`/statistics`);
 			return data;
 		} catch (err) {
-			return {};
+			return {
+				overall: {
+					totalOrders: 0,
+					totalGrossSales: 0,
+					totalDiscounts: 0,
+					totalCouponDiscounts: 0,
+					totalAmountCollected: 0,
+					uniqueCustomersCount: 0,
+				},
+				monthly: [],
+			};
 		}
 	}
 	static async abandonedCarts() {

@@ -37,7 +37,17 @@ type StatData = {
 
 export default function Dashboard() {
 	const [loading, setLoading] = useState(true);
-	const [state, setState] = useState<StatData>({} as StatData);
+	const [state, setState] = useState<StatData>({
+		overall: {
+			totalOrders: 0,
+			totalGrossSales: 0,
+			totalDiscounts: 0,
+			totalCouponDiscounts: 0,
+			totalAmountCollected: 0,
+			uniqueCustomersCount: 0,
+		},
+		monthly: [],
+	} as StatData);
 
 	useEffect(() => {
 		setLoading(true);
@@ -63,7 +73,7 @@ export default function Dashboard() {
 
 	const graphData = [
 		['Year', 'Sales'],
-		...(state.monthly
+		...(state.monthly && state.monthly.length > 0
 			? state.monthly
 					.reverse()
 					.map((item) =>
@@ -71,8 +81,9 @@ export default function Dashboard() {
 							? [`${item.month}/${item.year}`, item.totalAmountCollected]
 							: [`0${item.month}/${item.year}`, item.totalAmountCollected]
 					)
-			: []),
+			: [['No Data', 0]]),
 	];
+	console.log(graphData);
 
 	if (loading) {
 		return <Loading isLoaded={false} />;
