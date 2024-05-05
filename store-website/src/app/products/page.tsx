@@ -22,7 +22,7 @@ async function getData(query: {
 }) {
 	try {
 		const res = await fetch(SERVER_URL + `/products?` + new URLSearchParams(query), {
-			next: { revalidate: 3600 },
+			next: { revalidate: 60 },
 		});
 		if (!res.ok) {
 			return [];
@@ -100,7 +100,7 @@ export default async function ProductPage({
 											className='absolute -left-3 -top-3 -rotate-12 w-[70px] aura-bella rounded-full h-[70px] bg-primary-brown text-white font-bold tracking-widest'
 											hidden={product.discount === 0}
 										>
-											{(product.discount * 100) / product.price}% <br /> Off
+											{((product.discount * 100) / product.price).toFixed(2)}% <br /> Off
 										</Center>
 										<Flex
 											rounded={'2xl'}
@@ -116,11 +116,11 @@ export default async function ProductPage({
 												alt={product.productCode}
 												width={500}
 												height={500}
-												className='rounded-2xl object-cover mix-blend-multiply group-hover:hidden'
+												className='rounded-2xl w-full h-full object-cover mix-blend-multiply group-hover:hidden'
 											/>
 											<VideoPlayer
 												src={SERVER_URL + `/media/${product.video}`}
-												className='hidden group-hover:block'
+												className='hidden w-full h-full group-hover:block'
 												playOnHover
 												autoPlay={false}
 												controls={false}

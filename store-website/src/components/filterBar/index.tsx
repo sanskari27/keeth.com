@@ -40,7 +40,7 @@ export default function FilterBar() {
 	const [tags, setTags] = useState<string[]>([]);
 
 	useEffect(() => {
-		fetch(SERVER_URL + `/collections`, { next: { revalidate: 3600 } }).then(async (res) => {
+		fetch(SERVER_URL + `/collections`, { next: { revalidate: 60 } }).then(async (res) => {
 			if (!res.ok) return;
 			const data = await res.json();
 

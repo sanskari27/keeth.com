@@ -77,7 +77,7 @@ export default function ProductPreview({ images, videos }: { images: string[]; v
 										alt={'Product Image'}
 										width={500}
 										height={500}
-										className='rounded-2xl object-contain mix-blend-multiply object-center'
+										className='rounded-2xl h-full w-full object-cover mix-blend-multiply object-center'
 										priority
 									/>
 								</Box>
@@ -102,7 +102,7 @@ export default function ProductPreview({ images, videos }: { images: string[]; v
 										src={SERVER_URL + `/media/${item}`}
 										autoPlay={true}
 										controls={false}
-										className='object-cover'
+										className='object-cover w-full h-full'
 									/>
 								</Box>
 							</CarouselItem>

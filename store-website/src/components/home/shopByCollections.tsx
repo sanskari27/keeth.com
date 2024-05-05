@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 async function getData() {
 	try {
-		const res = await fetch(SERVER_URL + `/collections`, { next: { revalidate: 3600 } });
+		const res = await fetch(SERVER_URL + `/collections`, { next: { revalidate: 60 } });
 		if (!res.ok) {
 			return [];
 		}

@@ -99,7 +99,10 @@ export default function Footer() {
 									Follow Us on
 								</Text>
 								<Flex marginTop={'1rem'} gap={'1rem'} className='justify-center md:justify-start'>
-									<Link href={'https://www.instagram.com/sanskar.i274/'} target='_blank'>
+									<Link
+										href={'https://www.facebook.com/profile.php?id=61558614548477'}
+										target='_blank'
+									>
 										<FaFacebook
 											style={{
 												height: '2rem',
@@ -108,7 +111,7 @@ export default function Footer() {
 											}}
 										/>
 									</Link>
-									<Link href={'https://www.instagram.com/sanskar.i274/'} target='_blank'>
+									<Link href={'https://www.instagram.com/keeth_jewels'} target='_blank'>
 										<FaInstagram
 											style={{
 												height: '2rem',

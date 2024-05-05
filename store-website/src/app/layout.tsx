@@ -1,9 +1,9 @@
 import Footer from '@/components/footer';
+import Navbar from '@/components/navbar';
 import type { Metadata } from 'next';
 import { DM_Sans } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
-import Navbar from '@/components/navbar';
 
 const dm_sans = DM_Sans({ subsets: ['latin'] });
 
@@ -20,7 +20,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={dm_sans.className} style={{ backgroundColor: '#FDFDFD' }}>
+			<body
+				className={dm_sans.className + ' overflow-x-hidden'}
+				style={{ backgroundColor: '#FDFDFD' }}
+			>
 				<Providers>
 					<Navbar />
 					{children}

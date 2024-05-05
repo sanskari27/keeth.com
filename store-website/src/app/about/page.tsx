@@ -42,7 +42,7 @@ export default async function About() {
 					</Text>
 					<Text marginTop={'1rem'}>
 						Thank you for choosing <span className='text-[#DB3E42] px-1'>Keeth</span> to be a part
-						of your story. Together, let's adorn the world with beauty, one jewel at a time.
+						of your story. Together, let's adorn the world with beauty.
 					</Text>
 				</Box>
 			</VStack>

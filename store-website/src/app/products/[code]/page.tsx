@@ -68,7 +68,7 @@ const TESTIMONIALS = [
 async function getData(code: string) {
 	try {
 		const res = await fetch(SERVER_URL + `/products/product-code/${code}`, {
-			next: { revalidate: 3600 },
+			next: { revalidate: 60 },
 		});
 
 		if (!res.ok) {
@@ -259,7 +259,7 @@ export default async function ProductDetails({
 				</Box>
 
 				{/* ------------------------------------------------------------------Testimonials   ------------------------------------------------*/}
-				<Box py={'3%'} className='px-[5%] md:px-[7%]'>
+				<Box py={'3%'} className='px-[5%] md:px-[7%] mt-8'>
 					<Text className='aura-bella font-thin text-primary-dark_red text-3xl md:text-4xl'>
 						What Our Customer says
 					</Text>
