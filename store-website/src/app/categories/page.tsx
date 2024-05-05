@@ -40,7 +40,7 @@ export default async function Categories() {
 				pb={'1rem'}
 				gap={'1rem'}
 				alignItems={'flex-start'}
-				className='px-[5%] md:px-[7%] '
+				className='px-[5%] md:px-[7%] min-h-screen'
 			>
 				<Text className='w-full text-2xl md:text-4xl aura-bella text-center md:text-left'>
 					All Categories

@@ -163,7 +163,7 @@ export default function Orders() {
 	};
 
 	return (
-		<Box pt={'100px'} px={'5%'}>
+		<Box pt={'100px'} px={'5%'} minHeight={'100vh'}>
 			<Heading>
 				<Text className='aura-bella text-2xl md:text-4xl font-light' color={'#DB3E42'}>
 					My Orders
