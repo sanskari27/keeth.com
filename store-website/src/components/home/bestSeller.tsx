@@ -61,7 +61,7 @@ export default async function BestSeller() {
 												alt={product.productCode}
 												width={500}
 												height={500}
-												className='rounded-2xl object-cover mix-blend-multiply '
+												className='rounded-2xl w-full h-full object-cover mix-blend-multiply '
 											/>
 										</Flex>
 										<Flex
