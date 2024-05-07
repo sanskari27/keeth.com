@@ -102,7 +102,12 @@ async function login(req: Request, res: Response, next: NextFunction) {
 	try {
 		const [token, new_session] = await SessionService.login(email, password);
 
-		res.clearCookie(SESSION_COOKIE);
+		res.clearCookie(SESSION_COOKIE, {
+			sameSite: 'strict',
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+			domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+		});
 		res.cookie(AUTH_COOKIE, token, {
 			sameSite: 'strict',
 			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
@@ -143,7 +148,12 @@ async function googleLogin(req: Request, res: Response, next: NextFunction) {
 		const email = payload['email'];
 		const [token, new_session] = await SessionService.loginOrRegister(email, GOOGLE_AUTH_PASSWORD);
 
-		res.clearCookie(SESSION_COOKIE);
+		res.clearCookie(SESSION_COOKIE, {
+			sameSite: 'strict',
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+			domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+		});
 		res.cookie(AUTH_COOKIE, token, {
 			sameSite: 'strict',
 			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
@@ -200,9 +210,24 @@ async function validateAuth(req: Request, res: Response, next: NextFunction) {
 }
 
 async function logout(req: Request, res: Response, next: NextFunction) {
-	res.clearCookie(SESSION_COOKIE);
-	res.clearCookie(AUTH_COOKIE);
-	res.clearCookie(ADMIN_AUTH_COOKIE);
+	res.clearCookie(SESSION_COOKIE, {
+		sameSite: 'strict',
+		httpOnly: IS_PRODUCTION,
+		secure: IS_PRODUCTION,
+		domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+	});
+	res.clearCookie(AUTH_COOKIE, {
+		sameSite: 'strict',
+		httpOnly: IS_PRODUCTION,
+		secure: IS_PRODUCTION,
+		domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+	});
+	res.clearCookie(ADMIN_AUTH_COOKIE, {
+		sameSite: 'strict',
+		httpOnly: IS_PRODUCTION,
+		secure: IS_PRODUCTION,
+		domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+	});
 	return Respond({
 		res,
 		status: 200,

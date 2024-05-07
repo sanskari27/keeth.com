@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { TRANSACTION_COOKIE } from '../../config/const';
+import { IS_PRODUCTION, TRANSACTION_COOKIE } from '../../config/const';
 import CustomError, { ERRORS } from '../../errors';
 import { CartService } from '../../services';
 import { Respond } from '../../utils/ExpressUtils';
@@ -42,7 +42,12 @@ async function cart(req: Request, res: Response, next: NextFunction) {
 async function addToCart(req: Request, res: Response, next: NextFunction) {
 	const session = req.locals.session;
 	const product_id = req.locals.id;
-	res.clearCookie(TRANSACTION_COOKIE);
+	res.clearCookie(TRANSACTION_COOKIE, {
+		sameSite: 'strict',
+		httpOnly: IS_PRODUCTION,
+		secure: IS_PRODUCTION,
+		domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+	});
 
 	try {
 		await new CartService(session).addToCart(product_id);
@@ -57,7 +62,12 @@ async function addToCart(req: Request, res: Response, next: NextFunction) {
 
 async function decreaseQuantityFromCart(req: Request, res: Response, next: NextFunction) {
 	const session = req.locals.session;
-	res.clearCookie(TRANSACTION_COOKIE);
+	res.clearCookie(TRANSACTION_COOKIE, {
+		sameSite: 'strict',
+		httpOnly: IS_PRODUCTION,
+		secure: IS_PRODUCTION,
+		domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+	});
 	const product_id = req.locals.id;
 	try {
 		await new CartService(session).removeQuantityFromCart(product_id);
@@ -72,7 +82,12 @@ async function decreaseQuantityFromCart(req: Request, res: Response, next: NextF
 
 async function removeFromCart(req: Request, res: Response, next: NextFunction) {
 	const session = req.locals.session;
-	res.clearCookie(TRANSACTION_COOKIE);
+	res.clearCookie(TRANSACTION_COOKIE, {
+		sameSite: 'strict',
+		httpOnly: IS_PRODUCTION,
+		secure: IS_PRODUCTION,
+		domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+	});
 	const product_id = req.locals.id;
 	try {
 		await new CartService(session).removeFromCart(product_id);
