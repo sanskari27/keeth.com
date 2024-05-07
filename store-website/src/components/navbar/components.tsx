@@ -4,7 +4,7 @@ import { KEETH_LOGO } from '@/lib/const';
 import { isLoggedIn, logOut } from '@/services/session.service';
 import { Text } from '@chakra-ui/react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { BsBoxSeam } from 'react-icons/bs';
 import { FaRegHeart, FaRegUserCircle } from 'react-icons/fa';
@@ -12,6 +12,7 @@ import { FiMenu, FiShoppingCart } from 'react-icons/fi';
 
 const NavbarComponent = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
 	const pathname = usePathname();
+	const router = useRouter();
 
 	const [isNavbarExpanded, setNavbarExpanded] = useState(false);
 	const [_isAuthenticated, setAuthenticated] = useState(isAuthenticated);
@@ -29,6 +30,8 @@ const NavbarComponent = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
 	const handleLogout = async () => {
 		await logOut();
 		setAuthenticated(false);
+
+		router.replace('/');
 	};
 
 	return (
