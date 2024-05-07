@@ -6,36 +6,15 @@ import {
 	CarouselPrevious,
 } from '@/components/ui/carousel';
 import { SERVER_URL } from '@/lib/const';
+import { getCollections } from '@/services/product.service';
 import { Box, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-async function getData() {
-	try {
-		const res = await fetch(SERVER_URL + `/collections`, { next: { revalidate: 60 } });
-		if (!res.ok) {
-			return [];
-		}
-
-		const data = await res.json();
-
-		const collections = data.collections as {
-			id: string;
-			name: string;
-			tags: string[];
-			image: string;
-			visibleAtHome: boolean;
-			productCodes: string[];
-		}[];
-
-		return collections.filter((c) => c.visibleAtHome);
-	} catch (err) {
-		return [];
-	}
-}
+export const revalidate = 3600;
 
 export default async function ShopByCollections() {
-	const collections = await getData();
+	const collections = await getCollections();
 	return (
 		<Box px={'3%'} py={'1.5%'}>
 			<Text className='aura-bella font-thin text-primary-dark_red text-4xl'>

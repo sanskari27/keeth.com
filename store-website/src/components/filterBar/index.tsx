@@ -1,7 +1,8 @@
 'use client';
-import { SERVER_URL, WEBSITE_URL } from '@/lib/const';
+import { WEBSITE_URL } from '@/lib/const';
 import { BiReset } from 'react-icons/bi';
 
+import { getCollections } from '@/services/product.service';
 import {
 	Box,
 	Button,
@@ -40,18 +41,7 @@ export default function FilterBar() {
 	const [tags, setTags] = useState<string[]>([]);
 
 	useEffect(() => {
-		fetch(SERVER_URL + `/collections`, { next: { revalidate: 60 } }).then(async (res) => {
-			if (!res.ok) return;
-			const data = await res.json();
-
-			const collections = data.collections as {
-				id: string;
-				name: string;
-				image: string;
-				tags: string[];
-				visibleAtHome: boolean;
-				productCodes: string[];
-			}[];
+		getCollections().then((collections) => {
 			setCollections(collections.map((c) => ({ id: c.id, name: c.name })));
 
 			const tags = collections

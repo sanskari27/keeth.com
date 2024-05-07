@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { IS_PRODUCTION, TRANSACTION_COOKIE } from '../../config/const';
 import CustomError, { COMMON_ERRORS, ERRORS } from '../../errors';
 import { CartService, CheckoutService } from '../../services';
 import { Respond } from '../../utils/ExpressUtils';
@@ -38,10 +39,27 @@ async function details(req: Request, res: Response, next: NextFunction) {
 
 async function startCheckout(req: Request, res: Response, next: NextFunction) {
 	const session = req.locals.session;
+	const _transaction_id = req.cookies[TRANSACTION_COOKIE];
+	if (await CheckoutService.validTransactionID(_transaction_id)) {
+		return Respond({
+			res,
+			status: 200,
+			data: {
+				transaction_id: _transaction_id,
+			},
+		});
+	}
 
 	try {
 		const cart = new CartService(session);
 		const transaction_id = await CheckoutService.startCheckout(cart);
+
+		res.cookie(TRANSACTION_COOKIE, transaction_id, {
+			sameSite: 'strict',
+			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+		});
 
 		return Respond({
 			res,

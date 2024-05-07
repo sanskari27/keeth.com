@@ -56,8 +56,8 @@ export function AddToCart({ id }: { id: string }) {
 	);
 }
 
-export function WishlistButton({ id }: { id: string }) {
-	const [isWishlist, setWishlist] = useState(false);
+export function WishlistButton({ id, defaultVal }: { id: string; defaultVal?: boolean }) {
+	const [isWishlist, setWishlist] = useState(defaultVal ?? false);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -91,11 +91,12 @@ export function WishlistButton({ id }: { id: string }) {
 	);
 }
 
-export function RemoveFromCart({ id, onRemove }: { id: string; onRemove?: () => void }) {
+export function RemoveFromCart({ id }: { id: string }) {
+	const router = useRouter();
 	const handleClick = async () => {
 		const success = await removeFromCart(id);
 		if (success) {
-			onRemove?.();
+			router.refresh();
 		}
 	};
 

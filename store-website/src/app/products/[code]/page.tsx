@@ -11,14 +11,18 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from '@/components/ui/carousel';
-import { QUOTES, SERVER_URL } from '@/lib/const';
+import { QUOTES } from '@/lib/const';
+import { productDetails } from '@/services/product.service';
 import { Avatar, Box, Card, CardBody, Flex, HStack, Text, VStack } from '@chakra-ui/react';
+import { Metadata } from 'next';
 import { DM_Mono } from 'next/font/google';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
+
+export const revalidate = 3600;
 
 const TESTIMONIALS = [
 	{
@@ -65,52 +69,63 @@ const TESTIMONIALS = [
 	},
 ];
 
-async function getData(code: string) {
-	try {
-		const res = await fetch(SERVER_URL + `/products/product-code/${code}`, {
-			next: { revalidate: 60 },
-		});
-
-		if (!res.ok) {
-			return [];
-		}
-
-		const data = await res.json();
-
-		const products = data.products as {
-			id: string;
-			productCode: string;
-			name: string;
-			description: string;
-			details: string;
-			pricing_bifurcation: string;
-			images: string[];
-			videos: string[];
-			tags: string[];
-			size: string | null;
-			metal_color: string;
-			metal_type: string;
-			metal_quality: string;
-			diamond_type: string | null;
-			price: number;
-			discount: number;
-			discontinued: boolean;
-			listedOn: Date;
-		}[];
-		return products;
-	} catch (err) {
-		return [];
-	}
-}
-
-export default async function ProductDetails({
-	params,
-	searchParams,
-}: {
+type Props = {
 	params: { code: string };
 	searchParams: { [key: string]: string | string[] | undefined };
-}) {
-	const products = await getData(params.code);
+};
+
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+	// read route params
+
+	const products = await productDetails(params.code);
+
+	if (!products.length) {
+		return {
+			title: 'Product not found • Keeth',
+		};
+	}
+
+	const filtered = products.filter((p) => {
+		if (searchParams['productId']) {
+			return p.id === searchParams['productId'];
+		}
+		if (searchParams['metal_color']) {
+			if (p.metal_color !== searchParams['metal_color']) {
+				return false;
+			}
+		} else if (searchParams['metal_quality']) {
+			if (p.metal_quality !== searchParams['metal_quality']) {
+				return false;
+			}
+		}
+		if (searchParams['diamond_type']) {
+			if (p.diamond_type !== searchParams['diamond_type']) {
+				return false;
+			}
+		}
+		if (searchParams['size']) {
+			if (p.size !== searchParams['size']) {
+				return false;
+			}
+		}
+		return true;
+	});
+
+	if (filtered.length === 0) {
+		return {
+			title: 'Product not found • Keeth',
+		};
+	}
+
+	const product = filtered[0];
+
+	return {
+		title: `${product.name} • Keeth`,
+	};
+}
+
+export default async function ProductDetails({ params, searchParams }: Props) {
+	const products = await productDetails(params.code);
 
 	if (!products.length) {
 		redirect('/not-found');
@@ -266,8 +281,8 @@ export default async function ProductDetails({
 					<Box px={'1%'} marginTop={'-1rem'} position={'relative'}>
 						<Carousel>
 							<CarouselContent>
-								{TESTIMONIALS.map((t) => (
-									<CarouselItem className='md:basis-1/3 p-8'>
+								{TESTIMONIALS.map((t,index) => (
+									<CarouselItem className='md:basis-1/3 p-8' key={index}>
 										<Card className='bg-white w-[350px] py-2 md:w-[420px]  shadow-xl drop-shadow-xl rounded-2xl overflow-hidden'>
 											<CardBody bgColor={'white'}>
 												<Box bgColor={'white'}>

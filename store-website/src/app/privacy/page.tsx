@@ -1,5 +1,9 @@
 import { AbsoluteCenter, Box, Divider, Text, VStack } from '@chakra-ui/react';
 
+export const metadata = {
+	title: 'Privacy Policy • Keeth',
+};
+
 export default async function PrivacyPolicy() {
 	return (
 		<section>

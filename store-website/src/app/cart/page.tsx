@@ -1,139 +1,29 @@
-'use client';
 import { RemoveFromCart } from '@/components/products/buttons';
+import { fetchCart } from '@/helpers/cartHelper';
+import { details } from '@/helpers/checkoutHelper';
 import { SERVER_URL } from '@/lib/const';
-import { fetchCart } from '@/services/cart.service';
-import { addCoupon, details, removeCoupon, startCheckout } from '@/services/checkout.service';
-import {
-	Box,
-	Button,
-	Divider,
-	Flex,
-	Heading,
-	Input,
-	Text,
-	VStack,
-	useToast,
-} from '@chakra-ui/react';
-import { DM_Mono } from 'next/font/google';
+import { Box, Divider, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
-import { IoCloseCircle } from 'react-icons/io5';
+import CheckoutButton from './_component/checkout';
+import PromoCode from './_component/promoCode';
 
-const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
+export const revalidate = 1;
 
-export default function Cart() {
-	const toast = useToast();
-	const router = useRouter();
+export const metadata = {
+	title: 'My Cart • Keeth',
+};
 
-	const [list, setList] = useState<
-		{
-			productId: string;
-			productCode: string;
-			name: string;
-			description: string;
-			details: string;
-			price: number;
-			size: string | null;
-			metal_type: string;
-			metal_quality: string;
-			metal_color: string;
-			diamond_type: string | null;
-			discount: number;
-			quantity: number;
-			image: string | null;
-		}[]
-	>([]);
+export default async function Cart() {
+	const { items: list, summary: _summary } = await fetchCart();
+	const _details = await details();
 
-	const [loading, setLoading] = useState(true);
-	const [promoCode, setPromoCode] = useState('');
-	const [transaction_id, setTransactionId] = useState<string | null>(null);
-	const [summary, setSummary] = useState({
-		total: 0,
-		discount: 0,
-		quantity: 0,
-		gross: 0,
-	});
-
-	const fetchData = useCallback(() => {
-		fetchCart()
-			.then(({ items, summary }) => {
-				setList(items);
-				setSummary(summary);
-			})
-			.finally(() => setLoading(false));
-		setTransactionId(null);
-	}, []);
-
-	const handleProceedToCheckout = async () => {
-		let id: string | null = transaction_id;
-		if (!id) {
-			id = await startCheckout();
-			if (!id) {
-				return toast({
-					status: 'error',
-					position: 'top',
-					title: 'Something went wrong.',
-					description: 'Please try again later.',
-				});
-			}
-			setTransactionId(id);
-		}
-
-		router.push(`/checkout/${id}`);
+	const summary = {
+		total: _details ? _details.amount : _summary.total,
+		discount: _details ? _details.discount : _summary.discount,
+		gross: _details ? _details.gross_amount : _summary.gross,
+		quantity: _summary.quantity,
 	};
-
-	const handleAddCoupon = async () => {
-		let id: string | null = transaction_id;
-		if (!id) {
-			id = await startCheckout();
-			if (!id) {
-				return toast({
-					status: 'error',
-					position: 'top',
-					title: 'Something went wrong.',
-					description: 'Please try again later.',
-				});
-			}
-			setTransactionId(id);
-		}
-		const success = await addCoupon(id, promoCode);
-		if (success) {
-			details(id).then((data) => {
-				if (!data) return;
-				setSummary((prev) => ({
-					...prev,
-					discount: data.discount,
-					gross: data.gross_amount,
-					total: data.amount,
-				}));
-			});
-		}
-	};
-
-	const handleRemoveCoupon = async () => {
-		if (!transaction_id) return;
-
-		setPromoCode('');
-
-		const success = await removeCoupon(transaction_id);
-		if (success) {
-			details(transaction_id).then((data) => {
-				if (!data) return;
-				setSummary((prev) => ({
-					...prev,
-					discount: data.discount,
-					gross: data.gross_amount,
-					total: data.amount,
-				}));
-			});
-		}
-	};
-
-	useEffect(() => {
-		fetchData();
-	}, [fetchData]);
 
 	return (
 		<Box pt={'100px'} px={'5%'} minHeight={'100vh'}>
@@ -218,14 +108,14 @@ export default function Cart() {
 									</Link>
 									<Flex className='flex-col md:flex-row gap-3 w-full  md:w-[400px]'>
 										<Flex className='gap-3'>
-											<RemoveFromCart id={item.productId} onRemove={fetchData} />
+											<RemoveFromCart id={item.productId} />
 										</Flex>
 									</Flex>
 								</Flex>
 							</Flex>
 						))}
 
-						{list.length === 0 && !loading && (
+						{list.length === 0 && (
 							<Box paddingY={'2rem'} className='w-full'>
 								<Link href={'/products'} className='w-full'>
 									<Text fontWeight={'medium'} fontSize={'xl'} textAlign={'center'}>
@@ -253,35 +143,7 @@ export default function Cart() {
 						<Text>₹ {summary.gross.toLocaleString()}</Text>
 					</Flex>
 					<Divider className='border !border-black/40 border-dashed my-4' />
-					<Flex
-						width={'full'}
-						justifyContent={'space-between'}
-						alignItems={'center'}
-						bgColor={'#F4F4F4'}
-						rounded={'lg'}
-						paddingY={'0.75rem'}
-						paddingLeft={'1.5rem'}
-						paddingRight={'0.5rem'}
-					>
-						<Text>Promocode</Text>
-						<Input
-							width={'55%'}
-							variant='outline'
-							textAlign={'center'}
-							placeholder={`ENTER CODE`}
-							className={dm_mono.className + ' '}
-							value={promoCode}
-							onChange={(e) => setPromoCode(e.target.value)}
-							onKeyDown={(e) => {
-								if (e.key === 'Enter') {
-									handleAddCoupon();
-								}
-							}}
-						/>
-						{promoCode.length ? (
-							<IoCloseCircle color='red' fontSize={'1.5rem'} onClick={handleRemoveCoupon} />
-						) : null}
-					</Flex>
+					<PromoCode />
 
 					<Divider className='border !border-black/40 border-dashed my-4' />
 					<Flex width={'full'} justifyContent={'space-between'} alignItems={'center'}>
@@ -299,18 +161,7 @@ export default function Cart() {
 						alignItems={'center'}
 						className='mb-4'
 					>
-						<Button
-							width={'full'}
-							py='0.75rem'
-							bgColor={'#E3BD9E'}
-							_hover={{
-								bgColor: '#CEA98C',
-							}}
-							color={'white'}
-							onClick={handleProceedToCheckout}
-						>
-							Proceed to Checkout
-						</Button>
+						<CheckoutButton />
 					</Flex>
 				</Box>
 			</Flex>

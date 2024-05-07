@@ -1,33 +1,22 @@
-'use client';
 import { AddToCart, WishlistButton } from '@/components/products/buttons';
-import useAuth from '@/hooks/useAuth';
+import verifyAuth from '@/helpers/verifyAuth';
+import { fetchWishlist } from '@/helpers/wishlistHelper';
 import { SERVER_URL } from '@/lib/const';
-import { fetchWishlist } from '@/services/wishlist.service';
 import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
-export default function Wishlist() {
-	useAuth({
+export const metadata: Metadata = {
+	title: 'Wishlist • Keeth',
+};
+
+export default async function Wishlist() {
+	await verifyAuth({
 		fallbackUrl: '/login?referrer=wishlist',
 	});
 
-	const [list, setList] = useState<
-		{
-			productId: string;
-			productCode: string;
-			name: string;
-			description: string;
-			price: number;
-			discount: number;
-			image: string | null;
-		}[]
-	>([]);
-
-	useEffect(() => {
-		fetchWishlist().then(setList);
-	}, []);
+	const list = await fetchWishlist();
 
 	return (
 		<Box pt={'100px'} px={'5%'} minHeight={'100vh'}>
@@ -99,7 +88,7 @@ export default function Wishlist() {
 									<Flex className='gap-3'>
 										<AddToCart id={item.productId} />
 
-										<WishlistButton id={item.productId} />
+										<WishlistButton id={item.productId} defaultVal />
 									</Flex>
 								</Flex>
 							</Flex>

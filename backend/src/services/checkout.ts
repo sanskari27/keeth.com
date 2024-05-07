@@ -35,6 +35,14 @@ export default class CheckoutService {
 		this._cart = cart;
 	}
 
+	static async validTransactionID(transactionId: Types.ObjectId) {
+		try {
+			return (await CheckoutDB.exists({ _id: transactionId })) !== null;
+		} catch (err) {
+			return false;
+		}
+	}
+
 	static async generateTotalStats() {
 		const totalStatsPipeline = [
 			{
@@ -338,7 +346,8 @@ export default class CheckoutService {
 
 		transaction.couponCode = '';
 		transaction.couponDiscount = 0;
-		transaction.total_amount = transaction.gross_total - transaction.couponDiscount;
+		transaction.total_amount =
+			transaction.gross_total - (transaction.discount + transaction.couponDiscount);
 		await transaction.save();
 	}
 
@@ -443,6 +452,12 @@ export default class CheckoutService {
 
 		if (doc.order_status !== ORDER_STATUS.PLACED) {
 			return new CustomError(ORDER_ERRORS.ORDER_NOT_CANCELLED);
+		}
+
+		if (doc.payment_method === 'cod') {
+			doc.order_status = ORDER_STATUS.CANCELLED;
+			await doc.save();
+			return;
 		}
 
 		doc.order_status = ORDER_STATUS.CANCELLED;

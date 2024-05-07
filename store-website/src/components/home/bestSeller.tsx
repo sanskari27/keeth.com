@@ -6,31 +6,15 @@ import {
 	CarouselPrevious,
 } from '@/components/ui/carousel';
 import { SERVER_URL } from '@/lib/const';
+import { getBestSellers } from '@/services/product.service';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-async function getData() {
-	try {
-		const res = await fetch(SERVER_URL + `/products/best-sellers`, { next: { revalidate: 60 } });
-		if (!res.ok) {
-			return [];
-		}
-
-		const data = await res.json();
-
-		const products = data.products as {
-			productCode: string;
-			image: string;
-		}[];
-		return products;
-	} catch (err) {
-		return [];
-	}
-}
+export const revalidate = 3600;
 
 export default async function BestSeller() {
-	const products = await getData();
+	const products = await getBestSellers();
 	return (
 		<Box px={'3%'} py={'1.5%'}>
 			<Text className='aura-bella font-thin text-primary-dark_red text-3xl md:text-4xl'>

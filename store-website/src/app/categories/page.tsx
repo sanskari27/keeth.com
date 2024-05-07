@@ -1,35 +1,17 @@
-import { SERVER_URL } from '@/lib/const';
+import { getCollections } from '@/services/product.service';
 import { Box, Grid, GridItem, Text, VStack } from '@chakra-ui/react';
 import { DM_Mono } from 'next/font/google';
 import Link from 'next/link';
 
 const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
 
-async function getData() {
-	try {
-		const res = await fetch(SERVER_URL + `/collections`, { next: { revalidate: 60 } });
-		if (!res.ok) {
-			return [];
-		}
-
-		const data = await res.json();
-
-		const collections = data.collections as {
-			id: string;
-			name: string;
-			image: string;
-			tags: string[];
-			visibleAtHome: boolean;
-			productCodes: string[];
-		}[];
-		return collections;
-	} catch (err) {
-		return [];
-	}
-}
+export const metadata = {
+	title: 'Categories • Keeth',
+};
+export const revalidate = 3600;
 
 export default async function Categories() {
-	let collections = await getData();
+	let collections = await getCollections();
 	collections = collections.sort((a, b) => a.name.localeCompare(b.name));
 
 	return (

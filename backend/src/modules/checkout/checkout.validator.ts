@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
+import { TRANSACTION_COOKIE } from '../../config/const';
 import { default as CustomError } from '../../errors';
+import { idValidator } from '../../utils/ExpressUtils';
 
 export type BillingDetailsValidationResult = {
 	email: string;
@@ -50,6 +52,24 @@ export async function BillingDetailsValidator(req: Request, res: Response, next:
 			STATUS: 400,
 			TITLE: 'INVALID_FIELDS',
 			MESSAGE: message,
+		})
+	);
+}
+
+export async function TransactionIDValidator(req: Request, res: Response, next: NextFunction) {
+	const _transaction_id = req.cookies[TRANSACTION_COOKIE];
+
+	const [validationResult, validationResult_data] = idValidator(_transaction_id);
+	if (validationResult) {
+		req.locals.id = validationResult_data;
+		return next();
+	}
+
+	return next(
+		new CustomError({
+			STATUS: 400,
+			TITLE: 'INVALID_FIELDS',
+			MESSAGE: 'Invalid ID',
 		})
 	);
 }

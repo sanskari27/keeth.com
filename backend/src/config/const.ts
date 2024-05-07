@@ -20,6 +20,7 @@ export const JWT_EXPIRE = process.env.JWT_EXPIRE ?? '30days';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 export const SESSION_COOKIE = 'session_id';
+export const TRANSACTION_COOKIE = 'transaction_id';
 export const AUTH_COOKIE = 'auth_id';
 export const ADMIN_AUTH_COOKIE = 'admin-keeth-jewels';
 

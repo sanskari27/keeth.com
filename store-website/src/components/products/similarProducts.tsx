@@ -6,6 +6,7 @@ import {
 	CarouselPrevious,
 } from '@/components/ui/carousel';
 import { SERVER_URL } from '@/lib/const';
+import { similarProducts } from '@/services/product.service';
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { DM_Mono } from 'next/font/google';
 import Image from 'next/image';
@@ -13,31 +14,10 @@ import Link from 'next/link';
 
 const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
 
-async function getData(productCode: string) {
-	try {
-		const res = await fetch(SERVER_URL + `/product-group/similar-products/${productCode}`, {
-			next: { revalidate: 0 },
-		});
-		if (!res.ok) {
-			return [];
-		}
-
-		const data = await res.json();
-
-		const products = data.products as {
-			productCode: string;
-			image: string;
-			discount: number;
-			price: number;
-		}[];
-		return products;
-	} catch (err) {
-		return [];
-	}
-}
+export const revalidate = 3600;
 
 export default async function SimilarProducts({ productCode }: { productCode: string }) {
-	const products = await getData(productCode);
+	const products = await similarProducts(productCode);
 
 	return (
 		<Box className='px-[5%] md:px-[7%]' py={'1.5%'} hidden={products.length === 0}>

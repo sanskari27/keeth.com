@@ -1,24 +1,23 @@
-'use client';
 import { LoginForm, RegisterForm } from '@/components/login/forms';
-import useAuth from '@/hooks/useAuth';
+import verifyAuth from '@/helpers/verifyAuth';
 import { GOOGLE_CLIENT_ID, WEBSITE_URL } from '@/lib/const';
 import { Box, Button, Divider, Flex, Text, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 
-export default function Login({
+export const metadata = {
+	title: 'Login • Keeth',
+};
+
+export default async function Login({
 	searchParams,
 }: {
 	searchParams: { [key: string]: string | string[] | undefined };
 }) {
-	const { loading } = useAuth({
+	await verifyAuth({
 		redirectUrl: searchParams['referrer'] ? `/${searchParams['referrer']}` : '/',
 	});
-
-	if (loading) {
-		return <></>;
-	}
 
 	return (
 		<Box width='full'>

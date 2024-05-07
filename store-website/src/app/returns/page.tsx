@@ -1,5 +1,9 @@
 import { AbsoluteCenter, Box, Divider, Text, VStack } from '@chakra-ui/react';
 
+export const metadata = {
+	title: 'Return Policy • Keeth',
+};
+
 export default async function Returns() {
 	return (
 		<section>

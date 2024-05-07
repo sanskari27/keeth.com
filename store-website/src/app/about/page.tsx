@@ -1,7 +1,8 @@
 import { AbsoluteCenter, Box, Divider, Text, VStack } from '@chakra-ui/react';
-import { DM_Mono } from 'next/font/google';
 
-const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
+export const metadata = {
+	title: 'About Keeth • Keeth',
+};
 
 export default async function About() {
 	return (

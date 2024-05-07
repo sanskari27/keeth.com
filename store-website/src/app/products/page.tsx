@@ -2,6 +2,7 @@ import CollectionBar from '@/components/collectionBar';
 import FilterBar from '@/components/filterBar';
 import VideoPlayer from '@/components/video-player';
 import { SERVER_URL } from '@/lib/const';
+import { products } from '@/services/product.service';
 import { Box, Button, Center, Flex, Grid, GridItem, Text, VStack } from '@chakra-ui/react';
 import { DM_Mono } from 'next/font/google';
 import Image from 'next/image';
@@ -10,42 +11,11 @@ import { Suspense } from 'react';
 
 const dm_mono = DM_Mono({ weight: ['300', '400', '500'], subsets: ['latin'] });
 
-async function getData(query: {
-	price_max: string;
-	price_min: string;
-	metals: string;
-	purity: string;
-	collection_ids: string;
-	tags: string;
-	skip: string;
-	limit: string;
-}) {
-	try {
-		const res = await fetch(SERVER_URL + `/products?` + new URLSearchParams(query), {
-			next: { revalidate: 60 },
-		});
-		if (!res.ok) {
-			return [];
-		}
+export const metadata = {
+	title: 'Products • Keeth',
+};
 
-		const data = await res.json();
-
-		const products = data.products as {
-			productCode: string;
-			price: number;
-			discount: number;
-			images: string[];
-			videos: string[];
-		}[];
-		return products.map((item) => ({
-			...item,
-			image: item.images.length > 0 ? item.images[0] : '',
-			video: item.videos.length > 0 ? item.videos[0] : '',
-		}));
-	} catch (err) {
-		return [];
-	}
-}
+export const revalidate = 3600;
 
 export default async function ProductPage({
 	searchParams,
@@ -73,7 +43,7 @@ export default async function ProductPage({
 		limit: '60',
 	};
 
-	const products = await getData(query);
+	const productsList = await products(query);
 
 	return (
 		<section>
@@ -86,7 +56,7 @@ export default async function ProductPage({
 				</Suspense>
 				<Box className='mt-4 md:mt-8 px-4 md:px-0'>
 					<Grid className='grid-cols-2 md:grid-cols-4 gap-6 md:gap-9'>
-						{products.map((product, index) => (
+						{productsList.map((product, index) => (
 							<GridItem key={index}>
 								<Link href={`/products/${product.productCode}`}>
 									<Box
@@ -97,7 +67,7 @@ export default async function ProductPage({
 										position={'relative'}
 									>
 										<Center
-											className='absolute -left-3 -top-3 -rotate-12 w-[40px] h-[40px] md:w-[70px] aura-bella rounded-full md:h-[70px] bg-primary-brown text-white font-bold text-xs md:text-base md:racking-widest'
+											className={`absolute -left-3 -top-3 -rotate-12 w-[40px] h-[40px] md:w-[70px]  rounded-full md:h-[70px] bg-primary-brown text-white text-center text-[0.5rem]  md:text-sm  ${dm_mono.className}`}
 											hidden={product.discount === 0}
 										>
 											{((product.discount * 100) / product.price).toFixed(2)}% <br /> Off
@@ -175,7 +145,7 @@ export default async function ProductPage({
 							</GridItem>
 						))}
 					</Grid>
-					{products.length === 0 && (
+					{productsList.length === 0 && (
 						<Box paddingY={'2rem'} className='w-full'>
 							<Link href={'/products'} className='w-full'>
 								<Text fontWeight={'medium'} fontSize={'xl'} textAlign={'center'}>
