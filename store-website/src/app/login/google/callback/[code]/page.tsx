@@ -3,10 +3,6 @@ import { googleLogin } from '@/services/session.service';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-export const metadata = {
-	title: 'Login • Keeth',
-};
-
 type Props = {
 	params: { code: string };
 };

@@ -15,7 +15,7 @@ const Navbar = () => {
 
 	const [isNavbarExpanded, setNavbarExpanded] = useState(false);
 	const [isAuthenticated, setAuthenticated] = useState(
-		localStorage.getItem('authenticated') === 'true'
+		localStorage ? localStorage.getItem('authenticated') === 'true' : false
 	);
 
 	const outsideRef = useOutsideClick(() => setNavbarExpanded(false));
@@ -27,15 +27,17 @@ const Navbar = () => {
 	const handleLogout = async () => {
 		await logOut();
 		setAuthenticated(false);
-		localStorage.removeItem('authenticated');
+		if (localStorage) {
+			localStorage.removeItem('authenticated');
+		}
 	};
 
 	useEffect(() => {
 		isLoggedIn().then((_isAuthenticated) => {
-			console.log('ISAUTH', _isAuthenticated);
-
 			setAuthenticated(_isAuthenticated);
-			localStorage.setItem('authenticated', _isAuthenticated ? 'true' : 'false');
+			if (localStorage) {
+				localStorage.setItem('authenticated', _isAuthenticated ? 'true' : 'false');
+			}
 		});
 	}, [pathname]);
 
