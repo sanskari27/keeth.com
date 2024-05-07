@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 	title: 'Wishlist • Keeth',
 };
 
+export const revalidate = 0;
+
 export default async function Wishlist() {
 	await verifyAuth({
 		fallbackUrl: '/login?referrer=wishlist',

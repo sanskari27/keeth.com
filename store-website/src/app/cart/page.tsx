@@ -8,7 +8,7 @@ import Link from 'next/link';
 import CheckoutButton from './_component/checkout';
 import PromoCode from './_component/promoCode';
 
-export const revalidate = 1;
+export const revalidate = 0;
 
 export const metadata = {
 	title: 'My Cart • Keeth',
