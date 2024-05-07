@@ -117,7 +117,7 @@ const schema = new mongoose.Schema<ICheckout>({
 	order_status: {
 		type: String,
 		enum: Object.values(ORDER_STATUS),
-		default: ORDER_STATUS.PAYMENT_PENDING,
+		default: ORDER_STATUS.UNINITIALIZED,
 	},
 	tracking_number: String,
 	return_tracking_number: String,

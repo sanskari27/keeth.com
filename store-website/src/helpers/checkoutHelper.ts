@@ -47,7 +47,7 @@ export async function fetchOrders() {
 			status: 'success' | 'failed' | 'pending' | 'cancelled';
 			transaction_date: string;
 			order_status:
-				| 'payment-pending'
+				| 'uninitialized'
 				| 'placed'
 				| 'cancelled'
 				| 'shipped'

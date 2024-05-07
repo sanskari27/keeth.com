@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import Logger from 'n23-logger';
 import { AccountDB } from '../../db';
 import CheckoutDB from '../../db/repo/Checkout';
 import { ORDER_STATUS, TRANSACTION_STATUS } from '../config/const';
@@ -49,7 +50,7 @@ export default class CheckoutService {
 				$match: {
 					order_status: {
 						$nin: [
-							ORDER_STATUS.PAYMENT_PENDING,
+							ORDER_STATUS.UNINITIALIZED,
 							ORDER_STATUS.CANCELLED,
 							ORDER_STATUS.RETURN_COMPLETED,
 						],
@@ -113,7 +114,7 @@ export default class CheckoutService {
 						transaction_date: { $gte: startMonth, $lt: endMonth },
 						order_status: {
 							$nin: [
-								ORDER_STATUS.PAYMENT_PENDING,
+								ORDER_STATUS.UNINITIALIZED,
 								ORDER_STATUS.CANCELLED,
 								ORDER_STATUS.RETURN_COMPLETED,
 							],
@@ -218,7 +219,7 @@ export default class CheckoutService {
 	static async getOrders(linked_to: Types.ObjectId) {
 		const orders = await CheckoutDB.find({
 			linked_to,
-			transaction_status: { $ne: TRANSACTION_STATUS.UNINITIALIZED },
+			order_status: { $ne: ORDER_STATUS.UNINITIALIZED },
 		}).sort({ transaction_date: -1 });
 
 		return orders.map((order) => {
@@ -340,7 +341,7 @@ export default class CheckoutService {
 			}
 		);
 
-		return updates.modifiedCount !== 0;
+		return updates.matchedCount !== 0;
 	}
 
 	public async addCoupon(couponCode: string) {
@@ -488,12 +489,20 @@ export default class CheckoutService {
 		doc.order_status = ORDER_STATUS.CANCELLED;
 		doc.refund_id = generateTransactionID();
 		await doc.save();
-
-		await PhonePeProvider.refunds.createRefund({
-			amount: doc.total_amount,
-			order_id: doc.provider_id,
-			reference_id: doc.refund_id,
-		});
+		try {
+			await PhonePeProvider.refunds.createRefund({
+				amount: doc.total_amount,
+				order_id: doc.provider_id,
+				reference_id: doc.refund_id,
+			});
+		} catch (err) {
+			Logger.error('Phonepe Refund Error', err as Error, {
+				refund_id: doc.refund_id,
+				transaction_id: doc.payment_id,
+				amount: doc.total_amount,
+				order_id: this._transactionId.toString(),
+			});
+		}
 	}
 
 	async requestReturn() {
@@ -567,7 +576,7 @@ export default class CheckoutService {
 			}
 		);
 
-		return updates.modifiedCount !== 0;
+		return updates.matchedCount !== 0;
 	}
 
 	public static async confirmPayment(transactionId: Types.ObjectId, payment_provider_id: string) {
@@ -583,7 +592,7 @@ export default class CheckoutService {
 			}
 		);
 
-		return updates.modifiedCount !== 0;
+		return updates.matchedCount !== 0;
 	}
 
 	public static async failedPayment(transactionId: Types.ObjectId) {
@@ -592,6 +601,6 @@ export default class CheckoutService {
 			{ $set: { transaction_status: TRANSACTION_STATUS.FAILED } }
 		);
 
-		return updates.modifiedCount !== 0;
+		return updates.matchedCount !== 0;
 	}
 }

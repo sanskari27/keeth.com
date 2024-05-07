@@ -36,7 +36,7 @@ export enum TRANSACTION_STATUS {
 }
 
 export enum ORDER_STATUS {
-	PAYMENT_PENDING = 'payment-pending',
+	UNINITIALIZED = 'uninitialized',
 	PLACED = 'placed',
 	CANCELLED = 'cancelled',
 	SHIPPED = 'shipped',

@@ -4,13 +4,13 @@ import {
 	initiatePaymentProvider,
 	requestReturn,
 } from '@/services/checkout.service';
-import { Button, Flex, Text, useToast } from '@chakra-ui/react';
+import { Button, Flex, Icon, Text, useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { FaShippingFast } from 'react-icons/fa';
 import { FcCancel } from 'react-icons/fc';
-import { HiOutlineArrowUturnLeft } from 'react-icons/hi2';
 import { MdOutlinePayment } from 'react-icons/md';
+import { TbPackageOff } from 'react-icons/tb';
 import AlertBox, { AlertBoxHandle } from './alertBox';
 
 export default function Buttons(item: {
@@ -68,7 +68,7 @@ export default function Buttons(item: {
 
 	return (
 		<>
-			{item.order_status === 'payment-pending' ? (
+			{item.order_status === 'uninitialized' ? (
 				<Button
 					color={'white'}
 					bgColor={'#CEA98C'}
@@ -145,7 +145,7 @@ export default function Buttons(item: {
 					rounded={'xl'}
 					className='justify-between w-full  md:w-[500px]  px-4'
 					onClick={() => handleRequestReturn(item.id)}
-					leftIcon={<HiOutlineArrowUturnLeft color='white' />}
+					leftIcon={<Icon as={TbPackageOff} fontSize={'1.3rem'} color={'white'} />}
 				>
 					<Text fontWeight={'medium'}>Request Return</Text>
 				</Button>

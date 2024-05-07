@@ -1,8 +1,20 @@
 'use client';
 import { billingDetails, initiatePaymentProvider } from '@/services/checkout.service';
-import { Button, Grid, GridItem, Input, Text, useToast } from '@chakra-ui/react';
+import {
+	Button,
+	Grid,
+	GridItem,
+	Input,
+	Radio,
+	RadioGroup,
+	Stack,
+	Text,
+	useToast,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
+import { BsCashStack } from 'react-icons/bs';
+import { FaRegCreditCard } from 'react-icons/fa';
 
 export default function CheckoutForm({ amount }: { amount: number | string }) {
 	const router = useRouter();
@@ -24,7 +36,7 @@ export default function CheckoutForm({ amount }: { amount: number | string }) {
 			state: formData.get('state') as string,
 			country: formData.get('country') as string,
 			postal_code: formData.get('postal_code') as string,
-			payment_method: 'prepaid',
+			payment_method: formData.get('payment_method') as 'cod' | 'prepaid',
 		});
 		if (!success) {
 			setLoading(false);
@@ -101,6 +113,35 @@ export default function CheckoutForm({ amount }: { amount: number | string }) {
 					<Input name='postal_code' placeholder='Postal Code ' required />
 				</GridItem>
 			</Grid>
+
+			<Text fontSize={'1.3rem'} className='mt-6 -ml-3'>
+				Payment Method
+			</Text>
+			<RadioGroup name='payment_method'>
+				<Stack
+					direction='row'
+					borderWidth={'1px'}
+					borderColor={'grey.400'}
+					paddingY={'0.5rem'}
+					paddingX={'1.5rem'}
+					rounded={'2xl'}
+					width={'fit-content'}
+					gap={'2rem'}
+				>
+					<Radio value='cod'>
+						<Stack direction='row' alignItems={'center'} gap={'0.75rem'} marginLeft={'0.5rem'}>
+							<BsCashStack />
+							<Text>Cash on Delivery</Text>
+						</Stack>
+					</Radio>
+					<Radio value='prepaid'>
+						<Stack direction='row' alignItems={'center'} gap={'0.75rem'} marginLeft={'0.5rem'}>
+							<FaRegCreditCard />
+							<Text>Pay Now</Text>
+						</Stack>
+					</Radio>
+				</Stack>
+			</RadioGroup>
 
 			<Button
 				marginTop={'3rem'}
