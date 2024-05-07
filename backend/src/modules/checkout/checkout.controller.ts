@@ -151,8 +151,6 @@ async function initiatePayment(req: Request, res: Response, next: NextFunction) 
 			},
 		});
 	} catch (err) {
-		console.log(err);
-
 		next(new CustomError(ERRORS.COMMON_ERRORS.NOT_FOUND));
 	}
 }

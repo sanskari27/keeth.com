@@ -1,3 +1,4 @@
+import Logger from 'n23-logger';
 import { Resend } from 'resend';
 import { RESEND_API_KEY } from '../../config/const';
 
@@ -12,8 +13,7 @@ export async function sendSimpleText(to: string, value: string) {
 	});
 
 	if (error) {
-		console.log(error);
-
+		Logger.error('Resend Error', error, { details: 'Error Sending feedback message' });
 		return false;
 	}
 	return true;

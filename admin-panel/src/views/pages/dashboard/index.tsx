@@ -83,7 +83,6 @@ export default function Dashboard() {
 					)
 			: [['No Data', 0]]),
 	];
-	console.log(graphData);
 
 	if (loading) {
 		return <Loading isLoaded={false} />;
