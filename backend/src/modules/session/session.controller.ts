@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
+import { JwtPayload, verify } from 'jsonwebtoken';
 import {
 	ADMIN_AUTH_COOKIE,
 	ADMIN_EMAIL,
@@ -10,6 +11,7 @@ import {
 	GOOGLE_CLIENT_SECRET,
 	GOOGLE_REDIRECT_URL,
 	IS_PRODUCTION,
+	JWT_SECRET,
 	SESSION_COOKIE,
 } from '../../config/const';
 import CustomError, { COMMON_ERRORS, ERRORS } from '../../errors';
@@ -32,6 +34,20 @@ async function listUsers(req: Request, res: Response, next: NextFunction) {
 
 async function createSession(req: Request, res: Response, next: NextFunction) {
 	const _session_id = req.cookies[SESSION_COOKIE];
+	const _auth_id = req.cookies[AUTH_COOKIE];
+
+	if (_auth_id) {
+		try {
+			const decoded = verify(_auth_id, JWT_SECRET) as JwtPayload;
+			req.locals.session = await SessionService.getSessionByAccount(decoded.id);
+			return Respond({
+				res,
+				status: 200,
+			});
+		} catch (err) {
+			//ignored
+		}
+	}
 
 	if (_session_id) {
 		try {

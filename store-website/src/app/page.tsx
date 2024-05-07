@@ -31,7 +31,7 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from '@/components/ui/carousel';
-import { createSession, googleLogin } from '@/services/session.service';
+import { redirect } from 'next/navigation';
 
 const HOME_TESTIMONIALS = [
 	{
@@ -79,9 +79,7 @@ export default async function Home({
 	searchParams: { [key: string]: string | string[] | undefined };
 }) {
 	if (searchParams['code']) {
-		await googleLogin(searchParams['code'] as string);
-	} else {
-		await createSession();
+		redirect(`/login/google/callback/${searchParams['code']}`);
 	}
 
 	return (
