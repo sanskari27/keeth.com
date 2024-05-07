@@ -393,6 +393,7 @@ export default class CheckoutService {
 		if (transaction.payment_method === 'cod') {
 			transaction.order_status = ORDER_STATUS.PLACED;
 			transaction.expireAt = new Date(Date.now() + YEARS_10);
+			await this._cart.emptyCart();
 			await transaction.save();
 			return null;
 		}
