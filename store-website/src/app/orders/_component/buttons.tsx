@@ -107,10 +107,7 @@ export default function Buttons(item: {
 					px='4rem'
 					rounded={'xl'}
 					className='justify-between w-full  md:w-[500px]  px-4'
-					onClick={() => {
-						console.log('CLICKED', ref.current);
-						ref.current?.open(item.id);
-					}}
+					onClick={() => ref.current?.open(item.id)}
 					leftIcon={<FcCancel color='#891618' />}
 				>
 					<Text fontWeight={'medium'}>Cancel Order</Text>
