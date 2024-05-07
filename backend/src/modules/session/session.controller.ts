@@ -13,6 +13,7 @@ import {
 	IS_PRODUCTION,
 	JWT_SECRET,
 	SESSION_COOKIE,
+	TRANSACTION_COOKIE,
 } from '../../config/const';
 import CustomError, { COMMON_ERRORS, ERRORS } from '../../errors';
 import { SessionService } from '../../services';
@@ -108,6 +109,12 @@ async function login(req: Request, res: Response, next: NextFunction) {
 			secure: IS_PRODUCTION,
 			domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
 		});
+		res.clearCookie(TRANSACTION_COOKIE, {
+			sameSite: 'strict',
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+			domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+		});
 		res.cookie(AUTH_COOKIE, token, {
 			sameSite: 'strict',
 			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
@@ -149,6 +156,12 @@ async function googleLogin(req: Request, res: Response, next: NextFunction) {
 		const [token, new_session] = await SessionService.loginOrRegister(email, GOOGLE_AUTH_PASSWORD);
 
 		res.clearCookie(SESSION_COOKIE, {
+			sameSite: 'strict',
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+			domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+		});
+		res.clearCookie(TRANSACTION_COOKIE, {
 			sameSite: 'strict',
 			httpOnly: IS_PRODUCTION,
 			secure: IS_PRODUCTION,
@@ -223,6 +236,12 @@ async function logout(req: Request, res: Response, next: NextFunction) {
 		domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
 	});
 	res.clearCookie(ADMIN_AUTH_COOKIE, {
+		sameSite: 'strict',
+		httpOnly: IS_PRODUCTION,
+		secure: IS_PRODUCTION,
+		domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+	});
+	res.clearCookie(TRANSACTION_COOKIE, {
 		sameSite: 'strict',
 		httpOnly: IS_PRODUCTION,
 		secure: IS_PRODUCTION,
