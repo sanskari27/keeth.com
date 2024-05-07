@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
+		if (!localStorage) return;
 		const currentDate = new Date().toDateString();
 
 		const lastExecutionDate = localStorage.getItem('lastExecutionDate');
