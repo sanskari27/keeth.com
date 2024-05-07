@@ -44,9 +44,9 @@ const HOME_TESTIMONIALS = [
 	{
 		message: `I bought earrings for daily office wear and the product was so handy for the daily use jewellery. The collegues were just amazed with simplicity and subtleness of the product. Loved it.`,
 		rating: 5,
-		name: 'Aarav Goyal',
+		name: 'Gauri',
 		image:
-			'https://images.unsplash.com/photo-1609846685336-9cb06880bb48?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLW1hbGV8fHx8fHwxNzE0OTA0MDE2&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
+			'https://images.unsplash.com/photo-1513097633097-329a3a64e0d4?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=300&ixid=MnwxfDB8MXxyYW5kb218MHx8aW5kaWFuLWZlbWFsZXx8fHx8fDE3MTUxMDE3MTQ&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=500',
 	},
 	{
 		message: `The blend of fine art, tradition and modern design,this is what i really like about Keeth Jewels. The comfort for the daily use is awesome.`,
@@ -287,7 +287,7 @@ export default async function Home({
 				<Box px={'1%'} marginTop={'-1rem'} position={'relative'}>
 					<Carousel>
 						<CarouselContent>
-							{HOME_TESTIMONIALS.map((t,index) => (
+							{HOME_TESTIMONIALS.map((t, index) => (
 								<CarouselItem className='md:basis-1/3 p-8' key={index}>
 									<Card className='bg-white w-[350px] py-2 md:w-[450px]  shadow-xl drop-shadow-xl rounded-2xl overflow-hidden'>
 										<CardBody bgColor={'white'}>
