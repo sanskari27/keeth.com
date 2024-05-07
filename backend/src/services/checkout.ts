@@ -46,6 +46,17 @@ export default class CheckoutService {
 	static async generateTotalStats() {
 		const totalStatsPipeline = [
 			{
+				$match: {
+					order_status: {
+						$nin: [
+							ORDER_STATUS.PAYMENT_PENDING,
+							ORDER_STATUS.CANCELLED,
+							ORDER_STATUS.RETURN_COMPLETED,
+						],
+					},
+				},
+			},
+			{
 				$group: {
 					_id: null,
 					totalOrders: { $sum: 1 },
@@ -72,7 +83,14 @@ export default class CheckoutService {
 		try {
 			const data = await CheckoutDB.aggregate(totalStatsPipeline);
 			if (data.length === 0) {
-				throw new Error();
+				return {
+					totalOrders: 0,
+					totalGrossSales: 0,
+					totalDiscounts: 0,
+					totalCouponDiscounts: 0,
+					totalAmountCollected: 0,
+					uniqueCustomersCount: 0,
+				};
 			}
 			return {
 				totalOrders: data[0].totalOrders as number,
@@ -93,6 +111,13 @@ export default class CheckoutService {
 				{
 					$match: {
 						transaction_date: { $gte: startMonth, $lt: endMonth },
+						order_status: {
+							$nin: [
+								ORDER_STATUS.PAYMENT_PENDING,
+								ORDER_STATUS.CANCELLED,
+								ORDER_STATUS.RETURN_COMPLETED,
+							],
+						},
 					},
 				},
 				{
@@ -151,7 +176,7 @@ export default class CheckoutService {
 			]);
 
 			if (data.length === 0) {
-				throw new Error();
+				return [];
 			}
 
 			return data.map((item) => ({
