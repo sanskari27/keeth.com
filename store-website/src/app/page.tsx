@@ -287,8 +287,8 @@ export default async function Home({
 				<Box px={'1%'} marginTop={'-1rem'} position={'relative'}>
 					<Carousel>
 						<CarouselContent>
-							{HOME_TESTIMONIALS.map((t) => (
-								<CarouselItem className='md:basis-1/3 p-8'>
+							{HOME_TESTIMONIALS.map((t,index) => (
+								<CarouselItem className='md:basis-1/3 p-8' key={index}>
 									<Card className='bg-white w-[350px] py-2 md:w-[450px]  shadow-xl drop-shadow-xl rounded-2xl overflow-hidden'>
 										<CardBody bgColor={'white'}>
 											<Box bgColor={'white'}>

@@ -59,6 +59,7 @@ async function startCheckout(req: Request, res: Response, next: NextFunction) {
 			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
 			httpOnly: IS_PRODUCTION,
 			secure: IS_PRODUCTION,
+			domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
 		});
 
 		return Respond({

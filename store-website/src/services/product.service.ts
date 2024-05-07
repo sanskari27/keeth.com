@@ -78,7 +78,7 @@ export async function similarProducts(code: string) {
 
 export async function getCollections() {
 	try {
-		const { data } = await api.delete(`/collections`);
+		const { data } = await api.get(`/collections`);
 		const collections = data.collections as {
 			id: string;
 			name: string;
