@@ -303,7 +303,7 @@ export default async function Home({
 															<Text>
 																{Array.from({ length: t.rating })
 																	.fill(0)
-																	.map((item, index) => (
+																	.map((_, index) => (
 																		<span key={index}>⭐️</span>
 																	))}
 															</Text>
