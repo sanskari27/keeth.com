@@ -71,7 +71,10 @@ export function generateInvoiceID(id: string) {
 
 	let invoice_id = year;
 	invoice_id += '/Saas/';
-	invoice_id += id.toString().padStart(6, '0');
+	invoice_id += id
+		.substring(id.length > 6 ? id.length - 6 : 0)
+		.toString()
+		.padStart(8, '0');
 	return invoice_id;
 }
 

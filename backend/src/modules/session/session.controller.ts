@@ -18,6 +18,7 @@ import {
 import CustomError, { COMMON_ERRORS, ERRORS } from '../../errors';
 import { SessionService } from '../../services';
 import { Respond } from '../../utils/ExpressUtils';
+import { sendWelcomeEmail } from '../../utils/email';
 import { GoogleLoginValidationResult, LoginValidationResult } from './session.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
@@ -193,6 +194,7 @@ async function register(req: Request, res: Response, next: NextFunction) {
 	const { email, password } = req.locals.data as LoginValidationResult;
 	try {
 		const [token, new_session] = await SessionService.register(email, password);
+		sendWelcomeEmail(email);
 
 		res.cookie(AUTH_COOKIE, token, {
 			sameSite: 'strict',

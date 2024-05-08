@@ -132,6 +132,7 @@ const schema = new mongoose.Schema<ICheckout>({
 	},
 });
 
+
 const CheckoutDB = mongoose.model<ICheckout>(CheckoutDB_name, schema);
 
 export default CheckoutDB;

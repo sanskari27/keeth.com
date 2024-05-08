@@ -6,7 +6,8 @@ import { ORDER_STATUS, TRANSACTION_STATUS } from '../config/const';
 import CustomError, { COMMON_ERRORS, ORDER_ERRORS } from '../errors';
 import PhonePeProvider from '../provider/phonepe';
 import DateUtils from '../utils/DateUtils';
-import { generateTransactionID } from '../utils/ExpressUtils';
+import { generateInvoiceID, generateTransactionID } from '../utils/ExpressUtils';
+import { sendOrderConfirmation } from '../utils/email';
 import CartService from './cart';
 import CouponService from './coupon';
 
@@ -391,6 +392,43 @@ export default class CheckoutService {
 		}
 
 		if (transaction.payment_method === 'cod') {
+			await sendOrderConfirmation(transaction.email, {
+				status: 'placed',
+				customer: {
+					email: transaction.email,
+					name: transaction.name,
+					phone: transaction.phone,
+				},
+				address: {
+					address_line_1: transaction.address_line_1,
+					street: transaction.street,
+					city: transaction.city,
+					state: transaction.state,
+					country: transaction.country,
+					pincode: transaction.postal_code,
+				},
+				order_details: {
+					gross_amount: transaction.gross_total,
+					discount: transaction.discount + transaction.couponDiscount,
+					total_amount: transaction.total_amount,
+					order_date: DateUtils.format(transaction.transaction_date, 'DD-MM-YYYY'),
+					order_id: generateInvoiceID(transaction._id.toString()),
+					payment_method: 'cod',
+					tracking_link: 'https://keethjewels.com/orders',
+				},
+				products: transaction.products.map((p) => {
+					return {
+						image: p.image,
+						name: p.name,
+						diamond_quality: p.diamond_type,
+						metal_color: p.metal_color,
+						metal_purity: p.metal_quality.toUpperCase(),
+						size: p.size,
+						price: p.price,
+						quantity: p.quantity,
+					};
+				}),
+			});
 			transaction.order_status = ORDER_STATUS.PLACED;
 			transaction.expireAt = new Date(Date.now() + YEARS_10);
 			await this._cart.emptyCart();
@@ -466,41 +504,77 @@ export default class CheckoutService {
 	}
 
 	async cancelOrder() {
-		const doc = await CheckoutDB.findById(this._transactionId);
-		if (!doc) {
+		const transaction = await CheckoutDB.findById(this._transactionId);
+		if (!transaction) {
 			return new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
 
-		if (doc.transaction_status !== TRANSACTION_STATUS.SUCCESS) {
-			doc.order_status = ORDER_STATUS.CANCELLED;
-			await doc.save();
-			return;
-		}
-
-		if (doc.order_status !== ORDER_STATUS.PLACED) {
+		if (transaction.order_status !== ORDER_STATUS.PLACED) {
 			return new CustomError(ORDER_ERRORS.ORDER_NOT_CANCELLED);
 		}
 
-		if (doc.payment_method === 'cod') {
-			doc.order_status = ORDER_STATUS.CANCELLED;
-			await doc.save();
+		transaction.order_status = ORDER_STATUS.CANCELLED;
+
+		await sendOrderConfirmation(transaction.email, {
+			status: 'cancelled',
+			customer: {
+				email: transaction.email,
+				name: transaction.name,
+				phone: transaction.phone,
+			},
+			address: {
+				address_line_1: transaction.address_line_1,
+				street: transaction.street,
+				city: transaction.city,
+				state: transaction.state,
+				country: transaction.country,
+				pincode: transaction.postal_code,
+			},
+			order_details: {
+				gross_amount: transaction.gross_total,
+				discount: transaction.discount + transaction.couponDiscount,
+				total_amount: transaction.total_amount,
+				order_date: DateUtils.format(transaction.transaction_date, 'DD-MM-YYYY'),
+				order_id: generateInvoiceID(transaction._id.toString()),
+				payment_method: 'cod',
+				tracking_link: 'https://keethjewels.com/orders',
+			},
+			products: transaction.products.map((p) => {
+				return {
+					image: p.image,
+					name: p.name,
+					diamond_quality: p.diamond_type,
+					metal_color: p.metal_color,
+					metal_purity: p.metal_quality.toUpperCase(),
+					size: p.size,
+					price: p.price,
+					quantity: p.quantity,
+				};
+			}),
+		});
+
+		if (
+			transaction.transaction_status !== TRANSACTION_STATUS.SUCCESS ||
+			transaction.payment_method === 'cod'
+		) {
+			await transaction.save();
 			return;
 		}
 
-		doc.order_status = ORDER_STATUS.CANCELLED;
-		doc.refund_id = generateTransactionID();
-		await doc.save();
+		transaction.order_status = ORDER_STATUS.CANCELLED;
+		transaction.refund_id = generateTransactionID();
+		await transaction.save();
 		try {
 			await PhonePeProvider.refunds.createRefund({
-				amount: doc.total_amount,
-				order_id: doc.provider_id,
-				reference_id: doc.refund_id,
+				amount: transaction.total_amount,
+				order_id: transaction.provider_id,
+				reference_id: transaction.refund_id,
 			});
 		} catch (err) {
 			Logger.error('Phonepe Refund Error', err as Error, {
-				refund_id: doc.refund_id,
-				transaction_id: doc.payment_id,
-				amount: doc.total_amount,
+				refund_id: transaction.refund_id,
+				transaction_id: transaction.payment_id,
+				amount: transaction.total_amount,
 				order_id: this._transactionId.toString(),
 			});
 		}
@@ -551,23 +625,105 @@ export default class CheckoutService {
 	}
 
 	async setTrackingID(tracking_number: string) {
-		const doc = await CheckoutDB.findById(this._transactionId);
-		if (!doc) {
+		const transaction = await CheckoutDB.findById(this._transactionId);
+		if (!transaction) {
 			return new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
 
-		if (doc.order_status === ORDER_STATUS.SHIPPED) {
-			doc.tracking_number = tracking_number;
-		} else if (doc.order_status === ORDER_STATUS.RETURN_INITIATED) {
-			doc.return_tracking_number = tracking_number;
+		if (transaction.order_status === ORDER_STATUS.SHIPPED) {
+			await sendOrderConfirmation(transaction.email, {
+				status: 'shipped',
+				customer: {
+					email: transaction.email,
+					name: transaction.name,
+					phone: transaction.phone,
+				},
+				address: {
+					address_line_1: transaction.address_line_1,
+					street: transaction.street,
+					city: transaction.city,
+					state: transaction.state,
+					country: transaction.country,
+					pincode: transaction.postal_code,
+				},
+				order_details: {
+					gross_amount: transaction.gross_total,
+					discount: transaction.discount + transaction.couponDiscount,
+					total_amount: transaction.total_amount,
+					order_date: DateUtils.format(transaction.transaction_date, 'DD-MM-YYYY'),
+					order_id: generateInvoiceID(transaction._id.toString()),
+					payment_method: transaction.payment_method,
+					tracking_link: 'https://keethjewels.com/orders',
+				},
+				products: transaction.products.map((p) => {
+					return {
+						image: p.image,
+						name: p.name,
+						diamond_quality: p.diamond_type,
+						metal_color: p.metal_color,
+						metal_purity: p.metal_quality.toUpperCase(),
+						size: p.size,
+						price: p.price,
+						quantity: p.quantity,
+					};
+				}),
+			});
+			transaction.tracking_number = tracking_number;
+		} else if (transaction.order_status === ORDER_STATUS.RETURN_INITIATED) {
+			transaction.return_tracking_number = tracking_number;
 		} else {
 			return new CustomError(COMMON_ERRORS.NOT_FOUND);
 		}
 
-		await doc.save();
+		await transaction.save();
 	}
 
 	async changeOrderStatus(status: ORDER_STATUS) {
+		const transaction = await CheckoutDB.findById(this._transactionId);
+		if (!transaction) {
+			return false;
+		}
+
+		if (status === ORDER_STATUS.DELIVERED) {
+			await sendOrderConfirmation(transaction.email, {
+				status: 'delivered',
+				customer: {
+					email: transaction.email,
+					name: transaction.name,
+					phone: transaction.phone,
+				},
+				address: {
+					address_line_1: transaction.address_line_1,
+					street: transaction.street,
+					city: transaction.city,
+					state: transaction.state,
+					country: transaction.country,
+					pincode: transaction.postal_code,
+				},
+				order_details: {
+					gross_amount: transaction.gross_total,
+					discount: transaction.discount + transaction.couponDiscount,
+					total_amount: transaction.total_amount,
+					order_date: DateUtils.format(transaction.transaction_date, 'DD-MM-YYYY'),
+					order_id: generateInvoiceID(transaction._id.toString()),
+					payment_method: transaction.payment_method,
+					tracking_link: 'https://keethjewels.com/orders',
+				},
+				products: transaction.products.map((p) => {
+					return {
+						image: p.image,
+						name: p.name,
+						diamond_quality: p.diamond_type,
+						metal_color: p.metal_color,
+						metal_purity: p.metal_quality.toUpperCase(),
+						size: p.size,
+						price: p.price,
+						quantity: p.quantity,
+					};
+				}),
+			});
+		}
+
 		const updates = await CheckoutDB.updateOne(
 			{ _id: this._transactionId },
 			{
