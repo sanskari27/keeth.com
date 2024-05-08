@@ -123,7 +123,11 @@ export default class ProductService {
 			onlyIds?: boolean;
 		}
 	) {
-		let _query = {};
+		let _query: {
+			[key: string]: unknown;
+		} = {
+			price: { $gte: query.price_min, $lte: query.price_max }, // Filter products within the price range
+		};
 
 		if (query.onlyIds) {
 			_query = {
