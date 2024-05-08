@@ -58,7 +58,14 @@ export default async function ProductPage({
 					<Grid className='grid-cols-2 md:grid-cols-4 gap-6 md:gap-9'>
 						{productsList.map((product, index) => (
 							<GridItem key={index}>
-								<Link href={`/products/${product.productCode}`}>
+								<Link
+									href={{
+										pathname: `/products/${product.productCode}`,
+										query: {
+											productId: product.id,
+										},
+									}}
+								>
 									<Box
 										rounded={'2xl'}
 										bgColor={'RGBA(0, 0, 0, 0.1)'}

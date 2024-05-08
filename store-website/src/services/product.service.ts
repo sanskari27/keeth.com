@@ -45,6 +45,7 @@ export async function products(query: ProductsQuery) {
 			params: query,
 		});
 		const products = data.products as {
+			id: string;
 			productCode: string;
 			price: number;
 			discount: number;
