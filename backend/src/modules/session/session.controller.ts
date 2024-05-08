@@ -18,8 +18,13 @@ import {
 import CustomError, { COMMON_ERRORS, ERRORS } from '../../errors';
 import { SessionService } from '../../services';
 import { Respond } from '../../utils/ExpressUtils';
-import { sendWelcomeEmail } from '../../utils/email';
-import { GoogleLoginValidationResult, LoginValidationResult } from './session.validator';
+import { sendPasswordResetEmail, sendWelcomeEmail } from '../../utils/email';
+import {
+	GoogleLoginValidationResult,
+	LoginValidationResult,
+	ResetPasswordValidationResult,
+	UpdatePasswordValidationResult,
+} from './session.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 const client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL);
@@ -103,6 +108,65 @@ async function login(req: Request, res: Response, next: NextFunction) {
 	}
 	try {
 		const [token, new_session] = await SessionService.login(email, password);
+
+		res.clearCookie(SESSION_COOKIE, {
+			sameSite: 'strict',
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+			domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+		});
+		res.clearCookie(TRANSACTION_COOKIE, {
+			sameSite: 'strict',
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+			domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+		});
+		res.cookie(AUTH_COOKIE, token, {
+			sameSite: 'strict',
+			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
+			httpOnly: IS_PRODUCTION,
+			secure: IS_PRODUCTION,
+			domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
+		});
+
+		if (_session_id) {
+			await SessionService.copySession(_session_id, new_session);
+		}
+
+		return Respond({
+			res,
+			status: 200,
+		});
+	} catch (err) {
+		return next(new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR));
+	}
+}
+
+async function resetPassword(req: Request, res: Response, next: NextFunction) {
+	const { email } = req.locals.data as ResetPasswordValidationResult;
+
+	try {
+		const token = await SessionService.generatePasswordResetLink(email);
+
+		const resetLink = `https://keethjewels.com/login/reset-password/${token}`;
+		const success = await sendPasswordResetEmail(email, resetLink);
+
+		return Respond({
+			res,
+			status: success ? 200 : 400,
+		});
+	} catch (err) {
+		return next(new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR));
+	}
+}
+
+async function updatePassword(req: Request, res: Response, next: NextFunction) {
+	const _session_id = req.cookies[SESSION_COOKIE];
+
+	const { password, token: update_token } = req.locals.data as UpdatePasswordValidationResult;
+
+	try {
+		const [token, new_session] = await SessionService.saveResetPassword(update_token, password);
 
 		res.clearCookie(SESSION_COOKIE, {
 			sameSite: 'strict',
@@ -258,6 +322,8 @@ async function logout(req: Request, res: Response, next: NextFunction) {
 const Controller = {
 	validateAuth,
 	login,
+	resetPassword,
+	updatePassword,
 	googleLogin,
 	register,
 	createSession,

@@ -1,5 +1,7 @@
+import { randomBytes } from 'crypto';
 import { Types } from 'mongoose';
 import { AccountDB, CartItemDB, SessionDB } from '../../db';
+import StorageDB from '../../db/repo/Storage';
 import CustomError, { ERRORS } from '../errors';
 import CartService from './cart';
 import WishlistService from './wishlist';
@@ -88,6 +90,40 @@ export default class SessionService {
 			phone: acc.phone,
 			email: acc.email,
 		}));
+	}
+
+	static async generatePasswordResetLink(email: string) {
+		const user = await AccountDB.findOne({ email }).select('+password');
+		if (user === null) {
+			throw new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR);
+		}
+
+		const token = randomBytes(16).toString('hex');
+
+		await StorageDB.setString(token, user._id.toString());
+		return token;
+	}
+
+	static async saveResetPassword(token: string, password: string) {
+		const id = await StorageDB.getString(token);
+
+		if (!id) {
+			throw new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR);
+		}
+
+		const user = await AccountDB.findOne({ _id: id }).select('+password');
+		if (user === null) {
+			throw new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR);
+		}
+
+		user.password = password;
+		await user.save();
+
+		await StorageDB.deleteOne({
+			key: token,
+		});
+
+		return [user.getSignedToken(), new SessionService(user._id)] as [string, SessionService];
 	}
 
 	public get id(): Types.ObjectId {

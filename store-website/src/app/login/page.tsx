@@ -38,7 +38,7 @@ export default async function Login({
 							<LoginForm />
 						</Suspense>
 
-						<Divider className='my-4 border !border-black/40' />
+						<Divider className='  mb-4 border !border-black/40' />
 						<Link
 							className='w-full'
 							href={{

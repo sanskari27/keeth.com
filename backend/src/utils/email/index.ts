@@ -6,6 +6,7 @@ import {
 	OrderConfirmationTemplate,
 	OrderDeliveredTemplate,
 	OrderShippedTemplate,
+	PasswordResetTemplate,
 	WelcomeEmailTemplate,
 } from './templates';
 
@@ -35,7 +36,22 @@ export async function sendWelcomeEmail(to: string) {
 	});
 
 	if (error) {
-		Logger.error('Resend Error', error, { details: 'Error Sending feedback message' });
+		Logger.error('Resend Error', error, { details: 'Error Sending welcome message' });
+		return false;
+	}
+	return true;
+}
+
+export async function sendPasswordResetEmail(to: string, token: string) {
+	const { error } = await resend.emails.send({
+		from: 'Keeth <info@keethjewels.com>',
+		to: [to],
+		subject: 'Password reset request for Keeth Jewels',
+		html: PasswordResetTemplate(token),
+	});
+
+	if (error) {
+		Logger.error('Resend Error', error, { details: 'Error Sending reset message' });
 		return false;
 	}
 	return true;
@@ -97,7 +113,7 @@ export async function sendOrderConfirmation(
 	});
 
 	if (error) {
-		Logger.error('Resend Error', error, { details: 'Error Sending feedback message' });
+		Logger.error('Resend Error', error, { details: 'Error Sending order message' });
 		return false;
 	}
 	return true;

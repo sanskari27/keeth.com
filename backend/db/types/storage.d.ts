@@ -11,4 +11,5 @@ export default interface IStorage extends Document {
 	key: string;
 	value: string | undefined;
 	object: object | undefined;
+	expireAt: Date;
 }

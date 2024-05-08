@@ -13,6 +13,15 @@ const StorageSchema = new mongoose.Schema<IStorage>({
 	object: {
 		type: Object,
 	},
+	expireAt: {
+		type: Date,
+		required: true,
+		default: () => {
+			return Date.now() + 20 * 60 * 1000;
+		},
+		index: true,
+		expires: 0, // Documents will expire when the time specified in 'expireAt' is reached
+	},
 });
 
 StorageSchema.statics.getString = async function (key: string): Promise<string | null> {
