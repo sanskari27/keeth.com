@@ -20,6 +20,12 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
+			<head>
+				<link rel='shortcut icon' href='/icons/favicon.ico' />
+				<link rel='apple-touch-icon' sizes='180x180' href='/icons/apple-touch-icon.png' />
+				<link rel='icon' type='image/png' sizes='32x32' href='/icons/favicon-32x32.png' />
+				<link rel='icon' type='image/png' sizes='16x16' href='/icons/favicon-16x16.png' />
+			</head>
 			<body
 				className={dm_sans.className + ' overflow-x-hidden'}
 				style={{ backgroundColor: '#FDFDFD' }}
