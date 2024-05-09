@@ -96,7 +96,7 @@ export async function getCollections() {
 
 export async function getBestSellers() {
 	try {
-		const { data } = await api.delete(`/products/best-sellers`);
+		const { data } = await api.get(`/products/best-sellers`);
 
 		const products = data.products as {
 			productCode: string;
