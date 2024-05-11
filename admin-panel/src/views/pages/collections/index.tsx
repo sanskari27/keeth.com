@@ -1,4 +1,4 @@
-import { EditIcon } from '@chakra-ui/icons';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import {
 	Box,
 	Button,
@@ -17,7 +17,7 @@ import {
 	Text,
 	VStack,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MdCollectionsBookmark, MdOutlineCreate } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useOutlet } from 'react-router-dom';
@@ -27,15 +27,28 @@ import useFilteredList from '../../../hooks/useFilteredList';
 import { popFromNavbar, pushToNavbar } from '../../../hooks/useNavbar';
 import CollectionService from '../../../services/collection.service';
 import { StoreNames, StoreState } from '../../../store';
-import { updateVisibility } from '../../../store/reducers/CollectionsReducer';
+import { removeCollection, updateVisibility } from '../../../store/reducers/CollectionsReducer';
 import { Collection } from '../../../store/types/CollectionsState';
+import DeleteAlert, { DeleteAlertHandle } from '../../components/delete-alert';
 import { NavbarSearchElement } from '../../components/navbar';
 import Each from '../../components/utils/Each';
 
 const Collections = () => {
 	const outlet = useOutlet();
+	const dispatch = useDispatch();
+	const confirmRef = useRef<DeleteAlertHandle>(null);
 
 	const { list } = useSelector((state: StoreState) => state[StoreNames.COLLECTIONS]);
+
+	const handleRemoveClick = (id: string) => {
+		confirmRef.current?.open(id);
+	};
+	const handleDelete = async (id: string) => {
+		const success = await CollectionService.deleteCollection(id);
+		if (success) {
+			dispatch(removeCollection(id));
+		}
+	};
 
 	useEffect(() => {
 		pushToNavbar({
@@ -83,18 +96,25 @@ const Collections = () => {
 						items={filtered}
 						render={(collection) => (
 							<GridItem>
-								<PreviewElement collection={collection} />
+								<PreviewElement collection={collection} onRemove={handleRemoveClick} />
 							</GridItem>
 						)}
 					/>
 				</Grid>
 			</Box>
+			<DeleteAlert type='Collection' ref={confirmRef} onConfirm={(id) => handleDelete(id)} />
 			{outlet}
 		</Flex>
 	);
 };
 
-function PreviewElement({ collection }: { collection: Collection }) {
+function PreviewElement({
+	collection,
+	onRemove,
+}: {
+	collection: Collection;
+	onRemove: (id: string) => void;
+}) {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
@@ -175,6 +195,9 @@ function PreviewElement({ collection }: { collection: Collection }) {
 							onClick={() => navigate(NAVIGATION.COLLECTIONS + '/edit/' + collection.id)}
 						>
 							Edit
+						</Button>
+						<Button variant='solid' colorScheme='red' onClick={() => onRemove(collection.id)}>
+							<DeleteIcon />
 						</Button>
 					</Flex>
 				</VStack>

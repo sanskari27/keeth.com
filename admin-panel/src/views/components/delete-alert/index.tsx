@@ -52,7 +52,7 @@ const DeleteAlert = forwardRef<DeleteAlertHandle, Props>(
 		const cancelRef = React.useRef() as RefObject<HTMLButtonElement>;
 
 		return (
-			<AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+			<AlertDialog size={'lg'} isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
 				<AlertDialogOverlay />
 				<AlertDialogContent backgroundColor={'white'} textColor={'black'}>
 					<AlertDialogHeader fontSize='lg' fontWeight='bold'>

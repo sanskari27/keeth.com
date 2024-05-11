@@ -74,7 +74,7 @@ export default async function ProductPage({
 										position={'relative'}
 									>
 										<Center
-											className={`absolute -left-3 -top-3 -rotate-12 w-[40px] h-[40px] md:w-[70px]  rounded-full md:h-[70px] bg-primary-brown text-white text-center text-[0.5rem]  md:text-sm  ${dm_mono.className}`}
+											className={`absolute -left-2 -top-2 -rotate-12 w-[40px] h-[40px] md:w-[50px] md:h-[50px]  rounded-full  bg-primary-brown text-white text-center text-[0.5rem]  md:text-xs  ${dm_mono.className}`}
 											hidden={product.discount === 0}
 										>
 											{((product.discount * 100) / product.price).toFixed(2)}% <br /> Off

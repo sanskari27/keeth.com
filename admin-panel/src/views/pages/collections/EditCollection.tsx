@@ -97,6 +97,7 @@ export default function EditCollection() {
 			.filter((t) => !!t)
 			.map((t) => t.charAt(0).toUpperCase() + t.substring(1).toLowerCase());
 
+		await CollectionService.updateCollectionName(collection_id!, name);
 		await CollectionService.updateCollectionTags(collection_id!, tags);
 		await CollectionService.updateProductsInCollection(collection_id!, productCodes);
 		CollectionService.getCollection().then((collections) => dispatch(setCollections(collections)));
@@ -156,7 +157,6 @@ export default function EditCollection() {
 									color: error ? 'red.500' : 'black',
 									opacity: 0.7,
 								}}
-								isDisabled={!!collection_id}
 							/>
 						</FormControl>
 						<FormControl mt={'1rem'}>

@@ -34,6 +34,25 @@ async function create(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
+async function updateName(req: Request, res: Response, next: NextFunction) {
+	const data = req.body.name as string;
+
+	if (!data) {
+		return next(new CustomError(ERRORS.COMMON_ERRORS.NOT_FOUND));
+	}
+
+	try {
+		await new CollectionService().updateName(req.locals.collection_id, data);
+	} catch (err) {
+		return next(new CustomError(ERRORS.COMMON_ERRORS.ALREADY_EXISTS));
+	}
+
+	return Respond({
+		res,
+		status: 200,
+	});
+}
+
 async function updateImage(req: Request, res: Response, next: NextFunction) {
 	const data = req.body.image as string;
 
@@ -49,10 +68,10 @@ async function updateImage(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
-async function remove(req: Request, res: Response, next: NextFunction) {
-	const data = req.locals.collection_id;
+async function updateVisibility(req: Request, res: Response, next: NextFunction) {
+	const data = req.locals.data as boolean;
 
-	await new CollectionService().remove(data);
+	await new CollectionService().updateHomeVisibility(req.locals.collection_id, data);
 
 	return Respond({
 		res,
@@ -60,10 +79,8 @@ async function remove(req: Request, res: Response, next: NextFunction) {
 	});
 }
 
-async function updateVisibility(req: Request, res: Response, next: NextFunction) {
-	const data = req.locals.data as boolean;
-
-	await new CollectionService().updateHomeVisibility(req.locals.collection_id, data);
+async function deleteCollection(req: Request, res: Response, next: NextFunction) {
+	await new CollectionService().remove(req.locals.collection_id);
 
 	return Respond({
 		res,
@@ -143,12 +160,13 @@ const Controller = {
 	create,
 	updateVisibility,
 	setProducts,
-	remove,
 	addTags,
 	replaceTags,
 	removeTags,
 	addProducts,
 	removeProducts,
+	updateName,
+	deleteCollection,
 };
 
 export default Controller;

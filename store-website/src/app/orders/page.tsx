@@ -3,6 +3,7 @@ import verifyAuth from '@/helpers/verifyAuth';
 import { SERVER_URL } from '@/lib/const';
 import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import Buttons from './_component/buttons';
 
 export const metadata = {
@@ -127,6 +128,16 @@ export default async function Orders() {
 							))}
 						</VStack>
 					))}
+
+					{list.length === 0 && (
+						<Box paddingY={'2rem'} className='w-full'>
+							<Link href={'/products'} className='w-full'>
+								<Text fontWeight={'medium'} fontSize={'xl'} textAlign={'center'}>
+									No order history. click here to explore
+								</Text>
+							</Link>
+						</Box>
+					)}
 				</VStack>
 			</Box>
 		</Box>

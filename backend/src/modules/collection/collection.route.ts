@@ -29,12 +29,16 @@ router
 	.all(CollectionIDValidator, VisibilityValidator)
 	.patch(CollectionController.updateVisibility);
 
-router.route('/:id').all(CollectionIDValidator).patch(CollectionController.updateImage);
+router
+	.route('/:id')
+	.all(CollectionIDValidator)
+	.delete(CollectionController.deleteCollection)
+	.put(CollectionController.updateName)
+	.patch(CollectionController.updateImage);
 
 router
 	.route('/')
 	.get(CollectionController.listCollections)
-	.post(CreateValidator, CollectionController.create)
-	.delete(CollectionIDValidator, CollectionController.remove);
+	.post(CreateValidator, CollectionController.create);
 
 export default router;

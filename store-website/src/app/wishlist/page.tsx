@@ -96,6 +96,16 @@ export default async function Wishlist() {
 							</Flex>
 						</Flex>
 					))}
+
+					{list.length === 0 && (
+						<Box paddingY={'2rem'} className='w-full'>
+							<Link href={'/products'} className='w-full'>
+								<Text fontWeight={'medium'} fontSize={'xl'} textAlign={'center'}>
+									Wishlist is empty. click here to explore
+								</Text>
+							</Link>
+						</Box>
+					)}
 				</VStack>
 			</Box>
 		</Box>

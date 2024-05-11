@@ -2,6 +2,7 @@ import {
 	Box,
 	Button,
 	Flex,
+	HStack,
 	Heading,
 	Switch,
 	Table,
@@ -12,8 +13,8 @@ import {
 	Thead,
 	Tr,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
-import { MdOutlineCreate } from 'react-icons/md';
+import { useEffect, useRef } from 'react';
+import { MdOutlineCreate, MdOutlineEventAvailable } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { NAVIGATION } from '../../../config/const';
@@ -26,11 +27,13 @@ import {
 	updateVisibility,
 } from '../../../store/reducers/ProductsReducer';
 import { ProductDetails } from '../../../store/types/ProductsState';
+import DeleteAlert, { DeleteAlertHandle } from '../../components/delete-alert';
 import Each from '../../components/utils/Each';
 
 const ProductCustomizations = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const confirmRef = useRef<DeleteAlertHandle>(null);
 	const { productCode } = useParams();
 
 	const { customizations } = useSelector((state: StoreState) => state[StoreNames.PRODUCTS]);
@@ -57,6 +60,12 @@ const ProductCustomizations = () => {
 		};
 	}, []);
 
+	const handleAllUnavailable = () => {
+		for (const c of customizations) {
+			handleAvailable(c.id, false);
+		}
+	};
+
 	const openProduct = (product: ProductDetails) => {
 		navigate(`${NAVIGATION.PRODUCT}/${product.productCode}/edit/${product.id}`);
 	};
@@ -77,20 +86,31 @@ const ProductCustomizations = () => {
 			<Heading color={'black'}>
 				<Flex width={'98%'} justifyContent={'space-between'} alignItems={'flex-end'}>
 					Customizations
-					<Link
-						to={`${NAVIGATION.PRODUCT}/${productCode}/edit?${
-							customizations.length > 0 ? `clone_product_id=${customizations[0].id}` : ''
-						}`}
-					>
+					<HStack gap={'0.5rem'} alignItems={'flex-end'} justifyContent={'space-between'}>
 						<Button
 							variant='outline'
 							size={'sm'}
-							colorScheme='green'
-							leftIcon={<MdOutlineCreate />}
+							colorScheme='red'
+							leftIcon={<MdOutlineEventAvailable />}
+							onClick={() => confirmRef.current?.open()}
 						>
-							Add Customization
+							Mark Unavailable
 						</Button>
-					</Link>
+						<Link
+							to={`${NAVIGATION.PRODUCT}/${productCode}/edit?${
+								customizations.length > 0 ? `clone_product_id=${customizations[0].id}` : ''
+							}`}
+						>
+							<Button
+								variant='outline'
+								size={'sm'}
+								colorScheme='green'
+								leftIcon={<MdOutlineCreate />}
+							>
+								Add Customization
+							</Button>
+						</Link>
+					</HStack>
 				</Flex>
 			</Heading>
 
@@ -169,6 +189,7 @@ const ProductCustomizations = () => {
 						</Tbody>
 					</Table>
 				</TableContainer>
+				<DeleteAlert type='All Customization' ref={confirmRef} onConfirm={handleAllUnavailable} />
 			</Box>
 		</Flex>
 	);

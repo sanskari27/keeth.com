@@ -58,12 +58,32 @@ export default class CollectionService {
 		}
 	}
 
+	static async deleteCollection(id: string) {
+		try {
+			await APIInstance.delete(`/collections/${id}`);
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
 	static async updateCollectionImage(id: string, file: File) {
 		try {
 			const formData = new FormData();
 			formData.append('file', file);
 			await APIInstance.patch(`/collections/${id}`, {
 				image: file,
+			});
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
+	static async updateCollectionName(id: string, name: string) {
+		try {
+			await APIInstance.put(`/collections/${id}`, {
+				name,
 			});
 			return true;
 		} catch (err) {

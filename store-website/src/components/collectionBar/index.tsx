@@ -19,9 +19,9 @@ export default function CollectionBar() {
 					isActive={collections?.includes('rings') || false}
 				/>
 				<CollectionItem
-					id='earrings'
-					name='EarRings'
-					isActive={collections?.includes('earrings') || false}
+					id='necklace'
+					name='Necklace'
+					isActive={collections?.includes('necklace') || false}
 				/>
 				<CollectionItem
 					id='pendants'
@@ -29,9 +29,20 @@ export default function CollectionBar() {
 					isActive={collections?.includes('pendants') || false}
 				/>
 				<CollectionItem
-					id='solitaires'
-					name='solitaires'
-					isActive={collections?.includes('solitaires') || false}
+					id='tanmaniya'
+					name='Tanmaniya'
+					isActive={collections?.includes('tanmaniya') || false}
+				/>
+
+				<CollectionItem
+					id='earrings'
+					name='EarRings'
+					isActive={collections?.includes('earrings') || false}
+				/>
+				<CollectionItem
+					id='bracelet'
+					name='Bracelet'
+					isActive={collections?.includes('bracelet') || false}
 				/>
 				<CollectionItem
 					id='gifts'

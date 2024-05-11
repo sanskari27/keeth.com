@@ -132,18 +132,8 @@ export default function Footer() {
 								</Link>
 							</GridItem>
 							<GridItem>
-								<Link href={'/categories'}>
-									<Text>Categories</Text>
-								</Link>
-							</GridItem>
-							<GridItem>
-								<Link href={'/categories'}>
-									<Text>Contact us</Text>
-								</Link>
-							</GridItem>
-							<GridItem>
-								<Link href={'/privacy'}>
-									<Text>Privacy Policy</Text>
+								<Link href={'/terms'}>
+									<Text>Terms & Conditions</Text>
 								</Link>
 							</GridItem>
 							<GridItem>
@@ -152,8 +142,28 @@ export default function Footer() {
 								</Link>
 							</GridItem>
 							<GridItem>
-								<Link href={'/terms'}>
-									<Text>Terms & Conditions</Text>
+								<Link href={'/privacy'}>
+									<Text>Privacy Policy</Text>
+								</Link>
+							</GridItem>
+							<GridItem>
+								<Link href={'mailto:keethjewels@gmail.com'} target='_blank'>
+									<Text>Contact us</Text>
+								</Link>
+							</GridItem>
+							<GridItem>
+								<Link href={'/returns'}>
+									<Text>Return Policy</Text>
+								</Link>
+							</GridItem>
+							<GridItem>
+								<Link href={'/about'}>
+									<Text>Connect via Whatsapp</Text>
+								</Link>
+							</GridItem>
+							<GridItem>
+								<Link href={'/shipping-policy'}>
+									<Text>Shipping Policy</Text>
 								</Link>
 							</GridItem>
 						</Grid>

@@ -37,6 +37,19 @@ export default class CollectionService {
 		});
 	}
 
+	async updateName(id: string, name: string) {
+		await CollectionDB.updateOne(
+			{
+				collection_id: id,
+			},
+			{
+				$set: {
+					name: name,
+				},
+			}
+		);
+	}
+
 	async updateImage(id: string, image: string) {
 		await CollectionDB.updateOne(
 			{

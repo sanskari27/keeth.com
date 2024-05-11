@@ -48,6 +48,9 @@ const Slice = createSlice({
 		addCollection: (state, action: PayloadAction<(typeof initialState.list)[0]>) => {
 			state.list.push(action.payload);
 		},
+		removeCollection: (state, action: PayloadAction<string>) => {
+			state.list = state.list.filter((c) => c.id !== action.payload);
+		},
 		editSelected: (state, action: PayloadAction<string>) => {
 			state.fileDetails = initialState.fileDetails;
 			state.tagsString = initialState.tagsString;
@@ -157,6 +160,7 @@ export const {
 	setFile,
 	setTagString,
 	addCollection,
+	removeCollection,
 } = Slice.actions;
 
 export default Slice.reducer;
