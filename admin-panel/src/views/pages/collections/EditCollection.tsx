@@ -89,6 +89,7 @@ export default function EditCollection() {
 				dispatch(setSaving(false));
 				return alert('Error uploading file...');
 			}
+			await CollectionService.updateCollectionImage(collection_id!, filepath);
 		}
 
 		const tags = tagsString

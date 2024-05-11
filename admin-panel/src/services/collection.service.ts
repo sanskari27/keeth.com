@@ -67,12 +67,10 @@ export default class CollectionService {
 		}
 	}
 
-	static async updateCollectionImage(id: string, file: File) {
+	static async updateCollectionImage(id: string, image: string) {
 		try {
-			const formData = new FormData();
-			formData.append('file', file);
 			await APIInstance.patch(`/collections/${id}`, {
-				image: file,
+				image,
 			});
 			return true;
 		} catch (err) {
