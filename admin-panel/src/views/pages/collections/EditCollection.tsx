@@ -1,3 +1,4 @@
+import { SearchIcon } from '@chakra-ui/icons';
 import {
 	Box,
 	Button,
@@ -7,6 +8,8 @@ import {
 	FormLabel,
 	Image,
 	Input,
+	InputGroup,
+	InputLeftElement,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -25,7 +28,7 @@ import {
 	Tr,
 	VStack,
 } from '@chakra-ui/react';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -53,6 +56,7 @@ export default function EditCollection() {
 	const dispatch = useDispatch();
 	const { id: collection_id } = useParams();
 	const progressRef = useRef<ProgressBarHandle>(null);
+	const [productCodeSearch, setProductCodeSearch] = useState('');
 
 	const {
 		editSelected: { name, productCodes },
@@ -134,6 +138,12 @@ export default function EditCollection() {
 		dispatch(removeFile());
 	};
 
+	const filtered = list.filter(
+		(p) =>
+			p.productCode.startsWith(productCodeSearch) ||
+			p.price.toString().startsWith(productCodeSearch)
+	);
+
 	return (
 		<Modal isCentered isOpen={true} onClose={onClose} size='4xl'>
 			<ModalOverlay bg='blackAlpha.600' backdropFilter='blur(5px)' />
@@ -207,6 +217,21 @@ export default function EditCollection() {
 							)}
 						</Box>
 
+						<Flex justifyContent={'flex-end'}>
+							<InputGroup size='sm' variant={'outline'} width={'250px'}>
+								<InputLeftElement pointerEvents='none'>
+									<SearchIcon color='gray.300' />
+								</InputLeftElement>
+								<Input
+									placeholder='Search here...'
+									value={productCodeSearch}
+									onChange={(e) => setProductCodeSearch(e.target.value)}
+									borderRadius={'5px'}
+									focusBorderColor='gray.300'
+									color={'black'}
+								/>
+							</InputGroup>
+						</Flex>
 						<TableContainer pt={'0.5rem'} textColor={'black'}>
 							<Table>
 								<Thead>
@@ -214,7 +239,10 @@ export default function EditCollection() {
 										<Th color={'gray'} width={'5%'}>
 											Sl no
 										</Th>
-										<Th color={'gray'} width={'75%'}>
+										<Th color={'gray'} width={'15%'}>
+											Product Code
+										</Th>
+										<Th color={'gray'} width={'60%'}>
 											Name
 										</Th>
 
@@ -225,7 +253,7 @@ export default function EditCollection() {
 								</Thead>
 								<Tbody>
 									<Each
-										items={list}
+										items={filtered}
 										render={(product, index) => (
 											<Tr verticalAlign={'middle'} cursor={'pointer'}>
 												<Td>
@@ -243,6 +271,7 @@ export default function EditCollection() {
 													/>
 													{index + 1}.
 												</Td>
+												<Td>{product.productCode}</Td>
 												<Td>{product.name}</Td>
 												<Td isNumeric>{product.price}</Td>
 											</Tr>

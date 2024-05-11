@@ -37,7 +37,7 @@ export default async function ShopByCollections() {
 											alt={collection.name}
 											width={500}
 											height={500}
-											className='rounded-2xl object-cover mix-blend-multiply object-center'
+											className='w-full rounded-2xl object-cover mix-blend-multiply'
 										/>
 										<Box className='shadow-div shadow-light h-[100px]' />
 										<Text className='w-full text-center aura-bella absolute left-0 bottom-2  text-medium text-xl md:text-2xl '>
