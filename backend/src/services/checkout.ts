@@ -197,7 +197,9 @@ export default class CheckoutService {
 	}
 
 	static async getAllOrders() {
-		const orders = await CheckoutDB.find().sort({ transaction_date: -1 });
+		const orders = await CheckoutDB.find({
+			order_status: { $ne: ORDER_STATUS.UNINITIALIZED },
+		}).sort({ transaction_date: -1 });
 
 		return orders.map((order) => {
 			const quantity = order.products.reduce((acc, item) => acc + item.quantity, 0);
