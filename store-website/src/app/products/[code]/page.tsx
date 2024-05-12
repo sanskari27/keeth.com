@@ -168,7 +168,8 @@ export default async function ProductDetails({ params, searchParams }: Props) {
 			if (p.metal_color !== searchParams['metal_color']) {
 				return false;
 			}
-		} else if (searchParams['metal_quality']) {
+		}
+		if (searchParams['metal_quality']) {
 			if (p.metal_quality !== searchParams['metal_quality']) {
 				return false;
 			}

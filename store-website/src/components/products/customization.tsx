@@ -103,7 +103,7 @@ export default function Customization({
 							<Select
 								name='size'
 								value={searchParams.get('size') ?? ''}
-								placeholder='Select Color'
+								placeholder='Select Size'
 								bgColor={'#FFE5CF'}
 								variant={'filled'}
 								onChange={(e) => handleChange(e.target.name, e.target.value)}
