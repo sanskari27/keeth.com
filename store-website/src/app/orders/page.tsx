@@ -1,8 +1,7 @@
 import { fetchOrders } from '@/helpers/checkoutHelper';
 import verifyAuth from '@/helpers/verifyAuth';
 import { SERVER_URL } from '@/lib/const';
-import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
-import Image from 'next/image';
+import { Box, Flex, Heading, Image, Text, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import Buttons from './_component/buttons';
 
