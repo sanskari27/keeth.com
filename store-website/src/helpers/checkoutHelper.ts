@@ -57,7 +57,7 @@ export async function fetchOrders() {
 				| 'return-denied'
 				| 'return-initiated'
 				| 'refund-initiated'
-				| 'return-completed';
+				| 'refund-completed';
 			tracking_number: string;
 			return_tracking_number: string;
 			payment_method: 'cod' | 'prepaid';

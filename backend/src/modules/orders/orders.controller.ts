@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { z } from 'zod';
 import { ORDER_STATUS } from '../../config/const';
 import CustomError, { COMMON_ERRORS } from '../../errors';
 import { CheckoutService } from '../../services';
@@ -153,16 +154,17 @@ async function changeOrderStatus(req: Request, res: Response, next: NextFunction
 	if (
 		![
 			ORDER_STATUS.PLACED,
+			ORDER_STATUS.SHIPPED,
 			ORDER_STATUS.CANCELLED,
 			ORDER_STATUS.DELIVERED,
 			ORDER_STATUS.UNINITIALIZED,
-			ORDER_STATUS.REFUND_INITIATED,
-			ORDER_STATUS.RETURN_ACCEPTED,
-			ORDER_STATUS.RETURN_COMPLETED,
-			ORDER_STATUS.RETURN_DENIED,
 			ORDER_STATUS.RETURN_INITIATED,
+			ORDER_STATUS.RETURN_ACCEPTED,
+			ORDER_STATUS.REFUND_COMPLETED,
+			ORDER_STATUS.RETURN_DENIED,
+			ORDER_STATUS.REFUND_COMPLETED,
 			ORDER_STATUS.RETURN_RAISED,
-			ORDER_STATUS.SHIPPED,
+			ORDER_STATUS.REFUND_INITIATED,
 		].includes(body)
 	) {
 		return next(new CustomError(COMMON_ERRORS.INVALID_FIELDS));
@@ -170,6 +172,23 @@ async function changeOrderStatus(req: Request, res: Response, next: NextFunction
 
 	const checkout_service = new CheckoutService(transaction_id);
 	const success = await checkout_service.changeOrderStatus(body);
+	return Respond({
+		res,
+		status: success ? 200 : 400,
+	});
+}
+
+async function initiateRefund(req: Request, res: Response, next: NextFunction) {
+	const transaction_id = req.locals.id;
+
+	if (!z.number().nonnegative().safeParse(req.body.amount).success) {
+		return next(new CustomError(COMMON_ERRORS.INVALID_FIELDS));
+	}
+
+	const amount = Number(req.body.amount);
+
+	const checkout_service = new CheckoutService(transaction_id);
+	const success = await checkout_service.initiateRefund(amount);
 	return Respond({
 		res,
 		status: success ? 200 : 400,
@@ -194,6 +213,7 @@ async function paymentCompleted(req: Request, res: Response, next: NextFunction)
 const Controller = {
 	listAllOrders,
 	listUserOrders,
+	initiateRefund,
 	orderDetails,
 	acceptReturn,
 	cancelOrder,

@@ -97,6 +97,11 @@ const schema = new mongoose.Schema<ICheckout>({
 		default: 0,
 		min: 0,
 	},
+	refund_amount: {
+		type: Number,
+		required: true,
+		default: 0,
+	},
 	payment_method: {
 		type: String,
 		default: 'cod',
@@ -131,7 +136,6 @@ const schema = new mongoose.Schema<ICheckout>({
 		expires: 0, // Documents will expire when the time specified in 'expireAt' is reached
 	},
 });
-
 
 const CheckoutDB = mongoose.model<ICheckout>(CheckoutDB_name, schema);
 

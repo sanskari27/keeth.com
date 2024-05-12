@@ -40,7 +40,7 @@ export type OrderDetails = {
 		| 'return-denied'
 		| 'return-initiated'
 		| 'refund-initiated'
-		| 'return-completed';
+		| 'refund-completed';
 	transaction_date: string;
 	tracking_number: string;
 	return_tracking_number: string;

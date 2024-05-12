@@ -5,6 +5,7 @@ import {
 	requestReturn,
 } from '@/services/checkout.service';
 import { Button, Flex, Icon, Text, useToast } from '@chakra-ui/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { FaShippingFast } from 'react-icons/fa';
@@ -122,18 +123,20 @@ export default function Buttons(item: {
 						<Text>Tracking No.: </Text>
 						<Text className='uppercase'>{item.tracking_number}</Text>
 					</Flex>
-					<Button
-						borderColor={'green'}
-						color={'green'}
-						variant={'outline'}
-						py='0.5rem'
-						px='4rem'
-						rounded={'xl'}
-						className='justify-between w-full  md:w-[500px]  px-4'
-						leftIcon={<FaShippingFast color='green' />}
-					>
-						<Text fontWeight={'medium'}>Track Order</Text>
-					</Button>
+					<Link href={'https://bluedart.com/tracking'} target='_blank'>
+						<Button
+							borderColor={'green'}
+							color={'green'}
+							variant={'outline'}
+							py='0.5rem'
+							px='4rem'
+							rounded={'xl'}
+							className='justify-between w-full  md:w-[500px]  px-4'
+							leftIcon={<FaShippingFast color='green' />}
+						>
+							<Text fontWeight={'medium'}>Track Order</Text>
+						</Button>
+					</Link>
 				</>
 			) : item.order_status === 'delivered' ? (
 				<Button
@@ -173,18 +176,20 @@ export default function Buttons(item: {
 						<Text>Tracking No.: </Text>
 						<Text className='uppercase'>{item.return_tracking_number}</Text>
 					</Flex>
-					<Button
-						borderColor={'green'}
-						color={'green'}
-						variant={'outline'}
-						py='0.5rem'
-						px='4rem'
-						rounded={'xl'}
-						className='justify-between w-full  md:w-[500px]  px-4'
-						leftIcon={<FaShippingFast color='green' />}
-					>
-						<Text fontWeight={'medium'}>Track Return</Text>
-					</Button>
+					<Link href={'https://bluedart.com/tracking'} target='_blank'>
+						<Button
+							borderColor={'green'}
+							color={'green'}
+							variant={'outline'}
+							py='0.5rem'
+							px='4rem'
+							rounded={'xl'}
+							className='justify-between w-full  md:w-[500px]  px-4'
+							leftIcon={<FaShippingFast color='green' />}
+						>
+							<Text fontWeight={'medium'}>Track Return</Text>
+						</Button>
+					</Link>
 				</>
 			) : (
 				<Button

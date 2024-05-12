@@ -22,6 +22,7 @@ export default interface ICheckout extends Document {
 	couponCode: string;
 	couponDiscount: number;
 	total_amount: number;
+	refund_amount: number;
 
 	payment_method: 'cod' | 'prepaid';
 	refund_id: string;

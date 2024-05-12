@@ -82,6 +82,17 @@ export default class CartService {
 		}
 	}
 
+	static async initiateRefund(id: string, amount: number) {
+		try {
+			await APIInstance.post(`/orders/${id}/initiate-refund`, {
+				amount,
+			});
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
+
 	static async markPaid(id: string) {
 		try {
 			await APIInstance.post(`/orders/${id}/payment-completed`);

@@ -46,7 +46,7 @@ export enum ORDER_STATUS {
 	RETURN_DENIED = 'return-denied',
 	RETURN_INITIATED = 'return-initiated',
 	REFUND_INITIATED = 'refund-initiated',
-	RETURN_COMPLETED = 'return-completed',
+	REFUND_COMPLETED = 'refund-completed',
 }
 
 export const MISC_PATH = '/static/misc/';

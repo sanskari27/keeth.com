@@ -54,7 +54,7 @@ export type Order = {
 		| 'return-denied'
 		| 'return-initiated'
 		| 'refund-initiated'
-		| 'return-completed';
+		| 'refund-completed';
 	transaction_date: string;
 };
 

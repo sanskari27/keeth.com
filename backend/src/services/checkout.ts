@@ -53,7 +53,7 @@ export default class CheckoutService {
 						$nin: [
 							ORDER_STATUS.UNINITIALIZED,
 							ORDER_STATUS.CANCELLED,
-							ORDER_STATUS.RETURN_COMPLETED,
+							ORDER_STATUS.REFUND_COMPLETED,
 						],
 					},
 				},
@@ -117,7 +117,7 @@ export default class CheckoutService {
 							$nin: [
 								ORDER_STATUS.UNINITIALIZED,
 								ORDER_STATUS.CANCELLED,
-								ORDER_STATUS.RETURN_COMPLETED,
+								ORDER_STATUS.REFUND_COMPLETED,
 							],
 						},
 					},
@@ -495,7 +495,7 @@ export default class CheckoutService {
 
 	public async markCODCompleted() {
 		const transaction = await CheckoutDB.findById(this._transactionId);
-		if (!transaction || transaction.transaction_status !== TRANSACTION_STATUS.PENDING) {
+		if (!transaction || transaction.transaction_status !== TRANSACTION_STATUS.UNINITIALIZED) {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
 		} else if (transaction.payment_method !== 'cod') {
 			throw new CustomError(COMMON_ERRORS.NOT_FOUND);
@@ -736,6 +736,61 @@ export default class CheckoutService {
 		);
 
 		return updates.matchedCount !== 0;
+	}
+
+	async initiateRefund(amount: number) {
+		const transaction = await CheckoutDB.findById(this._transactionId);
+		if (
+			!transaction ||
+			transaction.order_status !== ORDER_STATUS.RETURN_INITIATED ||
+			amount > transaction.total_amount ||
+			(transaction.refund_amount || 0) > 0
+		) {
+			return false;
+		}
+
+		if (transaction.payment_method === 'cod') {
+			await CheckoutDB.updateOne(
+				{ _id: this._transactionId },
+				{
+					$set: {
+						order_status: ORDER_STATUS.REFUND_INITIATED,
+						refund_amount: amount,
+					},
+				}
+			);
+			return true;
+		}
+
+		const refund_id = generateTransactionID();
+		try {
+			await PhonePeProvider.refunds.createRefund({
+				amount: amount,
+				order_id: transaction.provider_id,
+				reference_id: transaction.refund_id,
+			});
+		} catch (err) {
+			Logger.error('Phonepe Refund Error', err as Error, {
+				refund_id: transaction.refund_id,
+				transaction_id: transaction.payment_id,
+				amount: transaction.total_amount,
+				order_id: this._transactionId.toString(),
+			});
+			return false;
+		}
+
+		await CheckoutDB.updateOne(
+			{ _id: this._transactionId },
+			{
+				$set: {
+					order_status: ORDER_STATUS.REFUND_INITIATED,
+					refund_amount: amount,
+					refund_id,
+				},
+			}
+		);
+
+		return true;
 	}
 
 	public static async confirmPayment(transactionId: Types.ObjectId, payment_provider_id: string) {

@@ -18,6 +18,9 @@ router
 	.delete(Controller.cancelReturnRequest);
 
 router.route('/:id/tracking').all(VerifyAdmin, IDValidator).post(Controller.setTrackingID);
+
+router.route('/:id/initiate-refund').all(VerifyAdmin, IDValidator).post(Controller.initiateRefund);
+
 router.route('/:id/status').all(VerifyAdmin, IDValidator).post(Controller.changeOrderStatus);
 router
 	.route('/:id/payment-completed')
