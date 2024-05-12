@@ -8,11 +8,18 @@ export default function Customization({
 	qualities,
 	diamond_types,
 	sizes,
+	defaultValues,
 }: {
 	colors: string[];
 	qualities: string[];
 	diamond_types: string[];
 	sizes: string[];
+	defaultValues: {
+		size: string | null;
+		metal_color: string;
+		metal_quality: string;
+		diamond_type: string | null;
+	};
 }) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -47,7 +54,7 @@ export default function Customization({
 				<GridItem>
 					<Select
 						name='metal_color'
-						value={searchParams.get('metal_color') ?? ''}
+						value={searchParams.get('metal_color') ?? defaultValues.metal_color ?? ''}
 						placeholder='Select Color'
 						bgColor={'#FFE5CF'}
 						variant={'filled'}
@@ -63,7 +70,7 @@ export default function Customization({
 				<GridItem>
 					<Select
 						name='metal_quality'
-						value={searchParams.get('metal_quality') ?? ''}
+						value={searchParams.get('metal_quality') ?? defaultValues.metal_quality ?? ''}
 						placeholder='Select Quality'
 						bgColor={'#FFE5CF'}
 						variant={'filled'}
@@ -79,7 +86,7 @@ export default function Customization({
 				<GridItem>
 					<Select
 						name='diamond_type'
-						value={searchParams.get('diamond_type') ?? ''}
+						value={searchParams.get('diamond_type') ?? defaultValues.diamond_type ?? ''}
 						placeholder='Diamond Type'
 						hidden={diamond_types.length === 0}
 						bgColor={'#FFE5CF'}
@@ -102,7 +109,7 @@ export default function Customization({
 						<GridItem>
 							<Select
 								name='size'
-								value={searchParams.get('size') ?? ''}
+								value={searchParams.get('size') ?? defaultValues.size ?? ''}
 								placeholder='Select Size'
 								bgColor={'#FFE5CF'}
 								variant={'filled'}

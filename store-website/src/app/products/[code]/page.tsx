@@ -247,7 +247,15 @@ export default async function ProductDetails({ params, searchParams }: Props) {
 							</Text>
 							<Box className='w-full mt-8 md:mt-16'>
 								<Suspense fallback={<div>Loading Customization...</div>}>
-									<Customization {...{ colors, qualities, diamond_types, sizes }} />
+									<Customization
+										{...{ colors, qualities, diamond_types, sizes }}
+										defaultValues={{
+											size: product.size,
+											metal_color: product.metal_color,
+											metal_quality: product.metal_quality,
+											diamond_type: product.diamond_type,
+										}}
+									/>
 								</Suspense>
 							</Box>
 							<Box width={'full'} marginTop={'1.5rem'}>
