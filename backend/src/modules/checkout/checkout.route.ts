@@ -28,6 +28,7 @@ router
 	.route('/verify-payment')
 	.all(VerifySession, TransactionIDValidator)
 	.get(Controller.verifyPayment);
+
 router.route('/').all(VerifySession, TransactionIDValidator).get(Controller.details);
 
 export default router;

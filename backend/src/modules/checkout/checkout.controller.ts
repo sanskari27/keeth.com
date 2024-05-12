@@ -7,17 +7,6 @@ import { BillingDetailsValidationResult } from './checkout.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
 async function details(req: Request, res: Response, next: NextFunction) {
-	const email = await req.locals.session.getEmailById();
-	if (!email) {
-		return Respond({
-			res,
-			status: 200,
-			data: {
-				orders: [],
-			},
-		});
-	}
-
 	const session = req.locals.session;
 	const transaction_id = req.locals.id;
 
