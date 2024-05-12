@@ -93,7 +93,7 @@ async function login(req: Request, res: Response, next: NextFunction) {
 			return next(new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR));
 		}
 
-		res.cookie(AUTH_COOKIE, ADMIN_AUTH_COOKIE, {
+		res.cookie(ADMIN_AUTH_COOKIE, ADMIN_AUTH_COOKIE, {
 			sameSite: 'strict',
 			expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
 			httpOnly: IS_PRODUCTION,

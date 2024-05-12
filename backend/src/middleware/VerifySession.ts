@@ -47,7 +47,7 @@ export default async function VerifySession(req: Request, res: Response, next: N
 }
 
 export async function VerifyAdmin(req: Request, res: Response, next: NextFunction) {
-	const _auth_id = req.cookies[AUTH_COOKIE];
+	const _auth_id = req.cookies[ADMIN_AUTH_COOKIE];
 
 	if (_auth_id === ADMIN_AUTH_COOKIE) {
 		return next();
