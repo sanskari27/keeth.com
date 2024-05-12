@@ -6,7 +6,7 @@ import {
 	CarouselPrevious,
 } from '@/components/ui/carousel';
 import { SERVER_URL } from '@/lib/const';
-import { getCollections } from '@/services/product.service';
+import { homeCollections } from '@/services/product.service';
 import { Box, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ import Link from 'next/link';
 export const revalidate = 3600;
 
 export default async function ShopByCollections() {
-	const collections = await getCollections();
+	const collections = await homeCollections();
 	return (
 		<Box px={'3%'} py={'1.5%'}>
 			<Text className='aura-bella font-thin text-primary-dark_red text-4xl'>

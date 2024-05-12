@@ -15,6 +15,19 @@ async function listCollections(req: Request, res: Response, next: NextFunction) 
 	});
 }
 
+async function homeCollections(req: Request, res: Response, next: NextFunction) {
+	let list = await new CollectionService().listAll();
+	list = list.filter((el) => el.visibleAtHome);
+
+	return Respond({
+		res,
+		status: 200,
+		data: {
+			collections: list,
+		},
+	});
+}
+
 async function create(req: Request, res: Response, next: NextFunction) {
 	const data = req.locals.data as CreateValidationResult;
 
@@ -156,6 +169,7 @@ async function removeProducts(req: Request, res: Response, next: NextFunction) {
 
 const Controller = {
 	listCollections,
+	homeCollections,
 	updateImage,
 	create,
 	updateVisibility,

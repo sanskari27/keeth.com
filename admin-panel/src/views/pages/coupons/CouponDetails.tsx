@@ -1,3 +1,4 @@
+import { DeleteIcon } from '@chakra-ui/icons';
 import {
 	Box,
 	Button,
@@ -40,7 +41,7 @@ export default function CouponDetails() {
 		const success = await CouponService.createCoupon(details);
 		if (!success) {
 			dispatch(setSaving(false));
-			return alert('Error Adding Product');
+			return alert('Error Adding coupon');
 		}
 		CouponService.listCoupons().then((coupons) => dispatch(setCoupons(coupons)));
 		navigate(NAVIGATION.COUPONS);
@@ -52,7 +53,19 @@ export default function CouponDetails() {
 		const success = await CouponService.updateCoupon(details.id, details);
 		if (!success) {
 			dispatch(setSaving(false));
-			return alert('Error Updating Product');
+			return alert('Error Updating coupon');
+		}
+		CouponService.listCoupons().then((coupons) => dispatch(setCoupons(coupons)));
+		navigate(NAVIGATION.COUPONS);
+		dispatch(setSaving(false));
+	};
+
+	const onRemove = async (id: string) => {
+		dispatch(setSaving(true));
+		const success = await CouponService.removeCoupon(id);
+		if (!success) {
+			dispatch(setSaving(false));
+			return alert('Error removing coupon');
 		}
 		CouponService.listCoupons().then((coupons) => dispatch(setCoupons(coupons)));
 		navigate(NAVIGATION.COUPONS);
@@ -94,7 +107,7 @@ export default function CouponDetails() {
 			</Heading>
 
 			<Box marginTop={'2rem'}>
-				<DetailsForm onSave={onSave} onUpdate={onUpdate} />
+				<DetailsForm onSave={onSave} onUpdate={onUpdate} onRemove={onRemove} />
 			</Box>
 		</Flex>
 	);
@@ -103,9 +116,11 @@ export default function CouponDetails() {
 function DetailsForm({
 	onSave,
 	onUpdate,
+	onRemove,
 }: {
 	onSave: (details: Coupon) => void;
 	onUpdate: (details: Coupon) => void;
+	onRemove: (id: string) => void;
 }) {
 	const navigate = useNavigate();
 
@@ -215,6 +230,14 @@ function DetailsForm({
 			</HStack>
 
 			<ButtonGroup alignSelf={'end'}>
+				<Button
+					variant='solid'
+					colorScheme='red'
+					hidden={isCreating}
+					onClick={() => onRemove(couponDetails.id)}
+				>
+					<DeleteIcon />
+				</Button>
 				<Button
 					variant='outline'
 					colorScheme='red'

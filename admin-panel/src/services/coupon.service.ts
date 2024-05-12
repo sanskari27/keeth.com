@@ -28,4 +28,13 @@ export default class CouponService {
 			return false;
 		}
 	}
+
+	static async removeCoupon(id: string) {
+		try {
+			await APIInstance.delete(`/coupon/${id}`);
+			return true;
+		} catch (err) {
+			return false;
+		}
+	}
 }

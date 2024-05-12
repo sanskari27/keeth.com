@@ -180,11 +180,15 @@ async function paymentCompleted(req: Request, res: Response, next: NextFunction)
 	const transaction_id = req.locals.id;
 
 	const checkout_service = new CheckoutService(transaction_id);
-	await checkout_service.markCODCompleted();
-	return Respond({
-		res,
-		status: 200,
-	});
+	try {
+		await checkout_service.markCODCompleted();
+		return Respond({
+			res,
+			status: 200,
+		});
+	} catch (err) {
+		return next(new CustomError(COMMON_ERRORS.INVALID_FIELDS));
+	}
 }
 
 const Controller = {

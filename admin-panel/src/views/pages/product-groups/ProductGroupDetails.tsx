@@ -1,3 +1,4 @@
+import { SearchIcon } from '@chakra-ui/icons';
 import {
 	Box,
 	Button,
@@ -8,6 +9,8 @@ import {
 	FormLabel,
 	Heading,
 	Input,
+	InputGroup,
+	InputLeftElement,
 	Table,
 	TableContainer,
 	Tbody,
@@ -16,7 +19,7 @@ import {
 	Thead,
 	Tr,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { IoSave } from 'react-icons/io5';
 import { MdCancelPresentation, MdUpdate } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,6 +43,8 @@ import {
 import Each from '../../components/utils/Each';
 
 const ProductGroupDetails = () => {
+	const [productCodeSearch, setProductCodeSearch] = useState('');
+
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { id } = useParams();
@@ -97,6 +102,12 @@ const ProductGroupDetails = () => {
 		};
 	}, []);
 
+	const filtered = list.filter(
+		(p) =>
+			p.productCode.startsWith(productCodeSearch) ||
+			p.price.toString().startsWith(productCodeSearch)
+	);
+
 	return (
 		<Flex direction={'column'} padding={'1rem'} justifyContent={'start'}>
 			<Heading color={'black'}>
@@ -147,6 +158,22 @@ const ProductGroupDetails = () => {
 						onChange={(e) => dispatch(setRecommendationName(e.target.value))}
 					/>
 				</FormControl>
+
+				<Flex justifyContent={'flex-end'} marginTop={'1rem'}>
+					<InputGroup size='sm' variant={'outline'} width={'250px'}>
+						<InputLeftElement pointerEvents='none'>
+							<SearchIcon color='gray.300' />
+						</InputLeftElement>
+						<Input
+							placeholder='Search here...'
+							value={productCodeSearch}
+							onChange={(e) => setProductCodeSearch(e.target.value)}
+							borderRadius={'5px'}
+							focusBorderColor='gray.300'
+							color={'black'}
+						/>
+					</InputGroup>
+				</Flex>
 				<TableContainer pt={'0.5rem'} textColor={'black'}>
 					<Table>
 						<Thead>
@@ -154,10 +181,12 @@ const ProductGroupDetails = () => {
 								<Th color={'gray'} width={'5%'}>
 									Sl no
 								</Th>
-								<Th color={'gray'} width={'75%'}>
+								<Th color={'gray'} width={'10%'}>
+									Product Code
+								</Th>
+								<Th color={'gray'} width={'65%'}>
 									Name
 								</Th>
-
 								<Th color={'gray'} width={'20%'} isNumeric>
 									Price
 								</Th>
@@ -165,7 +194,7 @@ const ProductGroupDetails = () => {
 						</Thead>
 						<Tbody>
 							<Each
-								items={list}
+								items={filtered}
 								render={(product, index) => (
 									<Tr verticalAlign={'middle'} cursor={'pointer'}>
 										<Td>
@@ -183,6 +212,7 @@ const ProductGroupDetails = () => {
 											/>
 											{index + 1}.
 										</Td>
+										<Td>{product.productCode}</Td>
 										<Td>{product.name}</Td>
 										<Td isNumeric>{product.price}</Td>
 									</Tr>

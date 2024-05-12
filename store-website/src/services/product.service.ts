@@ -95,6 +95,23 @@ export async function getCollections() {
 	}
 }
 
+export async function homeCollections() {
+	try {
+		const { data } = await api.get(`/collections/home-collections`);
+		const collections = data.collections as {
+			id: string;
+			name: string;
+			image: string;
+			tags: string[];
+			visibleAtHome: boolean;
+			productCodes: string[];
+		}[];
+		return collections;
+	} catch (err) {
+		return [];
+	}
+}
+
 export async function getBestSellers() {
 	try {
 		const { data } = await api.get(`/products/best-sellers`);

@@ -10,6 +10,8 @@ import {
 
 const router = express.Router();
 
+router.route('/home-collections').get(CollectionController.homeCollections);
+
 router
 	.route('/:id/products')
 	.all(CollectionIDValidator, ProductsValidator)
