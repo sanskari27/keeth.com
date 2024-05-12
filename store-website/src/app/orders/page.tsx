@@ -92,10 +92,7 @@ export default async function Orders() {
 										<Image
 											src={SERVER_URL + `/products/${product.product_id}/image`}
 											alt={'Product Image'}
-											width={500}
-											height={500}
 											className=' w-full rounded-2xl object-cover mix-blend-multiply object-center '
-											priority
 										/>
 									</Box>
 									<Flex
