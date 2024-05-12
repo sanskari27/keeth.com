@@ -24,6 +24,7 @@ export default async function ProductPage({
 }) {
 	const price_max = searchParams['max_price'] ? searchParams['max_price'] : '1000000';
 	const price_min = searchParams['min_price'] ? searchParams['min_price'] : '0';
+	const sort = searchParams['sort'] ? searchParams['sort'] : 'popular';
 	const metals = searchParams['metal_color'] ? searchParams['metal_color'].split('_+_') : [];
 	const purity = searchParams['metal_quality'] ? searchParams['metal_quality'].split('_+_') : [];
 	const collection_ids = searchParams['collections']
@@ -40,6 +41,7 @@ export default async function ProductPage({
 		collection_ids: collection_ids.join(','),
 		tags: tags.join(','),
 		skip,
+		sort,
 		limit: '60',
 	};
 

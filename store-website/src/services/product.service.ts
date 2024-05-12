@@ -38,6 +38,7 @@ export type ProductsQuery = {
 	tags: string;
 	skip: string;
 	limit: string;
+	sort: string;
 };
 export async function products(query: ProductsQuery) {
 	try {

@@ -49,7 +49,7 @@ export default function ProductPreview({ images, videos }: { images: string[]; v
 						<VideoPlayer
 							src={SERVER_URL + `/media/${state}`}
 							controls={false}
-							className='object-cover'
+							className='object-contain'
 						/>
 					</Center>
 				)}
@@ -66,7 +66,7 @@ export default function ProductPreview({ images, videos }: { images: string[]; v
 										'w-[80px] h-[80px] bg-[#F0F0F0]',
 										item === state ? 'border-primary-dark_marron border' : ''
 									)}
-									onClick={() => {
+									onMouseEnter={() => {
 										setState(item);
 										setType('image');
 									}}
@@ -92,7 +92,7 @@ export default function ProductPreview({ images, videos }: { images: string[]; v
 										'w-[80px] h-[80px] bg-[#F0F0F0] ',
 										item === state ? 'border-primary-dark_marron border' : ''
 									)}
-									onClick={() => {
+									onMouseEnter={() => {
 										setState(item);
 										setType('video');
 									}}

@@ -10,6 +10,8 @@ import {
 	Flex,
 	Grid,
 	GridItem,
+	Radio,
+	RadioGroup,
 	Slider,
 	SliderFilledTrack,
 	SliderThumb,
@@ -17,6 +19,7 @@ import {
 	Tag,
 	TagLabel,
 	Text,
+	VStack,
 	Wrap,
 	WrapItem,
 	useBoolean,
@@ -164,7 +167,6 @@ export default function FilterBar() {
 			</section>
 			<Grid
 				hidden={!isFilterExpanded}
-				bgColor={'white'}
 				width={'96%'}
 				mt={'-0.5rem'}
 				mx='2%'
@@ -172,7 +174,7 @@ export default function FilterBar() {
 				px={'1rem'}
 				rounded={'lg'}
 				bg='#F0F0F0'
-				className='md:max-h-[250px] h-fit transition-all grid-cols-1 md:grid-flow-col gap-x-6'
+				className='md:max-h-[260px] h-fit transition-all grid-cols-1 md:grid-flow-col gap-x-6'
 			>
 				<GridItem className='border-r border-black/20 px-6'>
 					<Box width={'full'} className='  pb-6'>
@@ -372,8 +374,24 @@ export default function FilterBar() {
 					</Box>
 				</GridItem>
 				<GridItem className='px-2'>
-					<Flex className='h-full flex-col justify-around'>
-						<Box height={'100px'}></Box>
+					<Flex className='h-full flex-col justify-around pb-2'>
+						<Text fontWeight={'medium'}>Sort By</Text>
+						<Box height={'170px'} overflowY={'scroll'}>
+							<RadioGroup
+								onChange={(val) => setValue('sort', val)}
+								value={
+									(data['sort'] as string) ?? (searchParams.get('sort') as string) ?? 'popular'
+								}
+							>
+								<VStack width={'full'} alignItems={'flex-start'}>
+									<Radio value='popular'>Popular</Radio>
+									<Radio value='new'>New</Radio>
+									<Radio value='discount'>Max Discounts</Radio>
+									<Radio value='low-high'>Low to High</Radio>
+									<Radio value='high-low'>High to Low</Radio>
+								</VStack>
+							</RadioGroup>
+						</Box>
 						<Flex className='w-full gap-3'>
 							<Button
 								borderColor={'#891618'}

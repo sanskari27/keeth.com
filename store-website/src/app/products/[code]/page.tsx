@@ -277,9 +277,11 @@ export default async function ProductDetails({ params, searchParams }: Props) {
 					<Text fontSize={'1.1rem'} fontWeight={'bold'}>
 						Product Details
 					</Text>
-					<Box width={'full'} className='custom-table'>
-						<Box dangerouslySetInnerHTML={{ __html: product.pricing_bifurcation }} />
-					</Box>
+					<Flex>
+						<Box className='md:w-1/2 custom-table'>
+							<Box dangerouslySetInnerHTML={{ __html: product.pricing_bifurcation }} />
+						</Box>
+					</Flex>
 				</Box>
 
 				{/* ------------------------------------------------------------------Testimonials   ------------------------------------------------*/}

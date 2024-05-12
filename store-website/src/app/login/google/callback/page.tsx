@@ -4,17 +4,21 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 type Props = {
-	params: { code: string };
+	searchParams: { code: string };
 };
-export default async function GoogleLogin({ params: { code } }: Props) {
+export default function GoogleLogin({ searchParams: { code } }: Props) {
 	const router = useRouter();
 	useEffect(() => {
 		if (code) {
-			googleLogin(code).then(() => {
-				router.replace('/');
+			googleLogin(code).then((success) => {
+				if (success) {
+					router.replace('/');
+				} else {
+					router.replace('/login');
+				}
 			});
 		} else {
-			router.replace('/');
+			router.replace('/login');
 		}
 	}, [code, router]);
 

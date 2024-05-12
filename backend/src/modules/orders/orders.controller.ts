@@ -69,7 +69,10 @@ async function listUserOrders(req: Request, res: Response, next: NextFunction) {
 		res,
 		status: 200,
 		data: {
-			orders: await CheckoutService.getOrders(req.locals.session.id),
+			orders: await CheckoutService.getOrders(
+				req.locals.session.id,
+				(await req.locals.session.getEmailById()) ?? ''
+			),
 		},
 	});
 }

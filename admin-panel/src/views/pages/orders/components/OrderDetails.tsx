@@ -215,7 +215,7 @@ function ProductCard({
 	const navigate = useNavigate();
 
 	const openProduct = () => {
-		navigate(`/${NAVIGATION.PRODUCT}/${product.productCode}/edit/${product.product_id}`);
+		navigate(`${NAVIGATION.PRODUCT}/${product.productCode}/edit/${product.product_id}`);
 	};
 
 	return (

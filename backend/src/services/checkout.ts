@@ -219,9 +219,9 @@ export default class CheckoutService {
 		});
 	}
 
-	static async getOrders(linked_to: Types.ObjectId) {
+	static async getOrders(linked_to: Types.ObjectId, email: string) {
 		const orders = await CheckoutDB.find({
-			linked_to,
+			$or: [{ linked_to: linked_to }, { email: email }],
 			order_status: { $ne: ORDER_STATUS.UNINITIALIZED },
 		}).sort({ transaction_date: -1 });
 

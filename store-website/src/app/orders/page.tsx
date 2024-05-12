@@ -80,47 +80,54 @@ export default async function Orders() {
 								<Buttons {...item} />
 							</VStack>
 							{item.products.map((product, index) => (
-								<Flex className='w-full gap-3 border-b py-4 !border-black/40 ' key={index}>
-									<Box
-										rounded={'2xl'}
-										overflow={'hidden'}
-										w='250px'
-										aspectRatio={1 / 1}
-										position={'relative'}
-									>
-										<Image
-											src={SERVER_URL + `/products/${product.product_id}/image`}
-											alt={'Product Image'}
-											className=' w-full rounded-2xl object-cover mix-blend-multiply object-center '
-										/>
-									</Box>
-									<Flex
-										overflow={'hidden'}
-										position={'relative'}
-										direction={'column'}
-										justifyContent={'space-around'}
-									>
-										<Box>
-											<Text fontWeight={'medium'} textColor={'black'}>
-												{product.name}
-											</Text>
-											<Text textColor={'#8E8E8E'}>Product Code: {product.productCode}</Text>
-											<Text textColor={'#8E8E8E'}>Description: {product.description}</Text>
-											<Text textColor={'#8E8E8E'}>Price: ₹ {product.price - product.discount}</Text>
-											<Text textColor={'#8E8E8E'}>Quantity: {product.quantity}</Text>
-											<Text textColor={'#8E8E8E'} marginTop={'0.5rem'}>
-												Metal Details: Color : {product.metal_color}, Quality:{' '}
-												{product.metal_quality}
-											</Text>
-											<Text hidden={!product.diamond_type} textColor={'#8E8E8E'}>
-												Diamond Details: {product.diamond_type}
-											</Text>
-											<Text hidden={!product.size} textColor={'#8E8E8E'}>
-												Size: {product.size}
-											</Text>
+								<Link
+									className='w-full'
+									href={`/products/${product.productCode}?product_id=${product.product_id}`}
+								>
+									<Flex className='w-full gap-3 border-b py-4 !border-black/40 ' key={index}>
+										<Box
+											rounded={'2xl'}
+											overflow={'hidden'}
+											w='250px'
+											aspectRatio={1 / 1}
+											position={'relative'}
+										>
+											<Image
+												src={SERVER_URL + `/products/${product.product_id}/image`}
+												alt={'Product Image'}
+												className=' w-full rounded-2xl object-cover mix-blend-multiply object-center '
+											/>
 										</Box>
+										<Flex
+											overflow={'hidden'}
+											position={'relative'}
+											direction={'column'}
+											justifyContent={'space-between'}
+										>
+											<Box>
+												<Text fontWeight={'medium'} textColor={'black'}>
+													{product.name}
+												</Text>
+												<Text textColor={'#8E8E8E'}>Product Code: {product.productCode}</Text>
+												<Text textColor={'#8E8E8E'}>Description: {product.description}</Text>
+												<Text textColor={'#8E8E8E'}>
+													Price: ₹ {product.price - product.discount}
+												</Text>
+												<Text textColor={'#8E8E8E'}>Quantity: {product.quantity}</Text>
+												<Text textColor={'#8E8E8E'} marginTop={'0.5rem'}>
+													Metal Details: Color : {product.metal_color}, Quality:{' '}
+													{product.metal_quality}
+												</Text>
+												<Text hidden={!product.diamond_type} textColor={'#8E8E8E'}>
+													Diamond Details: {product.diamond_type}
+												</Text>
+												<Text hidden={!product.size} textColor={'#8E8E8E'}>
+													Size: {product.size}
+												</Text>
+											</Box>
+										</Flex>
 									</Flex>
-								</Flex>
+								</Link>
 							))}
 						</VStack>
 					))}

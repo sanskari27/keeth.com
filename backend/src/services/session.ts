@@ -64,14 +64,14 @@ export default class SessionService {
 		}
 	}
 
-	static async loginOrRegister(email: string, password: string) {
+	static async loginOrRegister(email: string, password: string, opts: { force?: boolean } = {}) {
 		const user = await AccountDB.findOne({ email }).select('+password');
 		if (user === null) {
 			return await SessionService.register(email, password);
 		}
 
 		const password_matched = await user.verifyPassword(password);
-		if (!password_matched) {
+		if (!password_matched && !opts.force) {
 			throw new CustomError(ERRORS.USER_ERRORS.USER_NOT_FOUND_ERROR);
 		}
 		return [user.getSignedToken(), new SessionService(user._id)] as [string, SessionService];

@@ -27,7 +27,7 @@ import {
 } from './session.validator';
 export const SESSION_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 
-const client = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL);
+const oAuthClient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL);
 
 async function listUsers(req: Request, res: Response, next: NextFunction) {
 	return Respond({
@@ -204,11 +204,11 @@ async function updatePassword(req: Request, res: Response, next: NextFunction) {
 async function googleLogin(req: Request, res: Response, next: NextFunction) {
 	const _session_id = req.cookies[SESSION_COOKIE];
 	try {
-		const { tokens } = await client.getToken({
+		const { tokens } = await oAuthClient.getToken({
 			code: (req.locals.data as GoogleLoginValidationResult).token,
 		});
 
-		const ticket = await client.verifyIdToken({
+		const ticket = await oAuthClient.verifyIdToken({
 			idToken: tokens.id_token!,
 			audience: GOOGLE_CLIENT_ID, // Replace with your client ID
 		});
@@ -218,7 +218,9 @@ async function googleLogin(req: Request, res: Response, next: NextFunction) {
 			return next(new CustomError(COMMON_ERRORS.INTERNAL_SERVER_ERROR));
 		}
 		const email = payload['email'];
-		const [token, new_session] = await SessionService.loginOrRegister(email, GOOGLE_AUTH_PASSWORD);
+		const [token, new_session] = await SessionService.loginOrRegister(email, GOOGLE_AUTH_PASSWORD, {
+			force: true,
+		});
 
 		res.clearCookie(SESSION_COOKIE, {
 			sameSite: 'strict',

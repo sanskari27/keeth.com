@@ -20,7 +20,10 @@ export async function googleLogin(code: string) {
 		await api.post('/sessions/google-login', {
 			token: code,
 		});
-	} catch (err) {}
+		return true;
+	} catch (err) {
+		return false;
+	}
 }
 
 export async function logOut() {

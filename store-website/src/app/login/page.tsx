@@ -61,7 +61,7 @@ export default async function Login({
 						</Link>
 						<Link
 							className='w-full'
-							href={`https://accounts.google.com/o/oauth2/v2/auth?scope=email&response_type=code&redirect_uri=${WEBSITE_URL}&client_id=${GOOGLE_CLIENT_ID}`}
+							href={`https://accounts.google.com/o/oauth2/v2/auth?scope=email&response_type=code&redirect_uri=${WEBSITE_URL}/login/google/callback&client_id=${GOOGLE_CLIENT_ID}`}
 						>
 							<Button py='0.5rem' w='full' leftIcon={<FcGoogle />}>
 								Continue with Google

@@ -31,7 +31,6 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from '@/components/ui/carousel';
-import { redirect } from 'next/navigation';
 
 const HOME_TESTIMONIALS = [
 	{
@@ -73,15 +72,7 @@ const HOME_TESTIMONIALS = [
 
 const SOCIAL_MEDIA = [ARRIVALS_BANGLES, ARRIVALS_EARRINGS];
 
-export default async function Home({
-	searchParams,
-}: {
-	searchParams: { [key: string]: string | string[] | undefined };
-}) {
-	if (searchParams['code']) {
-		redirect(`/login/google/callback/${searchParams['code']}`);
-	}
-
+export default async function Home() {
 	return (
 		<main>
 			<Box>
