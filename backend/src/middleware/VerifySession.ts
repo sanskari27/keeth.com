@@ -42,6 +42,7 @@ export default async function VerifySession(req: Request, res: Response, next: N
 		expires: new Date(Date.now() + SESSION_EXPIRE_TIME),
 		httpOnly: IS_PRODUCTION,
 		secure: IS_PRODUCTION,
+		domain: IS_PRODUCTION ? '.keethjewels.com' : 'localhost',
 	});
 	next();
 }
