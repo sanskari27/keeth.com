@@ -7,6 +7,9 @@ import {
 	OrderDeliveredTemplate,
 	OrderShippedTemplate,
 	PasswordResetTemplate,
+	ReturnAcceptedTemplate,
+	ReturnCompletedTemplate,
+	ReturnDeniedTemplate,
 	WelcomeEmailTemplate,
 } from './templates';
 
@@ -60,7 +63,14 @@ export async function sendPasswordResetEmail(to: string, token: string) {
 export async function sendOrderConfirmation(
 	to: string,
 	details: {
-		status: 'placed' | 'shipped' | 'delivered' | 'cancelled';
+		status:
+			| 'placed'
+			| 'shipped'
+			| 'delivered'
+			| 'cancelled'
+			| 'return-denied'
+			| 'return-accepted'
+			| 'return-completed';
 		customer: { name: string; phone: string; email: string };
 		address: {
 			address_line_1: string;
@@ -101,6 +111,12 @@ export async function sendOrderConfirmation(
 				? 'Order is on Its Way - Exciting News from Keeth Jewels!'
 				: details.status === 'delivered'
 				? `Your Order Has Arrived! We'd Love to Hear Your Thoughts!`
+				: details.status === 'return-denied'
+				? `Return Request Denied!`
+				: details.status === 'return-accepted'
+				? `Return Request Approved!`
+				: details.status === 'return-completed'
+				? `Return Completed. You have been refunded!`
 				: 'Order Cancelled!',
 		html:
 			details.status === 'placed'
@@ -109,6 +125,12 @@ export async function sendOrderConfirmation(
 				? OrderShippedTemplate(details)
 				: details.status === 'delivered'
 				? OrderDeliveredTemplate(details)
+				: details.status === 'return-denied'
+				? ReturnDeniedTemplate(details)
+				: details.status === 'return-accepted'
+				? ReturnAcceptedTemplate(details)
+				: details.status === 'return-completed'
+				? ReturnCompletedTemplate(details)
 				: OrderCancelledTemplate(details),
 	});
 
