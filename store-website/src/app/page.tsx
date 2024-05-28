@@ -88,7 +88,7 @@ export default async function Home() {
 					<Box position={'relative'} overflow={'hidden'} w={'100vw'} h={'100vh'}>
 						<ChakraImage
 							src={HOME_SCREEN_MODAL}
-							className='h-screen w-screen absolute left-0 top-0 -z-10 md:block hidden'
+							className='absolute left-0 top-0 -z-10 md:block hidden'
 						/>
 						<Image
 							src={HOME_SCREEN_RINGS}
@@ -119,10 +119,10 @@ export default async function Home() {
 					>
 						Discover the Art of Elegance
 					</Heading>
-					<Box className='flex w-full md:block justify-center md:pl-24  ' marginTop={'1.75rem'}>
+					<Box className='flex w-full md:block justify-center md:pl-12  ' marginTop={'1.75rem'}>
 						<Link
 							href='/products'
-							className='aura-bella rounded-full py-2 px-4 bg-accent-light text-white text-2xl'
+							className='aura-bella rounded-full py-4 px-6 bg-accent-light text-white text-2xl'
 						>
 							shop now
 						</Link>
